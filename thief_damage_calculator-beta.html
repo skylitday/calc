@@ -475,7 +475,7 @@ function num(id) { return parseFloat(document.getElementById(id).value) || 0; }
 function val(id) { return document.getElementById(id).value; }
 function set(id, v) {
   const el = document.getElementById(id);
-  if (el) el.textContent = typeof v === 'number' ? (Number.isInteger(v) ? v : v.toFixed(1)) : v;
+  if (el) el.textContent = typeof v === 'number' ? (Number.isInteger(v) ? v : v.toFixed(2)) : v;
 }
 
 function getArmor(name) {
