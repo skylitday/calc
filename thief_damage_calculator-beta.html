@@ -386,6 +386,13 @@
     <!-- DAMAGE -->
     <div class="panel" style="margin-top:12px">
       <h2>DAMAGE</h2>
+      <div class="row" style="margin-bottom:10px">
+        <span class="label">Mastery Lv</span>
+        <input type="range" id="masteryLv" min="0" max="10" value="10" step="1" oninput="recalc()" style="flex:1; max-width:140px; accent-color:#e94560;">
+        <span class="calc" id="masteryLvVal">10</span>
+        <span class="label" style="margin-left:6px">m=</span>
+        <span class="calc" id="masteryFactor">0.88</span>
+      </div>
       <div class="damage-box">
         <div class="nums">
           <div>
@@ -403,8 +410,9 @@
         </div>
       </div>
       <p class="note">
-        L7: Skill 1.4 · M 0.5 · W 3.0<br>
-        Claw W 2.5 · Dagger 1–2 · else M 0.88
+        Mastery can be adjusted from levels 0-10<br>
+        Claw W 2.5 · Dagger W 1-2<br>
+        L7 overrides Mastery to 0.5 with W 3.0
       </p>
     </div>
   </div>
@@ -599,13 +607,16 @@ function recalc() {
   set('fAttPower', attPower);
 
   // Mastery & Wep multipliers
-  let mastery, wepMax, wepMin;
+  // m = (MasteryLevel / 10 + 0.1) × 0.8   (from osms / meowdb formula)
+  const masteryLv = Math.max(0, Math.min(10, num('masteryLv')));
+  set('masteryLvVal', masteryLv);
+  let mastery = (masteryLv / 10 + 0.1) * 0.8;
+  let wepMax, wepMin;
   if (skill === 'Lucky Seven') {
-    mastery = 0.5;
+    mastery = 0.5; // L7 forces m=0.5
     wepMax = 3;
     wepMin = 3;
   } else {
-    mastery = 0.88;
     if (wep.type === 'Claw') {
       wepMax = 2.5;
       wepMin = 2.5;
@@ -615,6 +626,7 @@ function recalc() {
     }
   }
   set('mastery', mastery);
+  set('masteryFactor', mastery.toFixed(2));
   set('wepMax', wepMax);
   set('wepMin', wepMin);
 
