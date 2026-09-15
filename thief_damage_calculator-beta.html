@@ -228,6 +228,9 @@
           <option selected>None</option>
           <option>Claw Mastery (+20)</option>
           <option>Steal (+35)</option>
+          <option>Fighter Rage (Party) (+40)</option>
+          <option>Claw Mastery + Rage (+60)</option>
+          <option>Steal + Rage (+75)</option>
           <option>Custom</option>
         </select>
       </div>
@@ -590,6 +593,9 @@ function recalc() {
   let attPower = 0;
   if (attBuff === 'Claw Mastery (+20)') attPower = 20;
   else if (attBuff === 'Steal (+35)') attPower = 35;
+  else if (attBuff === 'Fighter Rage (Party) (+40)') attPower = 40;
+  else if (attBuff === 'Claw Mastery + Rage (+60)') attPower = 60;
+  else if (attBuff === 'Steal + Rage (+75)') attPower = 75;
   else if (attBuff === 'Custom') attPower = num('customAtt');
   set('attPower', attPower);
 
