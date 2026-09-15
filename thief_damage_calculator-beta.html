@@ -191,7 +191,7 @@
 <p class="subtitle" style="margin-top: -8px; margin-bottom: 16px; font-size: 0.72rem; line-height: 1.5;">
   Created by Grok &amp; <strong>@skylitday</strong> on Discord
   · Data from <a href="https://osmsdataexplorer.com/#formulas" target="_blank" rel="noopener" style="color:#8892b0;">osmsdataexplorer.com/#formulas</a><br>
-  <strong style="color:#e94560;">Based on CoT2 Test and not finalized</strong>
+  <strong style="color:#e94560;">Based on CoT2 test and not finalized</strong>
 </p>
 <div class="grid">
 
@@ -445,7 +445,7 @@
       <div class="row"><span class="label">Wep MIN</span><span class="calc" id="wepMin">—</span></div>
       <p class="note" style="margin-top:8px;">
         Mastery levels 0–10 · Claw W 2.5 · Dagger W 1–2<br>
-        L7 overrides Mastery to 0.5 with W 3.0
+        L7 overrides Mastery to 0.5 with W 3
       </p>
     </div>
 
@@ -474,15 +474,20 @@
           <span class="calc" id="critTotal">20</span>
           <span class="label" style="margin-left:2px;">%</span>
         </div>
-        <div class="row" style="margin-bottom:8px">
+        <div class="row" style="margin-bottom:6px">
           <span class="label">Skill buff</span>
           <select id="critSkill" onchange="recalc()" style="max-width:160px;">
             <option value="0" selected>None</option>
             <option value="35">Critical Throw</option>
           </select>
-          <span class="label" style="margin-left:10px;">Weapon Critical Damage</span>
+        </div>
+        <div class="row" style="margin-bottom:8px">
+          <span class="label">Weapon Crit Damage</span>
           <span class="calc" id="weaponCrit">0</span>
           <span class="label" style="margin-left:2px;">%</span>
+          <span class="adj-label" style="margin-left:8px;">±</span>
+          <input type="number" class="mod" id="modWeaponCrit" value="0" oninput="recalc()" title="Weapon Crit Damage adjust (above/below average)">
+          <span class="label" style="margin-left:8px; font-size:0.72rem;">(only certain claws have crit damage)</span>
         </div>
       </div>
       <div class="damage-box" style="background:#1a3a2a;">
@@ -614,7 +619,7 @@ function recalc() {
   const wep = getWeapon(val('weapon'));
   set('weaponType', wep.type || '—');
   set('weaponWatk', wep.watk);
-  const weaponCrit = wep.crit || 0;
+  const weaponCrit = (wep.crit || 0) + num('modWeaponCrit');
   set('weaponCrit', weaponCrit);
   const watkMod = num('watkMod');
 
