@@ -377,7 +377,7 @@
       <div class="scroll-slots">
         <div class="scroll-card">
           <div class="scroll-card-header">
-            <span class="slot-name">Weapon</span>
+            <span class="slot-name">Weapon <span class="calc" id="scSlots0" style="font-weight:500; font-size:0.78rem;">0/7</span></span>
             <select id="scStat0" onchange="recalc()">
               <option selected>ATT</option>
             </select>
@@ -392,7 +392,7 @@
         </div>
         <div class="scroll-card">
           <div class="scroll-card-header">
-            <span class="slot-name">Overall</span>
+            <span class="slot-name">Overall <span class="calc" id="scSlots1" style="font-weight:500; font-size:0.78rem;">0/10</span></span>
             <select id="scStat1" onchange="recalc()">
               <option selected>LUK</option><option>DEX</option><option>STR</option>
             </select>
@@ -407,7 +407,7 @@
         </div>
         <div class="scroll-card">
           <div class="scroll-card-header">
-            <span class="slot-name">Gloves</span>
+            <span class="slot-name">Gloves <span class="calc" id="scSlots2" style="font-weight:500; font-size:0.78rem;">0/5</span></span>
             <select id="scStat2" onchange="recalc()">
               <option selected>ATT</option>
             </select>
@@ -422,7 +422,7 @@
         </div>
         <div class="scroll-card">
           <div class="scroll-card-header">
-            <span class="slot-name">Cape</span>
+            <span class="slot-name">Cape <span class="calc" id="scSlots3" style="font-weight:500; font-size:0.78rem;">0/5</span></span>
             <select id="scStat3" onchange="recalc()">
               <option selected>LUK</option><option>DEX</option><option>STR</option>
             </select>
@@ -437,7 +437,7 @@
         </div>
         <div class="scroll-card">
           <div class="scroll-card-header">
-            <span class="slot-name">Earrings</span>
+            <span class="slot-name">Earrings <span class="calc" id="scSlots4" style="font-weight:500; font-size:0.78rem;">0/5</span></span>
             <select id="scStat4" onchange="recalc()">
               <option selected>LUK</option><option>DEX</option><option>STR</option><option>CRIT</option>
             </select>
@@ -744,13 +744,17 @@ function recalc() {
   set('totLuk', gearLuk);
   set('totCrit', gearCrit);
 
-  // Scrolls
+  // Scrolls (max slots: Weapon 7, Overall 10, Gloves/Cape/Earrings 5)
+  const SCROLL_MAX = [7, 10, 5, 5, 5];
   let scSTR = 0, scDEX = 0, scLUK = 0, scATT = 0, scCRIT = 0;
   for (let i = 0; i < 5; i++) {
     const s100 = num('sc100_' + i);
     const s60 = num('sc60_' + i);
     const s10 = num('sc10_' + i);
     const sCh = num('scCh_' + i);
+    const used = s100 + s60 + s10 + sCh;
+    const max = SCROLL_MAX[i];
+    set('scSlots' + i, used + '/' + max);
     const bonus = s100 * 1 + s60 * 2 + s10 * 3 + sCh * 4;
     set('scBonus' + i, bonus);
     const st = val('scStat' + i);
