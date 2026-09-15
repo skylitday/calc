@@ -143,6 +143,74 @@
   .stat-summary-table tbody tr:last-child td { border-top: 1px solid var(--border); padding-top: 8px; font-weight: 700; }
   .stat-summary-table tbody tr:last-child td:first-child { color: var(--text); }
 
+  .scroll-totals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+  .scroll-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
+  .scroll-chip .chip-label { color: var(--muted); font-size: 0.72rem; letter-spacing: 0.3px; }
+  .scroll-chip .calc { padding: 0; min-width: 1.2em; text-align: center; }
+
+  .scroll-slots { display: flex; flex-direction: column; gap: 10px; }
+  .scroll-card {
+    background: #2c2830;
+    border: 1px solid #5c4a32;
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+  .scroll-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    gap: 8px;
+  }
+  .scroll-card-header .slot-name {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--text);
+    min-width: 70px;
+  }
+  .scroll-card-header select { max-width: 100px; }
+  .scroll-card-header .bonus-wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+  }
+  .scroll-card-header .bonus-wrap .chip-label { color: var(--muted); font-size: 0.72rem; }
+  .scroll-counts {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .scroll-counts label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+  .scroll-counts input[type="number"] {
+    max-width: 100%;
+    width: 100%;
+    text-align: center;
+  }
+
   .damage-box {
     background: #0f3460;
     border-radius: 6px;
@@ -251,7 +319,7 @@
           <option selected>None</option>
           <option>Claw Mastery (+20)</option>
           <option>Steal (+35)</option>
-          <option>Fighter Rage (Party) (+40)</option>
+          <option>Fighter Rage (+40)</option>
           <option>Claw Mastery + Rage (+60)</option>
           <option>Steal + Rage (+75)</option>
           <option>Custom</option>
@@ -306,84 +374,82 @@
     <!-- 4. SCROLLS -->
     <div class="panel" style="margin-top:12px">
       <h2>4. SCROLLS</h2>
-      <table>
-        <thead>
-          <tr><th>Slot</th><th>Stat</th><th>100%</th><th>60%</th><th>10%</th><th>Chaos</th><th>Bonus</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Weapon</td>
-            <td>
-              <select id="scStat0" onchange="recalc()">
-                <option selected>ATT</option>
-              </select>
-            </td>
-            <td><input type="number" id="sc100_0" value="0" min="0" max="7" oninput="recalc()"></td>
-            <td><input type="number" id="sc60_0" value="0" min="0" oninput="recalc()"></td>
-            <td><input type="number" id="sc10_0" value="0" min="0" oninput="recalc()"></td>
-            <td><input type="number" id="scCh_0" value="0" min="0" oninput="recalc()"></td>
-            <td><span class="calc" id="scBonus0">0</span></td>
-          </tr>
-          <tr>
-            <td>Overall</td>
-            <td>
-              <select id="scStat1" onchange="recalc()">
-                <option selected>LUK</option><option>DEX</option><option>STR</option>
-              </select>
-            </td>
-            <td><input type="number" id="sc100_1" value="0" min="0" oninput="recalc()"></td>
-            <td><input type="number" id="sc60_1" value="0" min="0" oninput="recalc()"></td>
-            <td><input type="number" id="sc10_1" value="0" min="0" oninput="recalc()"></td>
-            <td><input type="number" id="scCh_1" value="0" min="0" oninput="recalc()"></td>
-            <td><span class="calc" id="scBonus1">0</span></td>
-          </tr>
-          <tr>
-            <td>Gloves</td>
-            <td>
-              <select id="scStat2" onchange="recalc()">
-                <option selected>ATT</option>
-              </select>
-            </td>
-            <td><input type="number" id="sc100_2" value="0" min="0" max="5" oninput="recalc()"></td>
-            <td><input type="number" id="sc60_2" value="0" min="0" oninput="recalc()"></td>
-            <td><input type="number" id="sc10_2" value="0" min="0" oninput="recalc()"></td>
-            <td><input type="number" id="scCh_2" value="0" min="0" oninput="recalc()"></td>
-            <td><span class="calc" id="scBonus2">0</span></td>
-          </tr>
-          <tr>
-            <td>Cape</td>
-            <td>
-              <select id="scStat3" onchange="recalc()">
-                <option selected>LUK</option><option>DEX</option><option>STR</option>
-              </select>
-            </td>
-            <td><input type="number" id="sc100_3" value="0" min="0" max="5" oninput="recalc()"></td>
-            <td><input type="number" id="sc60_3" value="0" min="0" oninput="recalc()"></td>
-            <td><input type="number" id="sc10_3" value="0" min="0" oninput="recalc()"></td>
-            <td><input type="number" id="scCh_3" value="0" min="0" oninput="recalc()"></td>
-            <td><span class="calc" id="scBonus3">0</span></td>
-          </tr>
-          <tr>
-            <td>Earrings</td>
-            <td>
-              <select id="scStat4" onchange="recalc()">
-                <option selected>LUK</option><option>DEX</option><option>STR</option><option>CRIT</option>
-              </select>
-            </td>
-            <td><input type="number" id="sc100_4" value="0" min="0" max="5" oninput="recalc()"></td>
-            <td><input type="number" id="sc60_4" value="0" min="0" oninput="recalc()"></td>
-            <td><input type="number" id="sc10_4" value="0" min="0" oninput="recalc()"></td>
-            <td><input type="number" id="scCh_4" value="0" min="0" oninput="recalc()"></td>
-            <td><span class="calc" id="scBonus4">0</span></td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="scroll-grid" style="margin-top:10px">
-        <div>Scroll STR <span class="calc" id="scSTR">0</span></div>
-        <div>Scroll DEX <span class="calc" id="scDEX">0</span></div>
-        <div>Scroll LUK <span class="calc" id="scLUK">0</span></div>
-        <div>Scroll ATT <span class="calc" id="scATT">0</span></div>
-        <div>Scroll CRIT <span class="calc" id="scCRIT">0</span></div>
+      <div class="scroll-slots">
+        <div class="scroll-card">
+          <div class="scroll-card-header">
+            <span class="slot-name">Weapon</span>
+            <select id="scStat0" onchange="recalc()">
+              <option selected>ATT</option>
+            </select>
+            <div class="bonus-wrap"><span class="chip-label">Bonus</span><span class="calc" id="scBonus0">0</span></div>
+          </div>
+          <div class="scroll-counts">
+            <label>100%<input type="number" id="sc100_0" value="0" min="0" max="7" oninput="recalc()"></label>
+            <label>60%<input type="number" id="sc60_0" value="0" min="0" oninput="recalc()"></label>
+            <label>10%<input type="number" id="sc10_0" value="0" min="0" oninput="recalc()"></label>
+            <label>Chaos 10%<input type="number" id="scCh_0" value="0" min="0" oninput="recalc()"></label>
+          </div>
+        </div>
+        <div class="scroll-card">
+          <div class="scroll-card-header">
+            <span class="slot-name">Overall</span>
+            <select id="scStat1" onchange="recalc()">
+              <option selected>LUK</option><option>DEX</option><option>STR</option>
+            </select>
+            <div class="bonus-wrap"><span class="chip-label">Bonus</span><span class="calc" id="scBonus1">0</span></div>
+          </div>
+          <div class="scroll-counts">
+            <label>100%<input type="number" id="sc100_1" value="0" min="0" oninput="recalc()"></label>
+            <label>60%<input type="number" id="sc60_1" value="0" min="0" oninput="recalc()"></label>
+            <label>10%<input type="number" id="sc10_1" value="0" min="0" oninput="recalc()"></label>
+            <label>Chaos 10%<input type="number" id="scCh_1" value="0" min="0" oninput="recalc()"></label>
+          </div>
+        </div>
+        <div class="scroll-card">
+          <div class="scroll-card-header">
+            <span class="slot-name">Gloves</span>
+            <select id="scStat2" onchange="recalc()">
+              <option selected>ATT</option>
+            </select>
+            <div class="bonus-wrap"><span class="chip-label">Bonus</span><span class="calc" id="scBonus2">0</span></div>
+          </div>
+          <div class="scroll-counts">
+            <label>100%<input type="number" id="sc100_2" value="0" min="0" max="5" oninput="recalc()"></label>
+            <label>60%<input type="number" id="sc60_2" value="0" min="0" oninput="recalc()"></label>
+            <label>10%<input type="number" id="sc10_2" value="0" min="0" oninput="recalc()"></label>
+            <label>Chaos 10%<input type="number" id="scCh_2" value="0" min="0" oninput="recalc()"></label>
+          </div>
+        </div>
+        <div class="scroll-card">
+          <div class="scroll-card-header">
+            <span class="slot-name">Cape</span>
+            <select id="scStat3" onchange="recalc()">
+              <option selected>LUK</option><option>DEX</option><option>STR</option>
+            </select>
+            <div class="bonus-wrap"><span class="chip-label">Bonus</span><span class="calc" id="scBonus3">0</span></div>
+          </div>
+          <div class="scroll-counts">
+            <label>100%<input type="number" id="sc100_3" value="0" min="0" max="5" oninput="recalc()"></label>
+            <label>60%<input type="number" id="sc60_3" value="0" min="0" oninput="recalc()"></label>
+            <label>10%<input type="number" id="sc10_3" value="0" min="0" oninput="recalc()"></label>
+            <label>Chaos 10%<input type="number" id="scCh_3" value="0" min="0" oninput="recalc()"></label>
+          </div>
+        </div>
+        <div class="scroll-card">
+          <div class="scroll-card-header">
+            <span class="slot-name">Earrings</span>
+            <select id="scStat4" onchange="recalc()">
+              <option selected>LUK</option><option>DEX</option><option>STR</option><option>CRIT</option>
+            </select>
+            <div class="bonus-wrap"><span class="chip-label">Bonus</span><span class="calc" id="scBonus4">0</span></div>
+          </div>
+          <div class="scroll-counts">
+            <label>100%<input type="number" id="sc100_4" value="0" min="0" max="5" oninput="recalc()"></label>
+            <label>60%<input type="number" id="sc60_4" value="0" min="0" oninput="recalc()"></label>
+            <label>10%<input type="number" id="sc10_4" value="0" min="0" oninput="recalc()"></label>
+            <label>Chaos 10%<input type="number" id="scCh_4" value="0" min="0" oninput="recalc()"></label>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -437,8 +503,6 @@
         <span class="label">Mastery Lv</span>
         <input type="range" id="masteryLv" min="0" max="10" value="10" step="1" oninput="recalc()" style="flex:1; max-width:140px; accent-color:#e94560;">
         <span class="calc" id="masteryLvVal">10</span>
-        <span class="label" style="margin-left:6px">m=</span>
-        <span class="calc" id="masteryFactor">0.88</span>
       </div>
       <div class="row"><span class="label">Mastery</span><span class="calc" id="mastery">—</span></div>
       <div class="row"><span class="label">Wep MAX</span><span class="calc" id="wepMax">—</span></div>
@@ -651,7 +715,7 @@ function recalc() {
   let attPower = 0;
   if (attBuff === 'Claw Mastery (+20)') attPower = 20;
   else if (attBuff === 'Steal (+35)') attPower = 35;
-  else if (attBuff === 'Fighter Rage (Party) (+40)') attPower = 40;
+  else if (attBuff === 'Fighter Rage (+40)') attPower = 40;
   else if (attBuff === 'Claw Mastery + Rage (+60)') attPower = 60;
   else if (attBuff === 'Steal + Rage (+75)') attPower = 75;
   else if (attBuff === 'Custom') attPower = num('customAtt');
