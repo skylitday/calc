@@ -67,8 +67,9 @@
   }
 
   table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-  td, th { padding: 4px 6px; text-align: left; vertical-align: middle; }
-  th { color: var(--muted); font-weight: 500; font-size: 0.75rem; }
+  td, th { padding: 5px 6px; text-align: left; vertical-align: middle; }
+  th { color: var(--muted); font-weight: 500; font-size: 0.75rem; letter-spacing: 0.3px; }
+  tfoot td { border-top: 1px solid var(--border); padding-top: 8px; }
 
   input[type="number"], select {
     background: var(--input-bg);
@@ -83,15 +84,53 @@
   input[type="number"] { max-width: 70px; }
   select { max-width: 200px; cursor: pointer; }
 
-  .calc {
-    background: var(--green);
-    color: var(--green-text);
-    padding: 3px 8px;
+  /* Clean stacked gear adjusters */
+  .stat-cell {
+    text-align: center;
+    vertical-align: middle;
+    padding: 6px 4px !important;
+    min-width: 52px;
+  }
+  .stat-cell .calc {
+    display: block;
+    margin: 0 auto 3px auto;
+    padding: 0;
+    font-size: 0.9rem;
+    font-weight: 700;
+    background: none;
+    color: #4ade80;
+    line-height: 1.2;
+  }
+  .stat-cell .mod-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+  }
+  .stat-cell .adj-label {
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-weight: 500;
+  }
+  input.mod {
+    width: 34px;
+    max-width: 34px;
+    padding: 2px 3px;
+    font-size: 0.75rem;
+    text-align: center;
     border-radius: 3px;
-    font-weight: 600;
+  }
+
+  .calc {
+    background: none;
+    color: #4ade80;
+    padding: 0 2px;
+    border-radius: 0;
+    font-weight: 700;
     display: inline-block;
-    min-width: 40px;
+    min-width: 0;
     text-align: right;
+    font-size: 0.9rem;
   }
   .label { color: var(--muted); font-size: 0.8rem; }
   .row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
@@ -213,16 +252,6 @@
         <span class="calc" id="effWatk">—</span>
       </div>
       <div class="row">
-        <span class="label">Skill</span>
-        <select id="skill" onchange="recalc()">
-          <option>Basic Attack</option>
-          <option>Lucky Seven</option>
-          <option>Drain (maxed)</option>
-          <option>Double Stab</option>
-          <option>Savage Blow</option>
-        </select>
-      </div>
-      <div class="row">
         <span class="label">ATT Buff</span>
         <select id="attBuff" onchange="recalc()">
           <option selected>None</option>
@@ -233,16 +262,24 @@
           <option>Steal + Rage (+75)</option>
           <option>Custom</option>
         </select>
-      </div>
-      <div class="row">
-        <span class="label">SkillMult</span>
-        <span class="calc" id="skillMult">—</span>
         <span class="label">ATT Power</span>
         <span class="calc" id="attPower">—</span>
       </div>
       <div class="row">
         <span class="label">Custom ATT</span>
         <input type="number" id="customAtt" value="0" oninput="recalc()">
+      </div>
+      <div class="row">
+        <span class="label">Skill</span>
+        <select id="skill" onchange="recalc()">
+          <option>Basic Attack</option>
+          <option>Lucky Seven</option>
+          <option>Drain (maxed)</option>
+          <option>Double Stab</option>
+          <option>Savage Blow</option>
+        </select>
+        <span class="label">SkillMult</span>
+        <span class="calc" id="skillMult">—</span>
       </div>
     </div>
 
@@ -251,7 +288,7 @@
       <h2>3. GEAR</h2>
       <table>
         <thead>
-          <tr><th>Slot</th><th>Item</th><th>STR</th><th>DEX</th><th>LUK</th><th>CRIT</th></tr>
+          <tr><th>Slot</th><th>Item</th><th>STR</th><th>DEX</th><th>LUK</th></tr>
         </thead>
         <tbody id="gearBody"></tbody>
         <tfoot>
@@ -260,10 +297,17 @@
             <td><span class="calc" id="totStr">0</span></td>
             <td><span class="calc" id="totDex">0</span></td>
             <td><span class="calc" id="totLuk">0</span></td>
-            <td><span class="calc" id="totCrit">0</span></td>
           </tr>
         </tfoot>
       </table>
+      <div style="display:flex; align-items:center; gap:10px; margin-top:12px; padding-top:10px; border-top:1px solid var(--border);">
+        <span class="label" style="min-width:auto;">Gear Crit Damage</span>
+        <span class="calc" id="totCrit">0</span>
+        <span class="adj-label">±</span>
+        <input type="number" class="mod" id="modGearCrit" value="0" oninput="recalc()" title="Gear Crit Damage adjust (Earrings)">
+        <span class="label" style="font-size:0.7rem; color:var(--muted); margin-left:2px;">(Earrings)</span>
+      </div>
+      <p class="note" style="margin-top:8px;">Yellow ± = above/below average adjust · Green = final value</p>
     </div>
 
     <!-- 4. SCROLLS -->
@@ -514,10 +558,18 @@ function init() {
     tr.innerHTML = `
       <td>${slot.label}</td>
       <td><select id="gear_${slot.id}" onchange="recalc()"></select></td>
-      <td><span class="calc" id="gStr_${slot.id}">0</span></td>
-      <td><span class="calc" id="gDex_${slot.id}">0</span></td>
-      <td><span class="calc" id="gLuk_${slot.id}">0</span></td>
-      <td><span class="calc" id="gCrit_${slot.id}">0</span></td>
+      <td class="stat-cell">
+        <span class="calc" id="gStr_${slot.id}">0</span>
+        <div class="mod-row"><span class="adj-label">±</span><input type="number" class="mod" id="modStr_${slot.id}" value="0" oninput="recalc()" title="STR adjust"></div>
+      </td>
+      <td class="stat-cell">
+        <span class="calc" id="gDex_${slot.id}">0</span>
+        <div class="mod-row"><span class="adj-label">±</span><input type="number" class="mod" id="modDex_${slot.id}" value="0" oninput="recalc()" title="DEX adjust"></div>
+      </td>
+      <td class="stat-cell">
+        <span class="calc" id="gLuk_${slot.id}">0</span>
+        <div class="mod-row"><span class="adj-label">±</span><input type="number" class="mod" id="modLuk_${slot.id}" value="0" oninput="recalc()" title="LUK adjust"></div>
+      </td>
     `;
     tbody.appendChild(tr);
     fillSelect(document.getElementById('gear_' + slot.id), LISTS[slot.list], DEFAULTS[slot.id] || 'None');
@@ -599,20 +651,24 @@ function recalc() {
   else if (attBuff === 'Custom') attPower = num('customAtt');
   set('attPower', attPower);
 
-  // Gear
+  // Gear (base + ± adjusters for above/below avg items)
   let gearStr = 0, gearDex = 0, gearLuk = 0, gearCrit = 0;
   GEAR_SLOTS.forEach(slot => {
     const name = val('gear_' + slot.id);
     const a = getArmor(name);
-    set('gStr_' + slot.id, a.str);
-    set('gDex_' + slot.id, a.dex);
-    set('gLuk_' + slot.id, a.luk);
-    set('gCrit_' + slot.id, a.crit || 0);
-    gearStr += a.str;
-    gearDex += a.dex;
-    gearLuk += a.luk;
-    gearCrit += (a.crit || 0);
+    const adjStr = a.str + num('modStr_' + slot.id);
+    const adjDex = a.dex + num('modDex_' + slot.id);
+    const adjLuk = a.luk + num('modLuk_' + slot.id);
+    set('gStr_' + slot.id, adjStr);
+    set('gDex_' + slot.id, adjDex);
+    set('gLuk_' + slot.id, adjLuk);
+    gearStr += adjStr;
+    gearDex += adjDex;
+    gearLuk += adjLuk;
+    gearCrit += (a.crit || 0); // base crit from items (mostly earrings)
   });
+  // single Gear Crit Damage ± (mainly for earrings / special pieces)
+  gearCrit += num('modGearCrit');
   set('totStr', gearStr);
   set('totDex', gearDex);
   set('totLuk', gearLuk);
