@@ -136,13 +136,12 @@
   .row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
   .row > span:first-child { min-width: 90px; }
 
-  .stat-grid {
-    display: grid;
-    grid-template-columns: auto 1fr 1fr 1fr;
-    gap: 4px 10px;
-    font-size: 0.85rem;
-  }
-  .stat-grid .hdr { color: var(--muted); font-size: 0.75rem; }
+  .stat-summary-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  .stat-summary-table th { color: var(--muted); font-weight: 500; font-size: 0.75rem; text-align: center; padding: 4px 6px; }
+  .stat-summary-table th:first-child, .stat-summary-table td:first-child { text-align: left; color: var(--muted); }
+  .stat-summary-table td { text-align: center; padding: 5px 6px; }
+  .stat-summary-table tbody tr:last-child td { border-top: 1px solid var(--border); padding-top: 8px; font-weight: 700; }
+  .stat-summary-table tbody tr:last-child td:first-child { color: var(--text); }
 
   .damage-box {
     background: #0f3460;
@@ -262,7 +261,6 @@
           <option>Steal + Rage (+75)</option>
           <option>Custom</option>
         </select>
-        <span class="label">ATT Power</span>
         <span class="calc" id="attPower">—</span>
       </div>
       <div class="row">
@@ -400,29 +398,37 @@
     <!-- STAT SUMMARY -->
     <div class="panel">
       <h2>STAT SUMMARY</h2>
-      <div class="stat-grid">
-        <span></span><span class="hdr">STR</span><span class="hdr">DEX</span><span class="hdr">LUK</span>
-        <span class="label">Base</span>
-        <span class="calc" id="sumBaseStr">—</span>
-        <span class="calc" id="sumBaseDex">—</span>
-        <span class="calc" id="sumBaseLuk">—</span>
-        <span class="label">Gear</span>
-        <span class="calc" id="sumGearStr">—</span>
-        <span class="calc" id="sumGearDex">—</span>
-        <span class="calc" id="sumGearLuk">—</span>
-        <span class="label">Scroll</span>
-        <span class="calc" id="sumScStr">—</span>
-        <span class="calc" id="sumScDex">—</span>
-        <span class="calc" id="sumScLuk">—</span>
-        <span class="label"><strong>TOTAL</strong></span>
-        <span class="calc" id="sumTotStr">—</span>
-        <span class="calc" id="sumTotDex">—</span>
-        <span class="calc" id="sumTotLuk">—</span>
-      </div>
-      <div style="margin-top:12px">
-        <div class="row"><span class="label">W ATT</span><span class="calc" id="sumWatk">—</span></div>
-        <div class="row"><span class="label">ATT Power</span><span class="calc" id="sumAttPower">—</span></div>
-      </div>
+      <table class="stat-summary-table">
+        <thead>
+          <tr><th></th><th>STR</th><th>DEX</th><th>LUK</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Base</td>
+            <td><span class="calc" id="sumBaseStr">—</span></td>
+            <td><span class="calc" id="sumBaseDex">—</span></td>
+            <td><span class="calc" id="sumBaseLuk">—</span></td>
+          </tr>
+          <tr>
+            <td>Gear</td>
+            <td><span class="calc" id="sumGearStr">—</span></td>
+            <td><span class="calc" id="sumGearDex">—</span></td>
+            <td><span class="calc" id="sumGearLuk">—</span></td>
+          </tr>
+          <tr>
+            <td>Scroll</td>
+            <td><span class="calc" id="sumScStr">—</span></td>
+            <td><span class="calc" id="sumScDex">—</span></td>
+            <td><span class="calc" id="sumScLuk">—</span></td>
+          </tr>
+          <tr>
+            <td>TOTAL</td>
+            <td><span class="calc" id="sumTotStr">—</span></td>
+            <td><span class="calc" id="sumTotDex">—</span></td>
+            <td><span class="calc" id="sumTotLuk">—</span></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <!-- FORMULA INPUTS -->
@@ -432,37 +438,25 @@
       <div class="row"><span class="label">Secondary (STR+DEX)</span><span class="calc" id="secondary">—</span></div>
       <div class="row"><span class="label">Total W ATT</span><span class="calc" id="totalWatk">—</span></div>
       <div class="row"><span class="label">ATT Power</span><span class="calc" id="fAttPower">—</span></div>
-      <div class="row"><span class="label">Mastery</span><span class="calc" id="mastery">—</span></div>
-      <div class="row"><span class="label">Wep MAX</span><span class="calc" id="wepMax">—</span></div>
-      <div class="row"><span class="label">Wep MIN</span><span class="calc" id="wepMin">—</span></div>
-    </div>
-
-    <!-- DAMAGE -->
-    <div class="panel" style="margin-top:12px">
-      <h2>DAMAGE</h2>
-      <div class="row" style="margin-bottom:10px">
+      <div class="row" style="margin-bottom:8px">
         <span class="label">Mastery Lv</span>
         <input type="range" id="masteryLv" min="0" max="10" value="10" step="1" oninput="recalc()" style="flex:1; max-width:140px; accent-color:#e94560;">
         <span class="calc" id="masteryLvVal">10</span>
         <span class="label" style="margin-left:6px">m=</span>
         <span class="calc" id="masteryFactor">0.88</span>
       </div>
-      <div class="row" style="margin-bottom:6px">
-        <span class="label">Crit damage</span>
-        <input type="number" id="critDmg" value="20" min="0" oninput="recalc()" style="max-width:70px;">
-        <span class="label" style="margin-left:2px;">%</span>
-        <span class="label" style="margin-left:8px;">base 20%</span>
-      </div>
-      <div class="row" style="margin-bottom:10px">
-        <span class="label">Skill buff</span>
-        <select id="critSkill" onchange="recalc()" style="max-width:160px;">
-          <option value="0" selected>None</option>
-          <option value="35">Critical Throw</option>
-        </select>
-        <span class="label" style="margin-left:10px;">Total</span>
-        <span class="calc" id="critTotal">20</span>
-        <span class="label" style="margin-left:2px;">%</span>
-      </div>
+      <div class="row"><span class="label">Mastery</span><span class="calc" id="mastery">—</span></div>
+      <div class="row"><span class="label">Wep MAX</span><span class="calc" id="wepMax">—</span></div>
+      <div class="row"><span class="label">Wep MIN</span><span class="calc" id="wepMin">—</span></div>
+      <p class="note" style="margin-top:8px;">
+        Mastery levels 0–10 · Claw W 2.5 · Dagger W 1–2<br>
+        L7 overrides Mastery to 0.5 with W 3.0
+      </p>
+    </div>
+
+    <!-- DAMAGE -->
+    <div class="panel" style="margin-top:12px">
+      <h2>DAMAGE</h2>
       <div class="damage-box">
         <div class="nums">
           <div>
@@ -479,7 +473,21 @@
           </div>
         </div>
       </div>
-      <div class="damage-box" style="margin-top:8px; background:#1a3a2a;">
+      <div style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border);">
+        <div class="row" style="margin-bottom:6px">
+          <span class="label">Crit Dmg</span>
+          <span class="calc" id="critTotal">20</span>
+          <span class="label" style="margin-left:2px;">%</span>
+        </div>
+        <div class="row" style="margin-bottom:8px">
+          <span class="label">Skill buff</span>
+          <select id="critSkill" onchange="recalc()" style="max-width:160px;">
+            <option value="0" selected>None</option>
+            <option value="35">Critical Throw</option>
+          </select>
+        </div>
+      </div>
+      <div class="damage-box" style="background:#1a3a2a;">
         <div style="text-align:center; font-size:0.7rem; color:#86efac; margin-bottom:6px;">CRITICAL DAMAGE</div>
         <div class="nums">
           <div>
@@ -496,11 +504,6 @@
           </div>
         </div>
       </div>
-      <p class="note">
-        Mastery can be adjusted from levels 0-10<br>
-        Claw W 2.5 · Dagger W 1-2<br>
-        L7 overrides Mastery to 0.5 with W 3.0
-      </p>
       <p class="note" style="margin-top:12px; border-top:1px solid var(--border); padding-top:10px;">
         <strong style="color:#e94560;">Disclaimer:</strong>
         This calculator shows <strong>maximum theoretical damage</strong> per line.
@@ -762,10 +765,9 @@ function recalc() {
   set('dmgHigh', Math.floor(high));
   set('dmgMid', Math.floor(mid));
 
-  // Crit: Damage × (100 + CritDamage) / 100  [osmsdataexplorer]
-  // input = free base (default 5, future items ok); skill is additive
+  // Crit Dmg % = base 20 + gear (earrings) + weapon + scrolls + skill buff
   const critSkillBonus = parseFloat(document.getElementById('critSkill').value) || 0;
-  const critPct = Math.max(0, num('critDmg') + critSkillBonus + gearCrit + weaponCrit + (typeof scCRIT !== 'undefined' ? scCRIT : 0));
+  const critPct = Math.max(0, 20 + critSkillBonus + gearCrit + weaponCrit + (typeof scCRIT !== 'undefined' ? scCRIT : 0));
   set('critTotal', critPct);
   const critMult = 1 + critPct / 100;
   set('critLow', Math.floor(low * critMult));
