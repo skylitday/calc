@@ -249,7 +249,7 @@
   .scroll-card-header .bonus-wrap .chip-label { color: var(--muted); font-size: 0.72rem; }
   .scroll-counts {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 6px;
   }
   .scroll-counts label {
@@ -387,10 +387,10 @@
       </div>
       <div class="row">
         <span class="label">Skill</span>
-        <select id="skill" onchange="recalc()">
-          <option>Basic Attack</option>
+        <select id="skill" onchange="recalc()" style="max-width:230px;">
+          <option value="Basic Attack">Basic Attack (Range)</option>
           <option>Lucky Seven</option>
-          <option>Drain (maxed)</option>
+          <option value="Drain (maxed)">Drain (Maxed)</option>
           <option>Double Stab</option>
           <option>Savage Blow</option>
         </select>
@@ -451,6 +451,7 @@
             <label>60%<input type="number" id="sc60_0" value="0" min="0" oninput="recalc()"></label>
             <label>10%<input type="number" id="sc10_0" value="0" min="0" oninput="recalc()"></label>
             <label>Chaos 10%<input type="number" id="scCh_0" value="0" min="0" oninput="recalc()"></label>
+            <label>Failed<input type="number" id="scFail_0" value="0" min="0" oninput="recalc()"></label>
           </div>
         </div>
         <div class="scroll-card">
@@ -466,6 +467,7 @@
             <label>60%<input type="number" id="sc60_1" value="0" min="0" oninput="recalc()"></label>
             <label>10%<input type="number" id="sc10_1" value="0" min="0" oninput="recalc()"></label>
             <label>Chaos 10%<input type="number" id="scCh_1" value="0" min="0" oninput="recalc()"></label>
+            <label>Failed<input type="number" id="scFail_1" value="0" min="0" oninput="recalc()"></label>
           </div>
         </div>
         <div class="scroll-card">
@@ -481,6 +483,7 @@
             <label>60%<input type="number" id="sc60_2" value="0" min="0" oninput="recalc()"></label>
             <label>10%<input type="number" id="sc10_2" value="0" min="0" oninput="recalc()"></label>
             <label>Chaos 10%<input type="number" id="scCh_2" value="0" min="0" oninput="recalc()"></label>
+            <label>Failed<input type="number" id="scFail_2" value="0" min="0" oninput="recalc()"></label>
           </div>
         </div>
         <div class="scroll-card">
@@ -496,6 +499,7 @@
             <label>60%<input type="number" id="sc60_3" value="0" min="0" oninput="recalc()"></label>
             <label>10%<input type="number" id="sc10_3" value="0" min="0" oninput="recalc()"></label>
             <label>Chaos 10%<input type="number" id="scCh_3" value="0" min="0" oninput="recalc()"></label>
+            <label>Failed<input type="number" id="scFail_3" value="0" min="0" oninput="recalc()"></label>
           </div>
         </div>
         <div class="scroll-card">
@@ -511,6 +515,7 @@
             <label>60%<input type="number" id="sc60_4" value="0" min="0" oninput="recalc()"></label>
             <label>10%<input type="number" id="sc10_4" value="0" min="0" oninput="recalc()"></label>
             <label>Chaos 10%<input type="number" id="scCh_4" value="0" min="0" oninput="recalc()"></label>
+            <label>Failed<input type="number" id="scFail_4" value="0" min="0" oninput="recalc()"></label>
           </div>
         </div>
       </div>
@@ -814,7 +819,8 @@ function recalc() {
     const s60 = num('sc60_' + i);
     const s10 = num('sc10_' + i);
     const sCh = num('scCh_' + i);
-    const used = s100 + s60 + s10 + sCh;
+    const sFail = num('scFail_' + i);
+    const used = s100 + s60 + s10 + sCh + sFail; // failed still consume slots, no bonus
     const max = SCROLL_MAX[i];
     set('scSlots' + i, used + '/' + max);
     const slotEl = document.getElementById('scSlots' + i);
