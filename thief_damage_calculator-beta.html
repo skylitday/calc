@@ -615,8 +615,8 @@
       <div class="row"><span class="label">Wep MAX</span><span class="calc" id="wepMax">—</span></div>
       <div class="row"><span class="label">Wep MIN</span><span class="calc" id="wepMin">—</span></div>
       <p class="note" style="margin-top:8px;">
-        Claw weapon ratio 2.5 · Dagger weapon ratio 1.0–2.0<br>
-        Lucky Seven overrides claw mastery at static 0.5 with weapon ratio 3.0
+        Claw ratio 2.5 · Dagger range 1.0–2.0 (Avg uses expected 1.4 for swing+stab)<br>
+        Pure stab skills (Savage Blow / Double Stab) force ratio 2.0 · L7 = 3.0
       </p>
     </div>
 
@@ -981,6 +981,8 @@ function recalc() {
   set('masteryLvVal', masteryLv);
   let mastery = (masteryLv / 10 + 0.1) * 0.8;
   let wepMax, wepMin;
+  // isMixed: skill uses the ordinary melee pool (60% swing / 40% stab → expected 1.4 for dagger)
+  let isMixed = false;
   if (skill === 'Lucky Seven') {
     mastery = 0.5;
     wepMax = 3;
@@ -991,16 +993,23 @@ function recalc() {
   } else if (skill === 'Assaulter') {
     wepMax = 1.5;
     wepMin = 1.5;
+  } else if (skill === 'Savage Blow' || skill === 'Double Stab') {
+    // pure stab skills — force both ends to max ratio
+    wepMax = 2;
+    wepMin = 2;
   } else if (skill === 'Band of Thieves' || skill === 'Steal') {
     wepMax = 2;
     wepMin = 1;
+    isMixed = true; // treat as swing+stab pool for avg
   } else {
     if (wep.type === 'Claw') {
       wepMax = 2.5;
       wepMin = 2.5;
     } else {
+      // Basic Attack and other dagger skills → swing+stab
       wepMax = 2;
       wepMin = 1;
+      isMixed = true;
     }
   }
   set('mastery', mastery);
@@ -1015,7 +1024,19 @@ function recalc() {
   const k5 = skillMult * totalWatk * (1.0 + (primary * wepMax + secondary) / 100 + attPower / 50);
   const low = Math.min(k4, k5);
   const high = Math.max(k4, k5);
-  const mid = (low + high) / 2;
+
+  // Avg:
+  // - stab+swing (mixed) skills → expected 1.4 ratio (60% swing / 40% stab) for dagger
+  // - pure stab / fixed-ratio skills → use the (now identical) min/max average
+  let mid;
+  if (isMixed && wep.type === 'Dagger') {
+    // 0.6 * swing formula + 0.4 * stab formula  (MeowDB expected W = 1.4)
+    const swing = skillMult * totalWatk * (0.8 + (primary * mastery * 1.0 + secondary) / 100 + attPower / 50);
+    const stab  = skillMult * totalWatk * (1.0 + (primary * 2.0          + secondary) / 100 + attPower / 50);
+    mid = 0.6 * swing + 0.4 * stab;
+  } else {
+    mid = (low + high) / 2;
+  }
 
   const lo = Math.floor(low);
   const hi = Math.floor(high);
