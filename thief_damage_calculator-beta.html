@@ -337,7 +337,7 @@
       </div>
       <div class="row">
         <span class="label">INT</span>
-        <input type="number" id="baseInt" value="4" min="4" oninput="recalc()">
+        <span class="calc" id="baseInt">4</span>
         <span class="label">LUK</span>
         <span class="calc" id="baseLuk">—</span>
       </div>
@@ -393,6 +393,10 @@
           <option value="Drain (maxed)">Drain (Maxed)</option>
           <option>Double Stab</option>
           <option>Savage Blow</option>
+          <option>Steal</option>
+          <option>Assaulter</option>
+          <option>Band of Thieves</option>
+          <option>Avenger</option>
         </select>
         <span class="label">SkillMult</span>
         <span class="calc" id="skillMult">—</span>
@@ -402,7 +406,7 @@
         <span class="calc" id="weaponCrit">0</span>
         <span class="label" style="margin-left:2px;">%</span>
         <span class="adj-label">±</span>
-        <input type="number" class="mod" id="modWeaponCrit" value="0" oninput="recalc()" title="Weapon Crit Damage adjust (above/below average)">
+        <input type="number" class="mod" id="modWeaponCrit" value="0" min="-5" max="5" oninput="recalc()" title="Weapon Crit Damage adjust (±5)">
         <span class="label" style="font-size:0.7rem; color:var(--muted); margin-left:2px;">(only certain claws have crit damage)</span>
       </div>
     </div>
@@ -428,7 +432,7 @@
         <span class="label" style="min-width:auto;">Gear Crit Damage</span>
         <span class="calc" id="totCrit">0</span>
         <span class="adj-label">±</span>
-        <input type="number" class="mod" id="modGearCrit" value="0" oninput="recalc()" title="Gear Crit Damage adjust (Earrings)">
+        <input type="number" class="mod" id="modGearCrit" value="0" min="-5" max="5" oninput="recalc()" title="Gear Crit Damage adjust (±5)">
         <span class="label" style="font-size:0.7rem; color:var(--muted); margin-left:2px;">(Earrings)</span>
       </div>
       <p class="note" style="margin-top:8px;">Yellow ± = above/below average adjust · Green = final value</p>
@@ -692,19 +696,19 @@ function init() {
       <td class="stat-cell">
         <div class="stat-box">
           <span class="calc" id="gStr_${slot.id}">0</span>
-          <div class="mod-row"><span class="adj-label">±</span><input type="number" class="mod" id="modStr_${slot.id}" value="0" oninput="recalc()" title="STR adjust"></div>
+          <div class="mod-row"><span class="adj-label">±</span><input type="number" class="mod" id="modStr_${slot.id}" value="0" min="-5" max="5" oninput="recalc()" title="STR adjust (±5)"></div>
         </div>
       </td>
       <td class="stat-cell">
         <div class="stat-box">
           <span class="calc" id="gDex_${slot.id}">0</span>
-          <div class="mod-row"><span class="adj-label">±</span><input type="number" class="mod" id="modDex_${slot.id}" value="0" oninput="recalc()" title="DEX adjust"></div>
+          <div class="mod-row"><span class="adj-label">±</span><input type="number" class="mod" id="modDex_${slot.id}" value="0" min="-5" max="5" oninput="recalc()" title="DEX adjust (±5)"></div>
         </div>
       </td>
       <td class="stat-cell">
         <div class="stat-box">
           <span class="calc" id="gLuk_${slot.id}">0</span>
-          <div class="mod-row"><span class="adj-label">±</span><input type="number" class="mod" id="modLuk_${slot.id}" value="0" oninput="recalc()" title="LUK adjust"></div>
+          <div class="mod-row"><span class="adj-label">±</span><input type="number" class="mod" id="modLuk_${slot.id}" value="0" min="-5" max="5" oninput="recalc()" title="LUK adjust (±5)"></div>
         </div>
       </td>
     `;
@@ -742,7 +746,7 @@ function recalc() {
 
   const baseStr = num('baseStr');
   const baseDex = num('baseDex');
-  const baseInt = num('baseInt');
+  const baseInt = 4; // locked — thieves never invest INT
   const baseLuk = points - baseStr - baseDex - baseInt;
   set('baseLuk', baseLuk);
 
@@ -750,7 +754,15 @@ function recalc() {
   const wep = getWeapon(val('weapon'));
   set('weaponType', wep.type || '—');
   set('weaponWatk', wep.watk);
-  const weaponCrit = (wep.crit || 0) + num('modWeaponCrit');
+  // ± mods clamped to [-5, +5]
+  const clampMod = (id) => {
+    let v = num(id);
+    if (v > 5) v = 5; else if (v < -5) v = -5;
+    const el = document.getElementById(id);
+    if (el && Number(el.value) !== v) el.value = v;
+    return v;
+  };
+  const weaponCrit = (wep.crit || 0) + clampMod('modWeaponCrit');
   set('weaponCrit', weaponCrit);
   const watkMod = num('watkMod');
 
@@ -775,6 +787,10 @@ function recalc() {
   else if (skill === 'Drain (maxed)') skillMult = 2.4;
   else if (skill === 'Double Stab') skillMult = 1.6;
   else if (skill === 'Savage Blow') skillMult = 0.75;
+  else if (skill === 'Steal') skillMult = 1.8;           // CoT2 max 180%
+  else if (skill === 'Assaulter') skillMult = 6.0;        // CoT2 max 600%
+  else if (skill === 'Band of Thieves') skillMult = 2.2; // CoT2 max 220%
+  else if (skill === 'Avenger') skillMult = 1.5;         // CoT2 max 150%
   set('skillMult', skillMult);
 
   // ATT Buff
@@ -793,9 +809,9 @@ function recalc() {
   GEAR_SLOTS.forEach(slot => {
     const name = val('gear_' + slot.id);
     const a = getArmor(name);
-    const adjStr = a.str + num('modStr_' + slot.id);
-    const adjDex = a.dex + num('modDex_' + slot.id);
-    const adjLuk = a.luk + num('modLuk_' + slot.id);
+    const adjStr = a.str + clampMod('modStr_' + slot.id);
+    const adjDex = a.dex + clampMod('modDex_' + slot.id);
+    const adjLuk = a.luk + clampMod('modLuk_' + slot.id);
     set('gStr_' + slot.id, adjStr);
     set('gDex_' + slot.id, adjDex);
     set('gLuk_' + slot.id, adjLuk);
@@ -805,37 +821,55 @@ function recalc() {
     gearCrit += (a.crit || 0); // base crit from items (mostly earrings)
   });
   // single Gear Crit Damage ± (mainly for earrings / special pieces)
-  gearCrit += num('modGearCrit');
+  gearCrit += clampMod('modGearCrit');
   set('totStr', gearStr);
   set('totDex', gearDex);
   set('totLuk', gearLuk);
   set('totCrit', gearCrit);
 
   // Scrolls (max slots: Weapon 7, Overall 10, Gloves/Cape/Earrings 5)
+  // Clamp so total used never exceeds max slots per card
   const SCROLL_MAX = [7, 10, 5, 5, 5];
   let scSTR = 0, scDEX = 0, scLUK = 0, scATT = 0, scCRIT = 0;
   for (let i = 0; i < 5; i++) {
-    const s100 = num('sc100_' + i);
-    const s60 = num('sc60_' + i);
-    const s10 = num('sc10_' + i);
-    const sCh = num('scCh_' + i);
-    const sFail = num('scFail_' + i);
-    const used = s100 + s60 + s10 + sCh + sFail; // failed still consume slots, no bonus
+    let s100 = Math.max(0, Math.floor(num('sc100_' + i)));
+    let s60  = Math.max(0, Math.floor(num('sc60_' + i)));
+    let s10  = Math.max(0, Math.floor(num('sc10_' + i)));
+    let sCh  = Math.max(0, Math.floor(num('scCh_' + i)));
+    let sFail= Math.max(0, Math.floor(num('scFail_' + i)));
     const max = SCROLL_MAX[i];
+    let used = s100 + s60 + s10 + sCh + sFail;
+    if (used > max) {
+      let over = used - max;
+      const trim = (v) => { const t = Math.min(v, over); over -= t; return v - t; };
+      sFail = trim(sFail);
+      sCh   = trim(sCh);
+      s10   = trim(s10);
+      s60   = trim(s60);
+      s100  = trim(s100);
+      const setIn = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+      setIn('sc100_' + i, s100);
+      setIn('sc60_' + i, s60);
+      setIn('sc10_' + i, s10);
+      setIn('scCh_' + i, sCh);
+      setIn('scFail_' + i, sFail);
+      used = s100 + s60 + s10 + sCh + sFail;
+    }
     set('scSlots' + i, used + '/' + max);
     const slotEl = document.getElementById('scSlots' + i);
     if (slotEl) {
       slotEl.classList.remove('at-max', 'over-max');
       const card = slotEl.closest('.scroll-card');
       if (card) card.classList.remove('at-max', 'over-max');
-      if (used > max) {
-        slotEl.classList.add('over-max');
-        if (card) card.classList.add('over-max');
-      } else if (used === max) {
+      if (used >= max) {
         slotEl.classList.add('at-max');
         if (card) card.classList.add('at-max');
       }
     }
+    ['sc100_', 'sc60_', 'sc10_', 'scCh_', 'scFail_'].forEach(prefix => {
+      const el = document.getElementById(prefix + i);
+      if (el) el.max = max;
+    });
     const bonus = s100 * 1 + s60 * 2 + s10 * 3 + sCh * 4;
     set('scBonus' + i, bonus);
     const st = val('scStat' + i);
@@ -890,6 +924,18 @@ function recalc() {
     mastery = 0.5; // L7 forces m=0.5
     wepMax = 3;
     wepMin = 3;
+  } else if (skill === 'Avenger') {
+    // CoT2: claw-only projectile — always claw ratio 2.5
+    wepMax = 2.5;
+    wepMin = 2.5;
+  } else if (skill === 'Assaulter') {
+    // CoT2: fixed mixed dagger ratio 1.5
+    wepMax = 1.5;
+    wepMin = 1.5;
+  } else if (skill === 'Band of Thieves' || skill === 'Steal') {
+    // CoT2: ordinary dagger swing 1.0 / stab 2.0
+    wepMax = 2;
+    wepMin = 1;
   } else {
     if (wep.type === 'Claw') {
       wepMax = 2.5;
