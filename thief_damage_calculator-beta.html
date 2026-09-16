@@ -196,8 +196,8 @@
     min-width: 0;
     padding: 0;
   }
-  .stat-summary-table tbody tr:last-child td { border-top: 1px solid var(--border); padding-top: 8px; font-weight: 700; }
-  .stat-summary-table tbody tr:last-child td:first-child { color: var(--text); }
+  .stat-summary-table tbody tr.total-row td { border-top: 1px solid var(--border); padding-top: 8px; font-weight: 700; }
+  .stat-summary-table tbody tr.total-row td:first-child { color: var(--text); }
 
   .scroll-totals {
     display: flex;
@@ -599,7 +599,7 @@
             <td><span class="calc" id="sumScDex">—</span></td>
             <td><span class="calc" id="sumScLuk">—</span></td>
           </tr>
-          <tr>
+          <tr class="total-row">
             <td>TOTAL</td>
             <td><span class="calc" id="sumTotStr">—</span></td>
             <td><span class="calc" id="sumTotDex">—</span></td>
