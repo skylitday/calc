@@ -287,6 +287,26 @@
     font-size: 0.75rem;
     color: var(--muted);
   }
+  /* Critical card — Maple-style red accents */
+  .damage-box.crit {
+    background: linear-gradient(180deg, #3b1218 0%, #2a0e12 100%);
+    border: 1px solid #e94560;
+    box-shadow: 0 0 0 1px rgba(233, 69, 96, 0.15), inset 0 1px 0 rgba(255, 120, 140, 0.08);
+  }
+  .damage-box.crit .crit-title {
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    color: #fb7185;
+    margin-bottom: 8px;
+  }
+  .damage-box.crit .nums .val {
+    color: #fda4af;
+  }
+  .damage-box.crit .nums .lbl {
+    color: #9f1239;
+  }
 
   .scroll-grid {
     display: grid;
@@ -589,17 +609,13 @@
     <div class="panel" style="margin-top:12px">
       <h2>DAMAGE</h2>
       <div class="damage-box">
-        <div class="nums">
-          <div>
-            <div class="lbl">Low</div>
-            <div class="val" id="dmgLow">—</div>
+        <div class="nums" style="justify-content:center;">
+          <div style="flex:1.4; text-align:center;">
+            <div class="lbl">Damage</div>
+            <div class="val" id="dmgRange">—</div>
           </div>
           <div>
-            <div class="lbl">High</div>
-            <div class="val" id="dmgHigh">—</div>
-          </div>
-          <div>
-            <div class="lbl">Mid</div>
+            <div class="lbl">Avg</div>
             <div class="val" id="dmgMid">—</div>
           </div>
         </div>
@@ -619,20 +635,16 @@
           </select>
         </div>
       </div>
-      <div class="damage-box" style="background:#1a3a2a;">
-        <div style="text-align:center; font-size:0.7rem; color:#86efac; margin-bottom:6px;">CRITICAL DAMAGE</div>
-        <div class="nums">
-          <div>
-            <div class="lbl">Low</div>
-            <div class="val" id="critLow" style="color:#86efac;">—</div>
+      <div class="damage-box crit">
+        <div class="crit-title">CRITICAL DAMAGE</div>
+        <div class="nums" style="justify-content:center;">
+          <div style="flex:1.4; text-align:center;">
+            <div class="lbl">Damage</div>
+            <div class="val" id="critRange">—</div>
           </div>
           <div>
-            <div class="lbl">High</div>
-            <div class="val" id="critHigh" style="color:#86efac;">—</div>
-          </div>
-          <div>
-            <div class="lbl">Mid</div>
-            <div class="val" id="critMid" style="color:#86efac;">—</div>
+            <div class="lbl">Avg</div>
+            <div class="val" id="critMid">—</div>
           </div>
         </div>
       </div>
@@ -746,7 +758,7 @@ function recalc() {
 
   const baseStr = num('baseStr');
   const baseDex = num('baseDex');
-  const baseInt = 4; // locked — thieves never invest INT
+  const baseInt = 4; // locked
   const baseLuk = points - baseStr - baseDex - baseInt;
   set('baseLuk', baseLuk);
 
@@ -754,10 +766,9 @@ function recalc() {
   const wep = getWeapon(val('weapon'));
   set('weaponType', wep.type || '—');
   set('weaponWatk', wep.watk);
-  // ± mods clamped to [-5, +5]
-  const clampMod = (id) => {
+  const clampMod = (id, lo = -5, hi = 5) => {
     let v = num(id);
-    if (v > 5) v = 5; else if (v < -5) v = -5;
+    if (v > hi) v = hi; else if (v < lo) v = lo;
     const el = document.getElementById(id);
     if (el && Number(el.value) !== v) el.value = v;
     return v;
@@ -787,10 +798,10 @@ function recalc() {
   else if (skill === 'Drain (maxed)') skillMult = 2.4;
   else if (skill === 'Double Stab') skillMult = 1.6;
   else if (skill === 'Savage Blow') skillMult = 0.75;
-  else if (skill === 'Steal') skillMult = 1.8;           // CoT2 max 180%
-  else if (skill === 'Assaulter') skillMult = 6.0;        // CoT2 max 600%
-  else if (skill === 'Band of Thieves') skillMult = 2.2; // CoT2 max 220%
-  else if (skill === 'Avenger') skillMult = 1.5;         // CoT2 max 150%
+  else if (skill === 'Steal') skillMult = 1.8;
+  else if (skill === 'Assaulter') skillMult = 6.0;
+  else if (skill === 'Band of Thieves') skillMult = 2.2;
+  else if (skill === 'Avenger') skillMult = 1.5;
   set('skillMult', skillMult);
 
   // ATT Buff
@@ -827,8 +838,7 @@ function recalc() {
   set('totLuk', gearLuk);
   set('totCrit', gearCrit);
 
-  // Scrolls (max slots: Weapon 7, Overall 10, Gloves/Cape/Earrings 5)
-  // Clamp so total used never exceeds max slots per card
+  // Scrolls — clamp used slots to max per card
   const SCROLL_MAX = [7, 10, 5, 5, 5];
   let scSTR = 0, scDEX = 0, scLUK = 0, scATT = 0, scCRIT = 0;
   for (let i = 0; i < 5; i++) {
@@ -842,17 +852,9 @@ function recalc() {
     if (used > max) {
       let over = used - max;
       const trim = (v) => { const t = Math.min(v, over); over -= t; return v - t; };
-      sFail = trim(sFail);
-      sCh   = trim(sCh);
-      s10   = trim(s10);
-      s60   = trim(s60);
-      s100  = trim(s100);
+      sFail = trim(sFail); sCh = trim(sCh); s10 = trim(s10); s60 = trim(s60); s100 = trim(s100);
       const setIn = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
-      setIn('sc100_' + i, s100);
-      setIn('sc60_' + i, s60);
-      setIn('sc10_' + i, s10);
-      setIn('scCh_' + i, sCh);
-      setIn('scFail_' + i, sFail);
+      setIn('sc100_'+i, s100); setIn('sc60_'+i, s60); setIn('sc10_'+i, s10); setIn('scCh_'+i, sCh); setIn('scFail_'+i, sFail);
       used = s100 + s60 + s10 + sCh + sFail;
     }
     set('scSlots' + i, used + '/' + max);
@@ -861,16 +863,10 @@ function recalc() {
       slotEl.classList.remove('at-max', 'over-max');
       const card = slotEl.closest('.scroll-card');
       if (card) card.classList.remove('at-max', 'over-max');
-      if (used >= max) {
-        slotEl.classList.add('at-max');
-        if (card) card.classList.add('at-max');
-      }
+      if (used >= max) { slotEl.classList.add('at-max'); if (card) card.classList.add('at-max'); }
     }
-    ['sc100_', 'sc60_', 'sc10_', 'scCh_', 'scFail_'].forEach(prefix => {
-      const el = document.getElementById(prefix + i);
-      if (el) el.max = max;
-    });
-    const bonus = s100 * 1 + s60 * 2 + s10 * 3 + sCh * 4;
+    ['sc100_','sc60_','sc10_','scCh_','scFail_'].forEach(pre => { const el = document.getElementById(pre+i); if (el) el.max = max; });
+    const bonus = s100*1 + s60*2 + s10*3 + sCh*4;
     set('scBonus' + i, bonus);
     const st = val('scStat' + i);
     if (st === 'STR') scSTR += bonus;
@@ -921,19 +917,16 @@ function recalc() {
   let mastery = (masteryLv / 10 + 0.1) * 0.8;
   let wepMax, wepMin;
   if (skill === 'Lucky Seven') {
-    mastery = 0.5; // L7 forces m=0.5
+    mastery = 0.5;
     wepMax = 3;
     wepMin = 3;
   } else if (skill === 'Avenger') {
-    // CoT2: claw-only projectile — always claw ratio 2.5
     wepMax = 2.5;
     wepMin = 2.5;
   } else if (skill === 'Assaulter') {
-    // CoT2: fixed mixed dagger ratio 1.5
     wepMax = 1.5;
     wepMin = 1.5;
   } else if (skill === 'Band of Thieves' || skill === 'Steal') {
-    // CoT2: ordinary dagger swing 1.0 / stab 2.0
     wepMax = 2;
     wepMin = 1;
   } else {
@@ -959,8 +952,9 @@ function recalc() {
   const high = Math.max(k4, k5);
   const mid = (low + high) / 2;
 
-  set('dmgLow', Math.floor(low));
-  set('dmgHigh', Math.floor(high));
+  const lo = Math.floor(low);
+  const hi = Math.floor(high);
+  set('dmgRange', '(' + lo + ' ~ ' + hi + ')');
   set('dmgMid', Math.floor(mid));
 
   // Crit Dmg % = base 20 + gear (earrings) + weapon + scrolls + skill buff
@@ -968,8 +962,9 @@ function recalc() {
   const critPct = Math.max(0, 20 + critSkillBonus + gearCrit + weaponCrit + (typeof scCRIT !== 'undefined' ? scCRIT : 0));
   set('critTotal', critPct);
   const critMult = 1 + critPct / 100;
-  set('critLow', Math.floor(low * critMult));
-  set('critHigh', Math.floor(high * critMult));
+  const cLo = Math.floor(low * critMult);
+  const cHi = Math.floor(high * critMult);
+  set('critRange', '(' + cLo + ' ~ ' + cHi + ')');
   set('critMid', Math.floor(mid * critMult));
 }
 
