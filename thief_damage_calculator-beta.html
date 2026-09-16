@@ -630,8 +630,8 @@
       </table>
       <div class="row" style="margin-top:8px; flex-wrap:wrap; align-items:center; gap:6px;">
         <span class="label">Nimble Body</span>
-        <input type="range" id="nimbleBodyLv" min="0" max="15" value="15" step="1" oninput="recalc()" style="flex:1; max-width:140px; accent-color:#e94560;">
-        <span class="calc" id="nimbleBodyLvVal" style="min-width:1.5em; text-align:right;">15</span><span class="label" style="font-size:0.7rem; margin:0;">/15</span>
+        <input type="range" id="nimbleBodyLv" min="0" max="15" value="0" step="1" oninput="recalc()" style="flex:1; max-width:140px; accent-color:#e94560;">
+        <span class="calc" id="nimbleBodyLvVal" style="min-width:1.5em; text-align:right;">0</span><span class="label" style="font-size:0.7rem; margin:0;">/15</span>
       </div>
     </div>
 
@@ -644,8 +644,8 @@
       <div class="row"><span class="label">ATT Power</span><span class="calc" id="fAttPower">—</span></div>
       <div class="row" style="margin-bottom:8px">
         <span class="label">Mastery Lv</span>
-        <input type="range" id="masteryLv" min="0" max="10" value="10" step="1" oninput="recalc()" style="flex:1; max-width:140px; accent-color:#e94560;">
-        <span class="calc" id="masteryLvVal">10</span>
+        <input type="range" id="masteryLv" min="0" max="10" value="0" step="1" oninput="recalc()" style="flex:1; max-width:140px; accent-color:#e94560;">
+        <span class="calc" id="masteryLvVal">0</span>
       </div>
       <div class="row"><span class="label">Mastery</span><span class="calc" id="mastery">—</span></div>
       <div class="row"><span class="label">Wep MAX</span><span class="calc" id="wepMax">—</span></div>
@@ -725,43 +725,43 @@
           <option value="dm">Dagger Mastery (+20%)</option>
         </select>
       </div>
-      <div class="row" style="margin-bottom:4px; flex-wrap:wrap; align-items:center;">
-        <span class="label">Critical Throw</span>
+      <div class="row" style="margin-bottom:8px; flex-wrap:wrap; align-items:center; gap:6px;">
+        <span class="label" style="min-width:110px;">Critical Throw</span>
         <input type="range" id="critThrowLv" min="0" max="30" value="0" step="1" oninput="recalc()" style="flex:1; max-width:140px; accent-color:#e94560;">
-        <span class="calc" id="critThrowLvVal">0</span>
-        <span class="label" style="margin-left:2px; font-size:0.7rem;">/30</span>
+        <span class="calc" id="critThrowLvVal" style="min-width:1.5em; text-align:right;">0</span>
+        <span class="label" style="font-size:0.7rem; margin:0;">/30</span>
       </div>
-      <div class="row" style="margin-bottom:4px; flex-wrap:wrap; align-items:center;">
-        <span class="label">Dagger Mastery</span>
+      <div class="row" style="margin-bottom:4px; flex-wrap:wrap; align-items:center; gap:6px;">
+        <span class="label" style="min-width:110px;">Dagger Mastery</span>
         <input type="range" id="daggerMastLv" min="0" max="20" value="0" step="1" oninput="recalc()" style="flex:1; max-width:140px; accent-color:#e94560;">
-        <span class="calc" id="daggerMastLvVal">0</span>
-        <span class="label" style="margin-left:2px; font-size:0.7rem;">/20</span>
+        <span class="calc" id="daggerMastLvVal" style="min-width:1.5em; text-align:right;">0</span>
+        <span class="label" style="font-size:0.7rem; margin:0;">/20</span>
       </div>
     </div>
 
     <!-- MONSTER PDEF -->
     <div class="panel" style="margin-top:12px">
       <h2>MONSTER / PDEF</h2>
-      <div class="row" style="margin-bottom:8px; flex-wrap:wrap;">
+      <div class="row" style="margin-bottom:6px; flex-wrap:wrap; align-items:center; gap:6px;">
         <span class="label">Monster</span>
         <select id="monsterSelect" onchange="recalc()" style="max-width:260px;"></select>
       </div>
-      <div class="row" style="margin-bottom:6px; flex-wrap:wrap;">
+      <div class="row" style="margin-bottom:4px; flex-wrap:wrap; align-items:center; gap:4px 10px;">
         <span class="label">Level</span>
         <span class="calc" id="mobLevel">—</span>
-        <span class="label" style="margin-left:12px;">HP</span>
+        <span class="label">HP</span>
         <span class="calc" id="mobHp">—</span>
-        <span class="label" style="margin-left:12px;">PDEF</span>
+        <span class="label">PDEF</span>
         <span class="calc" id="mobPdef">—</span>
       </div>
-      <div class="row" style="margin-bottom:10px; flex-wrap:wrap;">
-        <span class="label">Avoid</span>
+      <div class="row" style="margin-bottom:8px; flex-wrap:wrap; align-items:center; gap:4px 10px;">
+        <span class="label">EVA</span>
         <span class="calc" id="mobEva">—</span>
-        <span class="label" style="margin-left:12px;">ACC</span>
+        <span class="label">ACC</span>
         <span class="calc" id="mobAcc">—</span>
-        <span class="label" style="margin-left:12px;">Hit rate</span>
+        <span class="label">Hit rate</span>
         <span class="calc" id="hitRate">—</span>
-        <span class="label" style="margin-left:12px;">Miss rate</span>
+        <span class="label">Miss rate</span>
         <span class="calc" id="missRate">—</span>
       </div>
       <div class="damage-box">
@@ -896,7 +896,7 @@ function init() {
     MONSTERS.forEach(m => {
       const opt = document.createElement('option');
       opt.value = m.id;
-      opt.textContent = 'Lv' + m.level + ' ' + m.name + ' (PDEF ' + m.pdef + ', Avoid ' + (m.eva || 0) + ')';
+      opt.textContent = 'Lv' + m.level + ' ' + m.name + ' (PDEF ' + m.pdef + ', EVA ' + (m.eva || 0) + ')';
       if (m.id === defaultId) opt.selected = true;
       mobSel.appendChild(opt);
     });
@@ -1270,7 +1270,7 @@ function recalc() {
     // LevelGap = max(0, PlayerLevel − MobLevel)
     // MonsterHitScore = MobACC × 100 / ((LevelGap + 51) × 5)
     // EffectiveAvoid = EVA / (1 + EVA/80) / (1 + LevelGap/40)
-    // same spread / roll band as player hit
+    // Failed main roll still hits 8%; out-of-reach still hits 2%
     const mobAccVal = Math.max(0, mob.acc || 0);
     const gapIn = Math.max(0, level - (mob.level || 0));
     const mobHitScore = mobAccVal * 100 / ((gapIn + 51) * 5);
@@ -1278,12 +1278,17 @@ function recalc() {
     const spreadIn = 0.15 + 0.2 / (1 + Math.exp((mobHitScore - effAvoid) / 12));
     let mobHitP;
     if (mobHitScore <= 0) {
-      mobHitP = 0;
+      mobHitP = 0.02;
     } else {
       const qIn = effAvoid / mobHitScore;
-      if (qIn <= 1 - spreadIn) mobHitP = 1;
-      else if (qIn >= 1 + spreadIn) mobHitP = 0;
-      else mobHitP = (1 + spreadIn - qIn) / (2 * spreadIn);
+      if (qIn <= 1 - spreadIn) {
+        mobHitP = 1;
+      } else if (qIn >= 1 + spreadIn) {
+        mobHitP = 0.02; // avoid out of roll reach
+      } else {
+        const base = (1 + spreadIn - qIn) / (2 * spreadIn);
+        mobHitP = base + (1 - base) * 0.08; // failed roll still hits 8%
+      }
     }
     mobHitP = Math.max(0, Math.min(1, mobHitP));
     const missP = 1 - mobHitP;
