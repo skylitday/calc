@@ -616,7 +616,7 @@
       <div class="row"><span class="label">Wep MIN</span><span class="calc" id="wepMin">—</span></div>
       <p class="note" style="margin-top:8px;">
         Claw ratio 2.5 · Dagger range 1.0–2.0 (Avg uses expected 1.4 for swing+stab)<br>
-        Pure stab skills (Savage Blow / Double Stab) force ratio 2.0 · L7 = 3.0
+        Lucky Seven forces 0.5 mastery and weapon ratio 3.0
       </p>
     </div>
 
@@ -678,16 +678,28 @@
         <span class="calc" id="critRateTotal">5</span>
         <span class="label" style="margin-left:2px;">%</span>
       </div>
-      <div style="font-size:0.7rem; color:var(--muted); margin-bottom:6px; line-height:1.3;">
-        Influenced by skill, glove crit rate and scrolls
+      <div style="font-size:0.7rem; color:var(--muted); margin-bottom:8px; line-height:1.3;">
+        Influenced by skill, glove crit rate, and scrolls
       </div>
-      <div class="row" style="margin-bottom:4px; flex-wrap:wrap;">
+      <div class="row" style="margin-bottom:6px; flex-wrap:wrap;">
         <span class="label">Preset</span>
-        <select id="critRatePreset" onchange="recalc()" style="max-width:220px;">
-          <option value="5" selected>Base</option>
-          <option value="20">Critical Throw (+15%)</option>
-          <option value="25">Dagger Mastery (+20%)</option>
+        <select id="critRatePreset" onchange="applyCritPreset()" style="max-width:220px;">
+          <option value="base" selected>Base</option>
+          <option value="ct">Critical Throw (+15%)</option>
+          <option value="dm">Dagger Mastery (+20%)</option>
         </select>
+      </div>
+      <div class="row" style="margin-bottom:4px; flex-wrap:wrap; align-items:center;">
+        <span class="label">Critical Throw</span>
+        <input type="range" id="critThrowLv" min="0" max="30" value="0" step="1" oninput="recalc()" style="flex:1; max-width:140px; accent-color:#e94560;">
+        <span class="calc" id="critThrowLvVal">0</span>
+        <span class="label" style="margin-left:2px; font-size:0.7rem;">/30</span>
+      </div>
+      <div class="row" style="margin-bottom:4px; flex-wrap:wrap; align-items:center;">
+        <span class="label">Dagger Mastery</span>
+        <input type="range" id="daggerMastLv" min="0" max="20" value="0" step="1" oninput="recalc()" style="flex:1; max-width:140px; accent-color:#e94560;">
+        <span class="calc" id="daggerMastLvVal">0</span>
+        <span class="label" style="margin-left:2px; font-size:0.7rem;">/20</span>
       </div>
     </div>
 
@@ -808,6 +820,24 @@ function getArmor(name) {
 }
 function getWeapon(name) {
   return weaponMap[name] || { type:'', watk:0, critD:0, critR:0 };
+}
+
+function applyCritPreset() {
+  const p = val('critRatePreset');
+  const ct = document.getElementById('critThrowLv');
+  const dm = document.getElementById('daggerMastLv');
+  if (!ct || !dm) return;
+  if (p === 'ct') {
+    ct.value = 30;  // max CT → +15%
+    dm.value = 0;
+  } else if (p === 'dm') {
+    ct.value = 0;
+    dm.value = 20;  // max DM → +20%
+  } else {
+    ct.value = 0;
+    dm.value = 0;
+  }
+  recalc();
 }
 
 function recalc() {
@@ -1055,10 +1085,20 @@ function recalc() {
   set('critMid', Math.floor(cMid));
 
   // Critical Rate panel (separate from Damage)
-  const critRateEl = document.getElementById('critRatePreset');
-  const baseCritRate = critRateEl ? (parseFloat(critRateEl.value) || 5) : 5;
-  const critRate = baseCritRate + (typeof gearCritR !== 'undefined' ? gearCritR : 0) + (typeof weaponCritR !== 'undefined' ? weaponCritR : 0) + (typeof scCRITR !== 'undefined' ? scCRITR : 0);
-  set('critRateTotal', critRate);
+  // Base 5% + Critical Throw (0–30) + Dagger Mastery (0–20) + gear/weapon/scrolls
+  const ctLv = Math.max(0, Math.min(30, num('critThrowLv')));
+  const dmLv = Math.max(0, Math.min(20, num('daggerMastLv')));
+  set('critThrowLvVal', ctLv);
+  set('daggerMastLvVal', dmLv);
+  // Scale: CT max 30 → +15% at max (0.5% per level), DM max 20 → +20% at max (1% per level)
+  // so presets still match the old +15 / +20 numbers
+  const ctBonus = ctLv * 0.5;
+  const dmBonus = dmLv * 1.0;
+  const critRate = 5 + ctBonus + dmBonus
+    + (typeof gearCritR !== 'undefined' ? gearCritR : 0)
+    + (typeof weaponCritR !== 'undefined' ? weaponCritR : 0)
+    + (typeof scCRITR !== 'undefined' ? scCRITR : 0);
+  set('critRateTotal', Math.round(critRate * 10) / 10);
 
   // Hits / targets for Expected output
   const estHitsEl = document.getElementById('estHits');
