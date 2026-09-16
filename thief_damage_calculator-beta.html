@@ -489,7 +489,7 @@
             <label>100%<input type="number" id="sc100_0" value="0" min="0" max="7" oninput="recalc()"></label>
             <label>60%<input type="number" id="sc60_0" value="0" min="0" oninput="recalc()"></label>
             <label>10%<input type="number" id="sc10_0" value="0" min="0" oninput="recalc()"></label>
-            <label>Chaos 10%<input type="number" id="scCh_0" value="0" min="0" oninput="recalc()"></label>
+            <label>Chaos<input type="number" id="scCh_0" value="0" min="0" oninput="recalc()"></label>
             <label>Failed<input type="number" id="scFail_0" value="0" min="0" oninput="recalc()"></label>
           </div>
         </div>
@@ -505,7 +505,7 @@
             <label>100%<input type="number" id="sc100_1" value="0" min="0" oninput="recalc()"></label>
             <label>60%<input type="number" id="sc60_1" value="0" min="0" oninput="recalc()"></label>
             <label>10%<input type="number" id="sc10_1" value="0" min="0" oninput="recalc()"></label>
-            <label>Chaos 10%<input type="number" id="scCh_1" value="0" min="0" oninput="recalc()"></label>
+            <label>Chaos<input type="number" id="scCh_1" value="0" min="0" oninput="recalc()"></label>
             <label>Failed<input type="number" id="scFail_1" value="0" min="0" oninput="recalc()"></label>
           </div>
         </div>
@@ -521,7 +521,7 @@
             <label>100%<input type="number" id="sc100_2" value="0" min="0" max="5" oninput="recalc()"></label>
             <label>60%<input type="number" id="sc60_2" value="0" min="0" oninput="recalc()"></label>
             <label>10%<input type="number" id="sc10_2" value="0" min="0" oninput="recalc()"></label>
-            <label>Chaos 10%<input type="number" id="scCh_2" value="0" min="0" oninput="recalc()"></label>
+            <label>Chaos<input type="number" id="scCh_2" value="0" min="0" oninput="recalc()"></label>
             <label>Failed<input type="number" id="scFail_2" value="0" min="0" oninput="recalc()"></label>
           </div>
         </div>
@@ -537,7 +537,7 @@
             <label>100%<input type="number" id="sc100_3" value="0" min="0" max="5" oninput="recalc()"></label>
             <label>60%<input type="number" id="sc60_3" value="0" min="0" oninput="recalc()"></label>
             <label>10%<input type="number" id="sc10_3" value="0" min="0" oninput="recalc()"></label>
-            <label>Chaos 10%<input type="number" id="scCh_3" value="0" min="0" oninput="recalc()"></label>
+            <label>Chaos<input type="number" id="scCh_3" value="0" min="0" oninput="recalc()"></label>
             <label>Failed<input type="number" id="scFail_3" value="0" min="0" oninput="recalc()"></label>
           </div>
         </div>
@@ -553,7 +553,7 @@
             <label>100%<input type="number" id="sc100_4" value="0" min="0" max="5" oninput="recalc()"></label>
             <label>60%<input type="number" id="sc60_4" value="0" min="0" oninput="recalc()"></label>
             <label>10%<input type="number" id="sc10_4" value="0" min="0" oninput="recalc()"></label>
-            <label>Chaos 10%<input type="number" id="scCh_4" value="0" min="0" oninput="recalc()"></label>
+            <label>Chaos<input type="number" id="scCh_4" value="0" min="0" oninput="recalc()"></label>
             <label>Failed<input type="number" id="scFail_4" value="0" min="0" oninput="recalc()"></label>
           </div>
         </div>
@@ -683,8 +683,7 @@
         <span class="label">Crit Rate</span>
         <span class="calc" id="critRateTotal">5</span>
         <span class="label" style="margin-left:2px;">%</span>
-        <span class="label" style="margin-left:14px;">≈</span>
-        <span class="calc" id="critRateHint" style="margin-left:4px;">1 in 20 hits</span>
+
       </div>
     </div>
 
@@ -1035,7 +1034,6 @@ function recalc() {
   const baseCritRate = critRateEl ? (parseFloat(critRateEl.value) || 5) : 5;
   const critRate = baseCritRate + (typeof gearCritR !== 'undefined' ? gearCritR : 0) + (typeof weaponCritR !== 'undefined' ? weaponCritR : 0) + (typeof scCRITR !== 'undefined' ? scCRITR : 0);
   set('critRateTotal', critRate);
-  set('critRateHint', critRate > 0 ? ('1 in ' + Math.round(100 / critRate) + ' hits') : 'never');
 
   // Hits / targets for Expected output
   const estHitsEl = document.getElementById('estHits');
