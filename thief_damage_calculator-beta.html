@@ -647,8 +647,10 @@
       <div class="row"><span class="label">Wep MIN</span><span class="calc" id="wepMin">—</span></div>
       <p class="note" style="margin-top:8px;">
         Claw ratio 2.5 · Dagger ratio 1.0–2.0 (Avg uses expected 1.4 for swing+stab)<br>
-        Lucky Seven forces 0.5 mastery and weapon ratio 3.0
+        Lucky Seven forces 0.5 mastery and weapon ratio 3.0 · Shadow Web is claw-only (ratio 2.5)
+
       </p>
+
     </div>
 
     <!-- SKILL -->
@@ -664,9 +666,14 @@
           <option>Assaulter</option>
           <option>Band of Thieves</option>
           <option>Lucky Seven</option>
-          <option value="Drain (maxed)">Drain (Maxed)</option>
+          <option>Drain</option>
+
           <option>Avenger</option>
+          <option>Shadow Web</option>
+
+
         </select>
+
         <span class="label">Skill Mult</span>
         <span class="calc" id="skillMult">—</span>
       </div>
@@ -1047,14 +1054,17 @@ function recalc() {
   const skill = val('skill');
   let skillMult = 1;
   if (skill === 'Lucky Seven') skillMult = 1.4;
-  else if (skill === 'Drain (maxed)') skillMult = 2.4;
+  else if (skill === 'Drain') skillMult = 2.4;
   else if (skill === 'Double Stab') skillMult = 1.6;
   else if (skill === 'Savage Blow') skillMult = 0.75;
   else if (skill === 'Steal') skillMult = 1.8;
   else if (skill === 'Assaulter') skillMult = 6.0;
   else if (skill === 'Band of Thieves') skillMult = 2.2;
   else if (skill === 'Avenger') skillMult = 1.5;
+  else if (skill === 'Shadow Web') skillMult = 0.45; // CoT2 max Lv20: total 45% damage (OSMS id:4111002)
   set('skillMult', skillMult);
+
+
 
   // ATT Buff
   const attBuff = val('attBuff');
@@ -1213,7 +1223,7 @@ function recalc() {
     mastery = 0.5;
     wepMax = 3;
     wepMin = 3;
-  } else if (skill === 'Drain (maxed)' || skill === 'Avenger') {
+  } else if (skill === 'Drain' || skill === 'Avenger') {
     // Claw skills — always use claw ratio 2.5 (even if a dagger is selected)
     wepMax = 2.5;
     wepMin = 2.5;
@@ -1228,7 +1238,12 @@ function recalc() {
     wepMax = 2;
     wepMin = 1;
     isMixed = true; // treat as swing+stab pool for avg
+  } else if (skill === 'Shadow Web') {
+    // CoT2: Claw-only — Weapon's Default Shoot 2.5
+    wepMax = 2.5;
+    wepMin = 2.5;
   } else {
+
     if (wep.type === 'Claw') {
       wepMax = 2.5;
       wepMin = 2.5;
@@ -1239,6 +1254,7 @@ function recalc() {
       isMixed = true;
     }
   }
+
   set('mastery', mastery);
   set('masteryFactor', mastery.toFixed(2));
   set('wepMax', wepMax);
