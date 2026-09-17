@@ -54,23 +54,41 @@
     .grid { grid-template-columns: 1fr; }
     body { padding: 10px; }
     .panel { padding: 12px; }
-    /* Allow tight slider/control rows to wrap instead of overflowing */
+    h1 { font-size: 1.15rem; }
+    /* Force wrap on nowrap control rows */
     .row[style*="nowrap"],
     div[style*="flex-wrap:nowrap"] {
       flex-wrap: wrap !important;
+      row-gap: 6px;
     }
-    /* Soften fixed label widths so content can reflow */
+    /* Kill fixed label widths that cause overflow */
     .row > span:first-child { min-width: 0; }
-    .label[style*="width:150px"],
-    span[style*="width:150px"] { width: auto !important; min-width: 90px; }
-    /* Inputs/selects can use more of the row on narrow screens */
+    .label[style*="width:"],
+    span[style*="width:"] { width: auto !important; min-width: 0 !important; flex-shrink: 1 !important; }
     select { max-width: 100%; }
-    input[type="range"] { max-width: 100%; flex: 1 1 120px; }
-    /* Gear table: scroll horizontally if needed instead of crushing columns */
+    input[type="range"] { max-width: 100%; flex: 1 1 100px; min-width: 80px; }
+    /* Tables scroll instead of crushing */
     .panel table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    /* Damage / crit values: slightly smaller type, tighter gap */
-    .calc { font-size: 0.85rem; }
+    .stat-summary-table { font-size: 0.78rem; }
+    .stat-cell { min-width: 48px; width: 48px; }
+    /* Scroll count grids: 3 cols instead of 5 */
+    .scroll-counts { grid-template-columns: repeat(3, 1fr); }
+    .calc { font-size: 0.82rem; }
+    /* Damage + Crit: stack into two visual groups */
+    .mob-dmg-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 12px;
+    }
+    .mob-dmg-row .dmg-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 8px;
+      flex: 1 1 140px;
+    }
   }
+
 
 
   .panel {
@@ -202,6 +220,19 @@
   .label { color: var(--muted); font-size: 0.8rem; }
   .row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
   .row > span:first-child { min-width: 90px; }
+  .mob-dmg-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 14px;
+  }
+  .mob-dmg-row .dmg-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+  }
+
 
   .stat-summary-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; table-layout: fixed; }
   .stat-summary-table th { color: var(--muted); font-weight: 500; font-size: 0.75rem; text-align: center; padding: 4px 6px; }
@@ -848,16 +879,26 @@
         <span class="label">Miss rate</span>
         <span class="calc" id="missRate">—</span>
       </div>
-      <div class="row" style="margin-bottom:8px; flex-wrap:wrap; align-items:center; gap:4px 10px;">
-        <span class="label">Damage vs DEF</span>
-        <span class="calc" id="defRange">—</span>
-        <span class="label">Avg</span>
-        <span class="calc" id="defMid">—</span>
-        <span class="label" style="color:#fb7185; margin-left:8px;">Crit</span>
-        <span class="calc" id="defCritRange" style="color:#fda4af;">—</span>
-        <span class="label" style="color:#fb7185;">Avg</span>
-        <span class="calc" id="defCritMid" style="color:#fda4af;">—</span>
+      <div class="row" style="margin-bottom:4px; flex-wrap:nowrap; align-items:center; gap:8px;">
+        <span class="label" style="min-width:130px; flex-shrink:0;">Damage vs DEF</span>
+        <span style="flex:1; display:flex; justify-content:center; align-items:center; gap:8px;">
+          <span class="calc" id="defRange">—</span>
+          <span class="label">Avg</span>
+          <span class="calc" id="defMid">—</span>
+        </span>
       </div>
+      <div class="row" style="margin-bottom:8px; flex-wrap:nowrap; align-items:center; gap:8px;">
+        <span class="label" style="color:#fb7185; min-width:130px; flex-shrink:0;">Crit Damage vs DEF</span>
+        <span style="flex:1; display:flex; justify-content:center; align-items:center; gap:8px;">
+          <span class="calc" id="defCritRange" style="color:#fda4af;">—</span>
+          <span class="label" style="color:#fb7185;">Avg</span>
+          <span class="calc" id="defCritMid" style="color:#fda4af;">—</span>
+        </span>
+      </div>
+
+
+
+
 
 
 
