@@ -797,6 +797,14 @@
         <span class="label" style="font-size:0.7rem; color:var(--muted); margin-left:4px;">PDEF −</span>
         <span class="calc" id="disorderPdef">0</span>
       </div>
+      <div class="row" style="margin-top:8px; flex-wrap:wrap; align-items:center; gap:6px;">
+        <span class="label" style="min-width:110px;">Threaten</span>
+        <input type="range" id="threatenLv" min="0" max="30" value="0" step="1" oninput="recalc()" style="flex:1; max-width:140px; accent-color:#e94560;">
+        <span class="calc" id="threatenLvVal" style="min-width:1.5em; text-align:right;">0</span>
+        <span class="label" style="font-size:0.7rem; margin:0;">/30</span>
+        <span class="label" style="font-size:0.7rem; color:var(--muted); margin-left:4px;">PDEF −</span>
+        <span class="calc" id="threatenPdef">0</span>
+      </div>
     </div>
 
   </div>
@@ -1249,6 +1257,24 @@ function recalc() {
   else if (disorderLv >= 1) disorderPdefRed = 1;
   set('disorderPdef', disorderPdefRed);
 
+  // Threaten (Page, CoT2): flat Weapon Def reduction
+  //   Lv1: −2 · 2–5: −3 · 6–9: −4 · 10–13: −5 · 14–17: −6 · 18–21: −7 · 22–25: −8 · 26–29: −9 · 30: −10
+  const threatenLv = Math.max(0, Math.min(30, num('threatenLv')));
+  set('threatenLvVal', threatenLv);
+  let threatenPdefRed = 0;
+  if (threatenLv >= 30) threatenPdefRed = 10;
+  else if (threatenLv >= 26) threatenPdefRed = 9;
+  else if (threatenLv >= 22) threatenPdefRed = 8;
+  else if (threatenLv >= 18) threatenPdefRed = 7;
+  else if (threatenLv >= 14) threatenPdefRed = 6;
+  else if (threatenLv >= 10) threatenPdefRed = 5;
+  else if (threatenLv >= 6) threatenPdefRed = 4;
+  else if (threatenLv >= 2) threatenPdefRed = 3;
+  else if (threatenLv >= 1) threatenPdefRed = 2;
+  set('threatenPdef', threatenPdefRed);
+
+  const totalPdefRed = disorderPdefRed + threatenPdefRed;
+
   const mobId = val('monsterSelect');
   let mob = null;
   if (mobId && typeof MONSTERS !== 'undefined') {
@@ -1256,11 +1282,11 @@ function recalc() {
   }
   if (mob) {
     const basePdef = Math.max(0, mob.pdef || 0);
-    const pdef = Math.max(0, basePdef - disorderPdefRed);
+    const pdef = Math.max(0, basePdef - totalPdefRed);
     const mobAvoid = Math.max(0, mob.eva || 0);
     set('mobLevel', mob.level);
     set('mobHp', mob.hp);
-    set('mobPdef', disorderPdefRed > 0 ? (basePdef + ' → ' + pdef) : pdef);
+    set('mobPdef', totalPdefRed > 0 ? (basePdef + ' → ' + pdef) : pdef);
     set('mobEva', mobAvoid);
     set('mobAcc', mob.acc);
     const factor = 100 / (pdef + 100);
