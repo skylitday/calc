@@ -331,7 +331,11 @@
     line-height: 1.4;
   }
   .full-width { grid-column: 1 / -1; }
+  details > summary { list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details[open] > summary > span:first-child { display: inline-block; transform: rotate(90deg); }
 </style>
+
 </head>
 <body>
 
@@ -666,9 +670,41 @@
         <span class="label">Skill Mult</span>
         <span class="calc" id="skillMult">—</span>
       </div>
+      <details style="margin-top:10px; padding-top:8px; border-top:1px solid var(--border);">
+        <summary style="cursor:pointer; font-size:0.8rem; color:var(--muted); user-select:none; list-style:none; display:flex; align-items:center; gap:6px;">
+          <span style="font-size:0.7rem; opacity:0.7;">▸</span> Shadow Partner
+          <span class="calc" id="spPctSummary" style="margin-left:auto; font-size:0.8rem;">0%</span>
+        </summary>
+        <div style="margin-top:10px;">
+          <div class="row" style="margin-bottom:8px; flex-wrap:nowrap; align-items:center; gap:8px;">
+            <span class="label" style="width:110px; flex-shrink:0;">Level</span>
+            <input type="range" id="shadowPartnerLv" min="0" max="30" value="0" step="1" oninput="recalc()" style="width:140px; flex-shrink:0; accent-color:#e94560;">
+            <span class="calc" id="shadowPartnerLvVal" style="width:1.5em; text-align:right; flex-shrink:0;">0</span>
+            <span class="label" style="font-size:0.7rem; margin:0; width:2em; flex-shrink:0;">/30</span>
+          </div>
+          <div class="row" style="margin-bottom:8px; flex-wrap:nowrap; align-items:center; gap:8px;">
+            <span class="label" style="width:110px; flex-shrink:0;">Bonus Damage</span>
+            <span class="calc" id="spPct">0%</span>
+          </div>
+          <div style="display:flex; gap:12px; align-items:baseline; flex-wrap:wrap; margin-bottom:4px;">
+            <span class="label" style="font-size:0.7rem;">Range</span>
+            <span class="calc" id="spRange" style="font-size:0.85rem;">—</span>
+            <span class="label" style="font-size:0.7rem; margin-left:6px;">Avg</span>
+            <span class="calc" id="spMid" style="font-size:0.85rem;">—</span>
+          </div>
+          <div style="display:flex; gap:12px; align-items:baseline; flex-wrap:wrap;">
+            <span class="label" style="font-size:0.7rem; color:#fb7185;">Crit Range</span>
+            <span class="calc" id="spCritRange" style="font-size:0.85rem; color:#fda4af;">—</span>
+            <span class="label" style="font-size:0.7rem; margin-left:6px; color:#fb7185;">Crit Avg</span>
+            <span class="calc" id="spCritMid" style="font-size:0.85rem; color:#fda4af;">—</span>
+          </div>
+        </div>
+      </details>
     </div>
 
+
     <!-- DAMAGE -->
+
     <div class="panel" style="margin-top:12px">
       <h2>DAMAGE</h2>
       <div class="damage-box">
@@ -1244,6 +1280,30 @@ function recalc() {
   const cMid = mid * critMult;
   set('critRange', '(' + cLo + ' ~ ' + cHi + ')');
   set('critMid', Math.floor(cMid));
+
+  // Shadow Partner (0–30): claw/star only
+  // CoT2 / MeowDB / OSMS: configured total = (109 + Lv)% for Lv 1–29, 140% at Lv 30
+  // Extra partner instance = (total − 100)% of main line (attribution model remains partly unconfirmed)
+  // https://osmsdataexplorer.com/#formulas · https://meowdb.com/msclassic/guides/explaining-the-damage-formula
+  const spLv = Math.max(0, Math.min(30, num('shadowPartnerLv')));
+  set('shadowPartnerLvVal', spLv);
+  let spExtraPct = 0;
+  if (spLv >= 30) spExtraPct = 40;
+  else if (spLv >= 1) spExtraPct = 9 + spLv; // (109 + Lv) − 100
+  set('spPct', spExtraPct + '%');
+  set('spPctSummary', spExtraPct + '%');
+  if (wep.type === 'Claw' && spExtraPct > 0) {
+    const spFactor = spExtraPct / 100;
+    set('spRange', '(' + Math.floor(low * spFactor) + ' ~ ' + Math.floor(high * spFactor) + ')');
+    set('spMid', Math.floor(mid * spFactor));
+    set('spCritRange', '(' + Math.floor(low * spFactor * critMult) + ' ~ ' + Math.floor(high * spFactor * critMult) + ')');
+    set('spCritMid', Math.floor(mid * spFactor * critMult));
+  } else {
+    set('spRange', '—');
+    set('spMid', '—');
+    set('spCritRange', '—');
+    set('spCritMid', '—');
+  }
 
   // Critical Rate panel (separate from Damage)
   // Base 5% + Critical Throw (0–30) + Dagger Mastery (0–20) + gear/weapon/scrolls
