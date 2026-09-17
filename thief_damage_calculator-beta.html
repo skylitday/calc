@@ -50,7 +50,28 @@
     max-width: 1100px;
     margin: 0 auto;
   }
-  @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+  @media (max-width: 800px) {
+    .grid { grid-template-columns: 1fr; }
+    body { padding: 10px; }
+    .panel { padding: 12px; }
+    /* Allow tight slider/control rows to wrap instead of overflowing */
+    .row[style*="nowrap"],
+    div[style*="flex-wrap:nowrap"] {
+      flex-wrap: wrap !important;
+    }
+    /* Soften fixed label widths so content can reflow */
+    .row > span:first-child { min-width: 0; }
+    .label[style*="width:150px"],
+    span[style*="width:150px"] { width: auto !important; min-width: 90px; }
+    /* Inputs/selects can use more of the row on narrow screens */
+    select { max-width: 100%; }
+    input[type="range"] { max-width: 100%; flex: 1 1 120px; }
+    /* Gear table: scroll horizontally if needed instead of crushing columns */
+    .panel table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    /* Damage / crit values: slightly smaller type, tighter gap */
+    .calc { font-size: 0.85rem; }
+  }
+
 
   .panel {
     background: var(--panel);
