@@ -789,6 +789,14 @@
           </div>
         </div>
       </div>
+      <div class="row" style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border); flex-wrap:wrap; align-items:center; gap:6px;">
+        <span class="label" style="min-width:110px;">Disorder</span>
+        <input type="range" id="disorderLv" min="0" max="20" value="0" step="1" oninput="recalc()" style="flex:1; max-width:140px; accent-color:#e94560;">
+        <span class="calc" id="disorderLvVal" style="min-width:1.5em; text-align:right;">0</span>
+        <span class="label" style="font-size:0.7rem; margin:0;">/20</span>
+        <span class="label" style="font-size:0.7rem; color:var(--muted); margin-left:4px;">PDEF −</span>
+        <span class="calc" id="disorderPdef">0</span>
+      </div>
     </div>
 
   </div>
@@ -1229,17 +1237,30 @@ function recalc() {
   // Hit rate (COT-2): BaseChance = Acc×100 / ((LevelDiff×2+51)×5)
   //   Spread = 0.15 + 0.2/(1+exp((BaseChance-Avoid)/12))
   //   P(hit) from uniform roll band
+  // Disorder (CoT2): flat Weapon Def reduction on target
+  //   Lv1–4: −1 · 5–9: −2 · 10–14: −3 · 15–19: −4 · 20: −5
+  const disorderLv = Math.max(0, Math.min(20, num('disorderLv')));
+  set('disorderLvVal', disorderLv);
+  let disorderPdefRed = 0;
+  if (disorderLv >= 20) disorderPdefRed = 5;
+  else if (disorderLv >= 15) disorderPdefRed = 4;
+  else if (disorderLv >= 10) disorderPdefRed = 3;
+  else if (disorderLv >= 5) disorderPdefRed = 2;
+  else if (disorderLv >= 1) disorderPdefRed = 1;
+  set('disorderPdef', disorderPdefRed);
+
   const mobId = val('monsterSelect');
   let mob = null;
   if (mobId && typeof MONSTERS !== 'undefined') {
     mob = MONSTERS.find(m => String(m.id) === String(mobId)) || null;
   }
   if (mob) {
-    const pdef = Math.max(0, mob.pdef || 0);
+    const basePdef = Math.max(0, mob.pdef || 0);
+    const pdef = Math.max(0, basePdef - disorderPdefRed);
     const mobAvoid = Math.max(0, mob.eva || 0);
     set('mobLevel', mob.level);
     set('mobHp', mob.hp);
-    set('mobPdef', pdef);
+    set('mobPdef', disorderPdefRed > 0 ? (basePdef + ' → ' + pdef) : pdef);
     set('mobEva', mobAvoid);
     set('mobAcc', mob.acc);
     const factor = 100 / (pdef + 100);
