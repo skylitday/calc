@@ -431,21 +431,21 @@
         <span class="label">SkillMult</span>
         <span class="calc" id="skillMult">—</span>
       </div>
-      <div style="display:flex; align-items:center; gap:10px; margin-top:12px; padding-top:10px; border-top:1px solid var(--border);">
-        <span class="label" style="min-width:auto;">Weapon Crit Damage</span>
-        <span class="calc" id="weaponCrit">0</span>
-        <span class="label" style="margin-left:2px;">%</span>
-        <span class="adj-label">±</span>
-        <input type="number" class="mod" id="modWeaponCrit" value="0" min="-5" max="5" oninput="recalc()" title="Weapon Crit Damage adjust (±5)">
-        <span class="label" style="font-size:0.7rem; color:var(--muted); margin-left:2px;">(only certain claws have crit damage)</span>
+      <div style="display:flex; align-items:center; gap:8px; margin-top:12px; padding-top:10px; border-top:1px solid var(--border); flex-wrap:nowrap;">
+        <span class="label" style="width:145px; flex-shrink:0;">Weapon Crit Damage</span>
+        <span class="calc" id="weaponCrit" style="width:2em; text-align:right; flex-shrink:0;">0</span>
+        <span class="label" style="width:1em; flex-shrink:0; margin:0;">%</span>
+        <span class="adj-label" style="flex-shrink:0;">±</span>
+        <input type="number" class="mod" id="modWeaponCrit" value="0" min="-5" max="5" oninput="recalc()" title="Weapon Crit Damage adjust (±5)" style="flex-shrink:0;">
+        <span class="label" style="font-size:0.7rem; color:var(--muted); margin:0;">(only certain claws have crit damage)</span>
       </div>
-      <div style="display:flex; align-items:center; gap:10px; margin-top:8px;">
-        <span class="label" style="min-width:auto;">Weapon Crit Rate</span>
-        <span class="calc" id="weaponCritR">0</span>
-        <span class="label" style="margin-left:2px;">%</span>
-        <span class="adj-label">±</span>
-        <input type="number" class="mod" id="modWeaponCritR" value="0" min="-5" max="5" oninput="recalc()" title="Weapon Crit Rate adjust (±5)">
-        <span class="label" style="font-size:0.7rem; color:var(--muted); margin-left:2px;">(only certain claws have crit rate)</span>
+      <div style="display:flex; align-items:center; gap:8px; margin-top:8px; flex-wrap:nowrap;">
+        <span class="label" style="width:145px; flex-shrink:0;">Weapon Crit Rate</span>
+        <span class="calc" id="weaponCritR" style="width:2em; text-align:right; flex-shrink:0;">0</span>
+        <span class="label" style="width:1em; flex-shrink:0; margin:0;">%</span>
+        <span class="adj-label" style="flex-shrink:0;">±</span>
+        <input type="number" class="mod" id="modWeaponCritR" value="0" min="-5" max="5" oninput="recalc()" title="Weapon Crit Rate adjust (±5)" style="flex-shrink:0;">
+        <span class="label" style="font-size:0.7rem; color:var(--muted); margin:0;">(only certain claws have crit rate)</span>
       </div>
     </div>
 
@@ -466,19 +466,19 @@
           </tr>
         </tfoot>
       </table>
-      <div style="display:flex; align-items:center; gap:10px; margin-top:12px; padding-top:10px; border-top:1px solid var(--border);">
-        <span class="label" style="min-width:auto;">Gear Crit Damage</span>
-        <span class="calc" id="totCrit">0</span>
-        <span class="adj-label">±</span>
-        <input type="number" class="mod" id="modGearCrit" value="0" min="-5" max="5" oninput="recalc()" title="Gear Crit Damage adjust (±5)">
-        <span class="label" style="font-size:0.7rem; color:var(--muted); margin-left:2px;">(Earrings)</span>
+      <div style="display:flex; align-items:center; gap:8px; margin-top:12px; padding-top:10px; border-top:1px solid var(--border); flex-wrap:nowrap;">
+        <span class="label" style="width:145px; flex-shrink:0;">Gear Crit Damage</span>
+        <span class="calc" id="totCrit" style="width:2em; text-align:right; flex-shrink:0;">0</span>
+        <span class="adj-label" style="flex-shrink:0;">±</span>
+        <input type="number" class="mod" id="modGearCrit" value="0" min="-5" max="5" oninput="recalc()" title="Gear Crit Damage adjust (±5)" style="flex-shrink:0;">
+        <span class="label" style="font-size:0.7rem; color:var(--muted); margin:0;">(Earrings)</span>
       </div>
-      <div style="display:flex; align-items:center; gap:10px; margin-top:8px;">
-        <span class="label" style="min-width:auto;">Gear Crit Rate</span>
-        <span class="calc" id="totCritR">0</span>
-        <span class="adj-label">±</span>
-        <input type="number" class="mod" id="modGearCritR" value="0" min="-5" max="5" oninput="recalc()" title="Gear Crit Rate adjust (±5)">
-        <span class="label" style="font-size:0.7rem; color:var(--muted); margin-left:2px;">(Gloves)</span>
+      <div style="display:flex; align-items:center; gap:8px; margin-top:8px; flex-wrap:nowrap;">
+        <span class="label" style="width:145px; flex-shrink:0;">Gear Crit Rate</span>
+        <span class="calc" id="totCritR" style="width:2em; text-align:right; flex-shrink:0;">0</span>
+        <span class="adj-label" style="flex-shrink:0;">±</span>
+        <input type="number" class="mod" id="modGearCritR" value="0" min="-5" max="5" oninput="recalc()" title="Gear Crit Rate adjust (±5)" style="flex-shrink:0;">
+        <span class="label" style="font-size:0.7rem; color:var(--muted); margin:0;">(Gloves)</span>
       </div>
       <p class="note" style="margin-top:8px;">Yellow ± = above/below average adjust · Green = final value</p>
     </div>
@@ -628,10 +628,11 @@
           </tr>
         </tbody>
       </table>
-      <div class="row" style="margin-top:8px; flex-wrap:wrap; align-items:center; gap:6px;">
-        <span class="label">Nimble Body</span>
-        <input type="range" id="nimbleBodyLv" min="0" max="15" value="0" step="1" oninput="recalc()" style="flex:1; max-width:140px; accent-color:#e94560;">
-        <span class="calc" id="nimbleBodyLvVal" style="min-width:1.5em; text-align:right;">0</span><span class="label" style="font-size:0.7rem; margin:0;">/15</span>
+      <div class="row" style="margin-top:8px; flex-wrap:nowrap; align-items:center; gap:8px;">
+        <span class="label" style="width:110px; flex-shrink:0;">Nimble Body</span>
+        <input type="range" id="nimbleBodyLv" min="0" max="15" value="0" step="1" oninput="recalc()" style="width:140px; flex-shrink:0; accent-color:#e94560;">
+        <span class="calc" id="nimbleBodyLvVal" style="width:1.5em; text-align:right; flex-shrink:0;">0</span>
+        <span class="label" style="font-size:0.7rem; margin:0; width:2em; flex-shrink:0;">/15</span>
       </div>
     </div>
 
@@ -642,16 +643,17 @@
       <div class="row"><span class="label">Secondary (STR+DEX)</span><span class="calc" id="secondary">—</span></div>
       <div class="row"><span class="label">Total W ATT</span><span class="calc" id="totalWatk">—</span></div>
       <div class="row"><span class="label">ATT Power</span><span class="calc" id="fAttPower">—</span></div>
-      <div class="row" style="margin-bottom:8px">
-        <span class="label">Mastery Lv</span>
-        <input type="range" id="masteryLv" min="0" max="10" value="0" step="1" oninput="recalc()" style="flex:1; max-width:140px; accent-color:#e94560;">
-        <span class="calc" id="masteryLvVal">0</span>
+      <div class="row" style="margin-bottom:8px; flex-wrap:nowrap; align-items:center; gap:8px;">
+        <span class="label" style="width:110px; flex-shrink:0;">Mastery Lv</span>
+        <input type="range" id="masteryLv" min="0" max="10" value="0" step="1" oninput="recalc()" style="width:140px; flex-shrink:0; accent-color:#e94560;">
+        <span class="calc" id="masteryLvVal" style="width:1.5em; text-align:right; flex-shrink:0;">0</span>
+        <span class="label" style="font-size:0.7rem; margin:0; width:2em; flex-shrink:0;">/10</span>
       </div>
       <div class="row"><span class="label">Mastery</span><span class="calc" id="mastery">—</span></div>
       <div class="row"><span class="label">Wep MAX</span><span class="calc" id="wepMax">—</span></div>
       <div class="row"><span class="label">Wep MIN</span><span class="calc" id="wepMin">—</span></div>
       <p class="note" style="margin-top:8px;">
-        Claw ratio 2.5 · Dagger range 1.0–2.0 (Avg uses expected 1.4 for swing+stab)<br>
+        Claw ratio 2.5 · Dagger ratio 1.0–2.0 (Avg uses expected 1.4 for swing+stab)<br>
         Lucky Seven forces 0.5 mastery and weapon ratio 3.0
       </p>
     </div>
@@ -715,7 +717,7 @@
         <span class="label" style="margin-left:2px;">%</span>
       </div>
       <div style="font-size:0.7rem; color:var(--muted); margin-bottom:8px; line-height:1.3;">
-        Influenced by skill, glove crit rate, and scrolls
+        Influenced by skill, weapon crit rate, glove crit rate, and scrolls
       </div>
       <div class="row" style="margin-bottom:6px; flex-wrap:wrap;">
         <span class="label">Preset</span>
@@ -725,17 +727,17 @@
           <option value="dm">Dagger Mastery (+20%)</option>
         </select>
       </div>
-      <div class="row" style="margin-bottom:8px; flex-wrap:wrap; align-items:center; gap:6px;">
-        <span class="label" style="min-width:110px;">Critical Throw</span>
-        <input type="range" id="critThrowLv" min="0" max="30" value="0" step="1" oninput="recalc()" style="flex:1; max-width:140px; accent-color:#e94560;">
-        <span class="calc" id="critThrowLvVal" style="min-width:1.5em; text-align:right;">0</span>
-        <span class="label" style="font-size:0.7rem; margin:0;">/30</span>
+      <div class="row" style="margin-bottom:8px; flex-wrap:nowrap; align-items:center; gap:8px;">
+        <span class="label" style="width:130px; flex-shrink:0;">Critical Throw</span>
+        <input type="range" id="critThrowLv" min="0" max="30" value="0" step="1" oninput="recalc()" style="width:140px; flex-shrink:0; accent-color:#e94560;">
+        <span class="calc" id="critThrowLvVal" style="width:1.5em; text-align:right; flex-shrink:0;">0</span>
+        <span class="label" style="font-size:0.7rem; margin:0; width:2em; flex-shrink:0;">/30</span>
       </div>
-      <div class="row" style="margin-bottom:4px; flex-wrap:wrap; align-items:center; gap:6px;">
-        <span class="label" style="min-width:110px;">Dagger Mastery</span>
-        <input type="range" id="daggerMastLv" min="0" max="20" value="0" step="1" oninput="recalc()" style="flex:1; max-width:140px; accent-color:#e94560;">
-        <span class="calc" id="daggerMastLvVal" style="min-width:1.5em; text-align:right;">0</span>
-        <span class="label" style="font-size:0.7rem; margin:0;">/20</span>
+      <div class="row" style="margin-bottom:4px; flex-wrap:nowrap; align-items:center; gap:8px;">
+        <span class="label" style="width:130px; flex-shrink:0;">Dagger Mastery</span>
+        <input type="range" id="daggerMastLv" min="0" max="20" value="0" step="1" oninput="recalc()" style="width:140px; flex-shrink:0; accent-color:#e94560;">
+        <span class="calc" id="daggerMastLvVal" style="width:1.5em; text-align:right; flex-shrink:0;">0</span>
+        <span class="label" style="font-size:0.7rem; margin:0; width:2em; flex-shrink:0;">/20</span>
       </div>
     </div>
 
@@ -789,21 +791,21 @@
           </div>
         </div>
       </div>
-      <div class="row" style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border); flex-wrap:wrap; align-items:center; gap:6px;">
-        <span class="label" style="min-width:110px;">Disorder</span>
-        <input type="range" id="disorderLv" min="0" max="20" value="0" step="1" oninput="recalc()" style="flex:1; max-width:140px; accent-color:#e94560;">
-        <span class="calc" id="disorderLvVal" style="min-width:1.5em; text-align:right;">0</span>
-        <span class="label" style="font-size:0.7rem; margin:0;">/20</span>
-        <span class="label" style="font-size:0.7rem; color:var(--muted); margin-left:4px;">PDEF −</span>
-        <span class="calc" id="disorderPdef">0</span>
+      <div class="row" style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border); flex-wrap:nowrap; align-items:center; gap:8px;">
+        <span class="label" style="width:150px; flex-shrink:0;">Disorder</span>
+        <input type="range" id="disorderLv" min="0" max="20" value="0" step="1" oninput="recalc()" style="width:140px; flex-shrink:0; accent-color:#e94560;">
+        <span class="calc" id="disorderLvVal" style="width:1.5em; text-align:right; flex-shrink:0;">0</span>
+        <span class="label" style="font-size:0.7rem; margin:0; width:2em; flex-shrink:0;">/20</span>
+        <span class="label" style="font-size:0.7rem; color:var(--muted); margin:0; flex-shrink:0;">PDEF −</span>
+        <span class="calc" id="disorderPdef" style="flex-shrink:0;">0</span>
       </div>
-      <div class="row" style="margin-top:8px; flex-wrap:wrap; align-items:center; gap:6px;">
-        <span class="label" style="min-width:110px;">Threaten (Party AoE)</span>
-        <input type="range" id="threatenLv" min="0" max="30" value="0" step="1" oninput="recalc()" style="flex:1; max-width:140px; accent-color:#e94560;">
-        <span class="calc" id="threatenLvVal" style="min-width:1.5em; text-align:right;">0</span>
-        <span class="label" style="font-size:0.7rem; margin:0;">/30</span>
-        <span class="label" style="font-size:0.7rem; color:var(--muted); margin-left:4px;">PDEF −</span>
-        <span class="calc" id="threatenPdef">0</span>
+      <div class="row" style="margin-top:8px; flex-wrap:nowrap; align-items:center; gap:8px;">
+        <span class="label" style="width:150px; flex-shrink:0;">Threaten (Party AoE)</span>
+        <input type="range" id="threatenLv" min="0" max="30" value="0" step="1" oninput="recalc()" style="width:140px; flex-shrink:0; accent-color:#e94560;">
+        <span class="calc" id="threatenLvVal" style="width:1.5em; text-align:right; flex-shrink:0;">0</span>
+        <span class="label" style="font-size:0.7rem; margin:0; width:2em; flex-shrink:0;">/30</span>
+        <span class="label" style="font-size:0.7rem; color:var(--muted); margin:0; flex-shrink:0;">PDEF −</span>
+        <span class="calc" id="threatenPdef" style="flex-shrink:0;">0</span>
       </div>
     </div>
 
@@ -1040,6 +1042,13 @@ function recalc() {
     gearAcc += ae ? (ae.acc || 0) : (a.acc || 0);
     gearEva += ae ? (ae.eva || 0) : 0;
   });
+  // Weapon ACC / EVA (claws/daggers with ACC in GEAR_ACC_EVA, e.g. Blood Avarice, Green Scarab, Korean Fan)
+  const wepName = val('weapon');
+  if (typeof GEAR_ACC_EVA !== 'undefined' && GEAR_ACC_EVA[wepName]) {
+    const wepAe = GEAR_ACC_EVA[wepName];
+    gearAcc += (wepAe.acc || 0);
+    gearEva += (wepAe.eva || 0);
+  }
   // Gear Crit Damage ± (earrings) / Gear Crit Rate ± (gloves)
   gearCrit += clampMod('modGearCrit');
   gearCritR += clampMod('modGearCritR');
@@ -1157,7 +1166,8 @@ function recalc() {
     mastery = 0.5;
     wepMax = 3;
     wepMin = 3;
-  } else if (skill === 'Avenger') {
+  } else if (skill === 'Drain (maxed)' || skill === 'Avenger') {
+    // Claw skills — always use claw ratio 2.5 (even if a dagger is selected)
     wepMax = 2.5;
     wepMin = 2.5;
   } else if (skill === 'Assaulter') {
