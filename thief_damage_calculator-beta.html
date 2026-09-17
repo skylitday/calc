@@ -800,9 +800,10 @@
       </div>
     </div>
 
-    <!-- MONSTER PDEF -->
+    <!-- MONSTER DEF -->
     <div class="panel" style="margin-top:12px">
-      <h2>MONSTER / PDEF</h2>
+      <h2>MONSTER / DEF</h2>
+
       <div class="row" style="margin-bottom:6px; flex-wrap:wrap; align-items:center; gap:6px;">
         <span class="label">Monster</span>
         <select id="monsterSelect" onchange="recalc()" style="max-width:260px;"></select>
@@ -812,8 +813,9 @@
         <span class="calc" id="mobLevel">—</span>
         <span class="label">HP</span>
         <span class="calc" id="mobHp">—</span>
-        <span class="label">PDEF</span>
+        <span class="label">DEF</span>
         <span class="calc" id="mobPdef">—</span>
+
       </div>
       <div class="row" style="margin-bottom:8px; flex-wrap:wrap; align-items:center; gap:4px 10px;">
         <span class="label">EVA</span>
@@ -825,48 +827,32 @@
         <span class="label">Miss rate</span>
         <span class="calc" id="missRate">—</span>
       </div>
-      <div class="damage-box">
-        <div class="nums" style="justify-content:center;">
-          <div style="flex:1.4; text-align:center;">
-            <div class="lbl">Range</div>
-            <div class="val" id="defRange">—</div>
-          </div>
-          <div>
-            <div class="lbl">Avg</div>
-            <div class="val" id="defMid">—</div>
-          </div>
-        </div>
+      <div class="row" style="margin-bottom:8px; flex-wrap:wrap; align-items:center; gap:4px 10px;">
+        <span class="label">Damage vs DEF</span>
+        <span class="calc" id="defRange">—</span>
+        <span class="label">Avg</span>
+        <span class="calc" id="defMid">—</span>
+        <span class="label" style="color:#fb7185; margin-left:8px;">Crit</span>
+        <span class="calc" id="defCritRange" style="color:#fda4af;">—</span>
+        <span class="label" style="color:#fb7185;">Avg</span>
+        <span class="calc" id="defCritMid" style="color:#fda4af;">—</span>
       </div>
-      <div class="damage-box crit" style="margin-top:10px;">
-        <div class="crit-title">CRITICAL vs PDEF</div>
-        <div class="nums" style="justify-content:center;">
-          <div style="flex:1.4; text-align:center;">
-            <div class="lbl">Range</div>
-            <div class="val" id="defCritRange">—</div>
-          </div>
-          <div>
-            <div class="lbl">Avg</div>
-            <div class="val" id="defCritMid">—</div>
-          </div>
-        </div>
-      </div>
+
+
+
+
+
       <div class="row" style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border); flex-wrap:nowrap; align-items:center; gap:8px;">
         <span class="label" style="width:150px; flex-shrink:0;">Disorder</span>
         <input type="range" id="disorderLv" min="0" max="20" value="0" step="1" oninput="recalc()" style="width:140px; flex-shrink:0; accent-color:#e94560;">
         <span class="calc" id="disorderLvVal" style="width:1.5em; text-align:right; flex-shrink:0;">0</span>
         <span class="label" style="font-size:0.7rem; margin:0; width:2em; flex-shrink:0;">/20</span>
         <span class="label" style="font-size:0.7rem; color:var(--muted); margin:0; flex-shrink:0;">PDEF −</span>
+
         <span class="calc" id="disorderPdef" style="flex-shrink:0;">0</span>
       </div>
-      <div class="row" style="margin-top:8px; flex-wrap:nowrap; align-items:center; gap:8px;">
-        <span class="label" style="width:150px; flex-shrink:0;">Threaten (Party AoE)</span>
-        <input type="range" id="threatenLv" min="0" max="30" value="0" step="1" oninput="recalc()" style="width:140px; flex-shrink:0; accent-color:#e94560;">
-        <span class="calc" id="threatenLvVal" style="width:1.5em; text-align:right; flex-shrink:0;">0</span>
-        <span class="label" style="font-size:0.7rem; margin:0; width:2em; flex-shrink:0;">/30</span>
-        <span class="label" style="font-size:0.7rem; color:var(--muted); margin:0; flex-shrink:0;">PDEF −</span>
-        <span class="calc" id="threatenPdef" style="flex-shrink:0;">0</span>
-      </div>
     </div>
+
 
   </div>
 </div>
@@ -973,7 +959,8 @@ function init() {
     MONSTERS.forEach(m => {
       const opt = document.createElement('option');
       opt.value = m.id;
-      opt.textContent = 'Lv' + m.level + ' ' + m.name + ' (PDEF ' + m.pdef + ', EVA ' + (m.eva || 0) + ')';
+      opt.textContent = 'Lv' + m.level + ' ' + m.name + ' (DEF ' + m.pdef + ', EVA ' + (m.eva || 0) + ')';
+
       if (m.id === defaultId) opt.selected = true;
       mobSel.appendChild(opt);
     });
@@ -1360,23 +1347,8 @@ function recalc() {
   else if (disorderLv >= 1) disorderPdefRed = 1;
   set('disorderPdef', disorderPdefRed);
 
-  // Threaten (Page, CoT2): flat Weapon Def reduction
-  //   Lv1: −2 · 2–5: −3 · 6–9: −4 · 10–13: −5 · 14–17: −6 · 18–21: −7 · 22–25: −8 · 26–29: −9 · 30: −10
-  const threatenLv = Math.max(0, Math.min(30, num('threatenLv')));
-  set('threatenLvVal', threatenLv);
-  let threatenPdefRed = 0;
-  if (threatenLv >= 30) threatenPdefRed = 10;
-  else if (threatenLv >= 26) threatenPdefRed = 9;
-  else if (threatenLv >= 22) threatenPdefRed = 8;
-  else if (threatenLv >= 18) threatenPdefRed = 7;
-  else if (threatenLv >= 14) threatenPdefRed = 6;
-  else if (threatenLv >= 10) threatenPdefRed = 5;
-  else if (threatenLv >= 6) threatenPdefRed = 4;
-  else if (threatenLv >= 2) threatenPdefRed = 3;
-  else if (threatenLv >= 1) threatenPdefRed = 2;
-  set('threatenPdef', threatenPdefRed);
+  const totalPdefRed = disorderPdefRed;
 
-  const totalPdefRed = disorderPdefRed + threatenPdefRed;
 
   const mobId = val('monsterSelect');
   let mob = null;
