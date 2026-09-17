@@ -373,9 +373,9 @@
       </div>
     </div>
 
-    <!-- 2. WEAPON & SKILL -->
+    <!-- 2. WEAPON -->
     <div class="panel" style="margin-top:12px">
-      <h2>2. WEAPON &amp; SKILL</h2>
+      <h2>2. WEAPON</h2>
       <div class="row">
         <span class="label">Weapon</span>
         <select id="weapon" onchange="recalc()"></select>
@@ -397,39 +397,6 @@
       <div class="row">
         <span class="label">Effective W ATT</span>
         <span class="calc" id="effWatk">—</span>
-      </div>
-      <div class="row">
-        <span class="label">ATT Buff</span>
-        <select id="attBuff" onchange="recalc()">
-          <option selected>None</option>
-          <option>Claw Mastery (+20)</option>
-          <option>Steal (+35)</option>
-          <option>Fighter Rage (+40)</option>
-          <option>Claw Mastery + Rage (+60)</option>
-          <option>Steal + Rage (+75)</option>
-          <option>Custom</option>
-        </select>
-        <span class="calc" id="attPower">—</span>
-      </div>
-      <div class="row">
-        <span class="label">Custom ATT</span>
-        <input type="number" id="customAtt" value="0" oninput="recalc()">
-      </div>
-      <div class="row">
-        <span class="label">Skill</span>
-        <select id="skill" onchange="recalc()" style="max-width:230px;">
-          <option value="Basic Attack">Basic Attack (Range)</option>
-          <option>Lucky Seven</option>
-          <option value="Drain (maxed)">Drain (Maxed)</option>
-          <option>Double Stab</option>
-          <option>Savage Blow</option>
-          <option>Steal</option>
-          <option>Assaulter</option>
-          <option>Band of Thieves</option>
-          <option>Avenger</option>
-        </select>
-        <span class="label">SkillMult</span>
-        <span class="calc" id="skillMult">—</span>
       </div>
       <div style="display:flex; align-items:center; gap:8px; margin-top:12px; padding-top:10px; border-top:1px solid var(--border); flex-wrap:nowrap;">
         <span class="label" style="width:145px; flex-shrink:0;">Weapon Crit Damage</span>
@@ -628,11 +595,39 @@
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- BUFFS & MASTERY -->
+    <div class="panel" style="margin-top:12px">
+      <h2>BUFFS &amp; MASTERY</h2>
+      <div class="row">
+        <span class="label">ATT Buff</span>
+        <select id="attBuff" onchange="recalc()">
+          <option selected>None</option>
+          <option>Claw Mastery (+20)</option>
+          <option>Steal (+35)</option>
+          <option>Fighter Rage (+40)</option>
+          <option>Claw Mastery + Rage (+60)</option>
+          <option>Steal + Rage (+75)</option>
+          <option>Custom</option>
+        </select>
+        <span class="calc" id="attPower">—</span>
+      </div>
+      <div class="row">
+        <span class="label">Custom ATT</span>
+        <input type="number" id="customAtt" value="0" oninput="recalc()">
+      </div>
       <div class="row" style="margin-top:8px; flex-wrap:nowrap; align-items:center; gap:8px;">
         <span class="label" style="width:110px; flex-shrink:0;">Nimble Body</span>
         <input type="range" id="nimbleBodyLv" min="0" max="15" value="0" step="1" oninput="recalc()" style="width:140px; flex-shrink:0; accent-color:#e94560;">
         <span class="calc" id="nimbleBodyLvVal" style="width:1.5em; text-align:right; flex-shrink:0;">0</span>
         <span class="label" style="font-size:0.7rem; margin:0; width:2em; flex-shrink:0;">/15</span>
+      </div>
+      <div class="row" style="margin-top:8px; flex-wrap:nowrap; align-items:center; gap:8px;">
+        <span class="label" style="width:110px; flex-shrink:0;">Mastery Lv</span>
+        <input type="range" id="masteryLv" min="0" max="20" value="0" step="1" oninput="recalc()" style="width:140px; flex-shrink:0; accent-color:#e94560;">
+        <span class="calc" id="masteryLvVal" style="width:1.5em; text-align:right; flex-shrink:0;">0</span>
+        <span class="label" style="font-size:0.7rem; margin:0; width:2em; flex-shrink:0;">/20</span>
       </div>
     </div>
 
@@ -643,12 +638,6 @@
       <div class="row"><span class="label">Secondary (STR+DEX)</span><span class="calc" id="secondary">—</span></div>
       <div class="row"><span class="label">Total W ATT</span><span class="calc" id="totalWatk">—</span></div>
       <div class="row"><span class="label">ATT Power</span><span class="calc" id="fAttPower">—</span></div>
-      <div class="row" style="margin-bottom:8px; flex-wrap:nowrap; align-items:center; gap:8px;">
-        <span class="label" style="width:110px; flex-shrink:0;">Mastery Lv</span>
-        <input type="range" id="masteryLv" min="0" max="10" value="0" step="1" oninput="recalc()" style="width:140px; flex-shrink:0; accent-color:#e94560;">
-        <span class="calc" id="masteryLvVal" style="width:1.5em; text-align:right; flex-shrink:0;">0</span>
-        <span class="label" style="font-size:0.7rem; margin:0; width:2em; flex-shrink:0;">/10</span>
-      </div>
       <div class="row"><span class="label">Mastery</span><span class="calc" id="mastery">—</span></div>
       <div class="row"><span class="label">Wep MAX</span><span class="calc" id="wepMax">—</span></div>
       <div class="row"><span class="label">Wep MIN</span><span class="calc" id="wepMin">—</span></div>
@@ -656,6 +645,27 @@
         Claw ratio 2.5 · Dagger ratio 1.0–2.0 (Avg uses expected 1.4 for swing+stab)<br>
         Lucky Seven forces 0.5 mastery and weapon ratio 3.0
       </p>
+    </div>
+
+    <!-- SKILL -->
+    <div class="panel" style="margin-top:12px">
+      <h2>SKILL</h2>
+      <div class="row">
+        <span class="label">Skill</span>
+        <select id="skill" onchange="recalc()" style="max-width:230px;">
+          <option value="Basic Attack">Basic Attack</option>
+          <option>Lucky Seven</option>
+          <option value="Drain (maxed)">Drain (Maxed)</option>
+          <option>Double Stab</option>
+          <option>Savage Blow</option>
+          <option>Steal</option>
+          <option>Assaulter</option>
+          <option>Band of Thieves</option>
+          <option>Avenger</option>
+        </select>
+        <span class="label">Skill Mult</span>
+        <span class="calc" id="skillMult">—</span>
+      </div>
     </div>
 
     <!-- DAMAGE -->
@@ -1155,10 +1165,11 @@ function recalc() {
   set('fAttPower', attPower);
 
   // Mastery & Wep multipliers
-  // m = (MasteryLevel / 10 + 0.1) × 0.8   (from osms / meowdb formula)
-  const masteryLv = Math.max(0, Math.min(10, num('masteryLv')));
+  // m = (SkillLevel / 20 + 0.1) × 0.8
+  // CoT2 mastery skills max at 20; skill lv 20 = same coefficient as old rank 10
+  const masteryLv = Math.max(0, Math.min(20, num('masteryLv')));
   set('masteryLvVal', masteryLv);
-  let mastery = (masteryLv / 10 + 0.1) * 0.8;
+  let mastery = (masteryLv / 20 + 0.1) * 0.8;
   let wepMax, wepMin;
   // isMixed: skill uses the ordinary melee pool (60% swing / 40% stab → expected 1.4 for dagger)
   let isMixed = false;
