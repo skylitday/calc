@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.25, maximum-scale=5, user-scalable=yes, viewport-fit=cover">
 <title>Maple Classic Thief Damage Calculator</title>
 <style>
   :root {
@@ -78,7 +78,7 @@
         calc(10px + env(safe-area-inset-bottom, 0px));
       overflow-x: hidden;
       overscroll-behavior-y: contain;
-      font-size: 13px;
+      font-size: 12px;
     }
     h1,
     .subtitle,
@@ -89,18 +89,22 @@
       margin-left: auto;
       margin-right: auto;
     }
-    /* Prevent iOS focus-zoom without making UI feel oversized */
+    /* Compact controls. Pinch-zoom enabled in viewport meta. */
     input[type="number"],
     input[type="search"],
-    input[type="text"],
-    select,
+    input[type="text"] {
+      font-size: 14px !important;
+    }
+    select {
+      font-size: 0.8rem !important;
+    }
     .gear-val,
     .scroll-table input[type="number"],
     .gear-table .gear-val {
-      font-size: 16px !important;
+      font-size: 14px !important;
     }
     h1 {
-      font-size: 0.92rem;
+      font-size: 0.88rem;
       letter-spacing: 0.1px;
       padding: 0 2px;
       line-height: 1.2;
@@ -1179,6 +1183,30 @@
   @media print {
     .app-toolbar, .bottom-bar, .toast-wrap { display: none !important; }
   }
+
+  /* page-shell: mobile-only visual scale; desktop unchanged */
+  .page-shell {
+    width: 100%;
+    max-width: 100%;
+  }
+  @media (min-width: 801px) {
+    .page-shell {
+      zoom: 1;
+      transform: none;
+      width: 100%;
+    }
+  }
+  @media (max-width: 800px) {
+    .page-shell {
+      zoom: 0.7;
+    }
+  }
+  @media (max-width: 390px) {
+    .page-shell {
+      zoom: 0.65;
+    }
+  }
+
 </style>
 
 </head>
@@ -1206,6 +1234,7 @@
 </div>
 
 
+<div class="page-shell">
 <h1>MAPLE CLASSIC THIEF DAMAGE CALCULATOR</h1>
 <p class="subtitle legend">
   <span class="y">Yellow = edit</span>
@@ -1770,8 +1799,7 @@
 
   </div>
 </div>
-
-
+</div><!-- /.page-shell -->
 
 <script>
 const WEAPONS = [{"name":"Razor","type":"Dagger","watk":23},{"name":"Fruit Knife","type":"Dagger","watk":23},{"name":"Beginner's Triangular Zamadar","type":"Dagger","watk":27},{"name":"Triangular Zamadar","type":"Dagger","watk":28},{"name":"Field Dagger","type":"Dagger","watk":30},{"name":"Triple-Tipped Zamadar","type":"Dagger","watk":35},{"name":"Coconut Knife","type":"Dagger","watk":35},{"name":"Stinger","type":"Dagger","watk":40},{"name":"Iron Dagger","type":"Dagger","watk":50},{"name":"Forked Dagger","type":"Dagger","watk":45},{"name":"Cass","type":"Dagger","watk":45},{"name":"Reef Claw","type":"Dagger","watk":48},{"name":"Halfmoon Zamadar","type":"Dagger","watk":53},{"name":"Gephart","type":"Dagger","watk":58},{"name":"Korean Fan","type":"Dagger","watk":55},{"name":"Bazlud","type":"Dagger","watk":63},{"name":"Sai","type":"Dagger","watk":65},{"name":"Shinkita","type":"Dagger","watk":68},{"name":"Deadly Fin","type":"Dagger","watk":78},{"name":"Serpent's Coil","type":"Dagger","watk":75},{"name":"Golden River","type":"Dagger","watk":85},{"name":"Kandine","type":"Dagger","watk":88},{"name":"Beginner's Garnier","type":"Claw","watk":10},{"name":"Garnier","type":"Claw","watk":10},{"name":"Gold Titans","type":"Claw","watk":14,"critD":1},{"name":"Mithril Titans","type":"Claw","watk":14,"critR":1},{"name":"Steel Titans","type":"Claw","watk":13},{"name":"Adamantium Igor","type":"Claw","watk":17,"critD":1},{"name":"Bronze Igor","type":"Claw","watk":16},{"name":"Steel Igor","type":"Claw","watk":17,"critR":1},{"name":"Meba","type":"Claw","watk":19},{"name":"Adamantium Guards","type":"Claw","watk":23,"critD":1},{"name":"Mithril Guards","type":"Claw","watk":23,"critR":1},{"name":"Steel Guards","type":"Claw","watk":22},{"name":"Bronze Guardian","type":"Claw","watk":25},{"name":"Dark Guardian","type":"Claw","watk":26,"critD":1},{"name":"Silver Guardian","type":"Claw","watk":26,"critR":1},{"name":"Adamantium Avarice","type":"Claw","watk":29,"critR":1},{"name":"Blood Avarice","type":"Claw","watk":29},{"name":"Dark Avarice","type":"Claw","watk":29,"critD":1},{"name":"Steel Avarice","type":"Claw","watk":28},{"name":"Blood Slain","type":"Claw","watk":34},{"name":"Dark Slain","type":"Claw","watk":34,"critR":1},{"name":"Sapphire Slain","type":"Claw","watk":34,"critD":1},{"name":"Steel Slain","type":"Claw","watk":34},{"name":"Blood Gigantic","type":"Claw","watk":41},{"name":"Bronze Gigantic","type":"Claw","watk":40},{"name":"Dark Gigantic","type":"Claw","watk":41,"critR":2},{"name":"Sapphire Gigantic","type":"Claw","watk":41,"critD":2},{"name":"Black Scarab","type":"Claw","watk":47,"critR":2},{"name":"Blue Scarab","type":"Claw","watk":47,"critD":2},{"name":"Brown Scarab","type":"Claw","watk":46},{"name":"Green Scarab","type":"Claw","watk":47},{"name":"None","type":"Star","watk":0},{"name":"Subi","type":"Star","watk":15},{"name":"Wolbi","type":"Star","watk":17},{"name":"Mokbi","type":"Star","watk":19},{"name":"Kumbi","type":"Star","watk":21},{"name":"Tobi","type":"Star","watk":23},{"name":"Steely","type":"Star","watk":25},{"name":"Ilbi","type":"Star","watk":27},{"name":"Hwabi","type":"Star","watk":29}];
