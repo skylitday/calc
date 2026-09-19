@@ -149,10 +149,10 @@
       flex-shrink: 0 !important;
     }
     .slider-row input[type="range"] {
-      flex: 1 1 0 !important;
-      width: auto !important;
-      min-width: 50px !important;
-      max-width: none !important;
+      flex: 0 0 110px !important;
+      width: 110px !important;
+      min-width: 110px !important;
+      max-width: 110px !important;
     }
     .slider-row .calc,
     .slider-row .slider-max {
@@ -162,6 +162,61 @@
     }
     .slider-row .calc { min-width: 1.4em !important; text-align: right; }
     .slider-row .slider-max { min-width: 2em !important; }
+
+    /* Damage vs DEF rows — stack cleanly on mobile */
+    .def-dmg-row {
+      flex-wrap: wrap !important;
+      flex-direction: column;
+      align-items: flex-start !important;
+      gap: 2px 8px !important;
+      margin-bottom: 8px !important;
+    }
+    .def-dmg-row .def-dmg-label {
+      min-width: 0 !important;
+      width: auto !important;
+      flex-shrink: 0 !important;
+      font-size: 0.78rem;
+    }
+    .def-dmg-row .def-dmg-nums {
+      flex: none;
+      width: 100%;
+      justify-content: flex-start;
+      gap: 6px 10px;
+      flex-wrap: wrap;
+    }
+    .def-dmg-row .def-dmg-nums .calc {
+      font-size: 0.9rem;
+    }
+
+    /* Weapon / Gear crit rows — keep columns aligned on mobile */
+    .crit-stat-row {
+      flex-wrap: nowrap !important;
+      gap: 6px !important;
+    }
+    .crit-stat-row .crit-stat-label {
+      width: 112px !important;
+      min-width: 112px !important;
+      flex-shrink: 0 !important;
+      font-size: 0.78rem;
+    }
+    .crit-stat-row .crit-stat-val {
+      width: 1.8em !important;
+      min-width: 1.8em !important;
+      flex-shrink: 0 !important;
+      text-align: right;
+    }
+    .crit-stat-row .crit-stat-pct {
+      width: 0.9em !important;
+      flex-shrink: 0 !important;
+    }
+    .crit-stat-row .adj-label,
+    .crit-stat-row .mod {
+      flex-shrink: 0 !important;
+    }
+    .crit-stat-row .crit-stat-hint {
+      font-size: 0.65rem;
+      white-space: nowrap;
+    }
   }
 
   @media (max-width: 420px) {
@@ -176,6 +231,11 @@
       width: 88px !important;
       min-width: 88px !important;
       font-size: 0.75rem;
+    }
+    .crit-stat-row .crit-stat-label {
+      width: 100px !important;
+      min-width: 100px !important;
+      font-size: 0.72rem;
     }
   }
 
@@ -325,10 +385,10 @@
     flex-shrink: 0;
   }
   .slider-row input[type="range"] {
-    flex: 1 1 0;
-    min-width: 60px;
-    width: auto;
-    max-width: none;
+    flex: 0 0 140px;
+    width: 140px;
+    min-width: 140px;
+    max-width: 140px;
     accent-color: #e94560;
   }
   .slider-row .calc {
@@ -379,6 +439,71 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 4px 8px;
+  }
+
+  /* Weapon / Gear crit damage & rate rows */
+  .crit-stat-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    flex-wrap: nowrap;
+  }
+  .crit-stat-row-first {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+  .crit-stat-row .crit-stat-label {
+    width: 145px;
+    min-width: 145px;
+    flex-shrink: 0;
+  }
+  .crit-stat-row .crit-stat-val {
+    width: 2em;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .crit-stat-row .crit-stat-pct {
+    width: 1em;
+    flex-shrink: 0;
+    margin: 0;
+  }
+  .crit-stat-row .adj-label {
+    flex-shrink: 0;
+  }
+  .crit-stat-row .mod {
+    flex-shrink: 0;
+  }
+  .crit-stat-row .crit-stat-hint {
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  /* Damage vs DEF / Crit Damage vs DEF rows */
+  .def-dmg-row {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 10px;
+  }
+  .def-dmg-row .def-dmg-label {
+    width: 148px;
+    min-width: 148px;
+    flex-shrink: 0;
+  }
+  .def-dmg-row .def-dmg-nums {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+  .def-dmg-row .def-dmg-nums .calc {
+    white-space: nowrap;
   }
 
 
@@ -606,19 +731,19 @@
         <span class="label">Effective W ATT</span>
         <span class="calc" id="effWatk">—</span>
       </div>
-      <div style="display:flex; align-items:center; gap:8px; margin-top:12px; padding-top:10px; border-top:1px solid var(--border); flex-wrap:nowrap;">
-        <span class="label" style="width:145px; flex-shrink:0;">Weapon Crit Damage</span>
-        <span class="calc" id="weaponCrit" style="width:2em; text-align:right; flex-shrink:0;">0</span>
-        <span class="label" style="width:1em; flex-shrink:0; margin:0;">%</span>
-        <span class="adj-label" style="flex-shrink:0;">±</span>
-        <input type="number" class="mod" id="modWeaponCrit" value="0" min="-5" max="5" oninput="recalc()" title="Weapon Crit Damage adjust (±5)" style="flex-shrink:0;">
+      <div class="crit-stat-row crit-stat-row-first">
+        <span class="label crit-stat-label">Weapon Crit Damage</span>
+        <span class="calc crit-stat-val" id="weaponCrit">0</span>
+        <span class="label crit-stat-pct">%</span>
+        <span class="adj-label">±</span>
+        <input type="number" class="mod" id="modWeaponCrit" value="0" min="-5" max="5" oninput="recalc()" title="Weapon Crit Damage adjust (±5)">
       </div>
-      <div style="display:flex; align-items:center; gap:8px; margin-top:8px; flex-wrap:nowrap;">
-        <span class="label" style="width:145px; flex-shrink:0;">Weapon Crit Rate</span>
-        <span class="calc" id="weaponCritR" style="width:2em; text-align:right; flex-shrink:0;">0</span>
-        <span class="label" style="width:1em; flex-shrink:0; margin:0;">%</span>
-        <span class="adj-label" style="flex-shrink:0;">±</span>
-        <input type="number" class="mod" id="modWeaponCritR" value="0" min="-5" max="5" oninput="recalc()" title="Weapon Crit Rate adjust (±5)" style="flex-shrink:0;">
+      <div class="crit-stat-row">
+        <span class="label crit-stat-label">Weapon Crit Rate</span>
+        <span class="calc crit-stat-val" id="weaponCritR">0</span>
+        <span class="label crit-stat-pct">%</span>
+        <span class="adj-label">±</span>
+        <input type="number" class="mod" id="modWeaponCritR" value="0" min="-5" max="5" oninput="recalc()" title="Weapon Crit Rate adjust (±5)">
       </div>
       <p class="note" style="margin-top:6px;">(Only certain claws have crit damage / crit rate)</p>
     </div>
@@ -640,19 +765,19 @@
           </tr>
         </tfoot>
       </table>
-      <div style="display:flex; align-items:center; gap:8px; margin-top:12px; padding-top:10px; border-top:1px solid var(--border); flex-wrap:nowrap;">
-        <span class="label" style="width:145px; flex-shrink:0;">Gear Crit Damage</span>
-        <span class="calc" id="totCrit" style="width:2em; text-align:right; flex-shrink:0;">0</span>
-        <span class="adj-label" style="flex-shrink:0;">±</span>
-        <input type="number" class="mod" id="modGearCrit" value="0" min="-5" max="5" oninput="recalc()" title="Gear Crit Damage adjust (±5)" style="flex-shrink:0;">
-        <span class="label" style="font-size:0.7rem; color:var(--muted); margin:0;">(Earrings)</span>
+      <div class="crit-stat-row crit-stat-row-first">
+        <span class="label crit-stat-label">Gear Crit Damage</span>
+        <span class="calc crit-stat-val" id="totCrit">0</span>
+        <span class="adj-label">±</span>
+        <input type="number" class="mod" id="modGearCrit" value="0" min="-5" max="5" oninput="recalc()" title="Gear Crit Damage adjust (±5)">
+        <span class="label crit-stat-hint">(Earrings)</span>
       </div>
-      <div style="display:flex; align-items:center; gap:8px; margin-top:8px; flex-wrap:nowrap;">
-        <span class="label" style="width:145px; flex-shrink:0;">Gear Crit Rate</span>
-        <span class="calc" id="totCritR" style="width:2em; text-align:right; flex-shrink:0;">0</span>
-        <span class="adj-label" style="flex-shrink:0;">±</span>
-        <input type="number" class="mod" id="modGearCritR" value="0" min="-5" max="5" oninput="recalc()" title="Gear Crit Rate adjust (±5)" style="flex-shrink:0;">
-        <span class="label" style="font-size:0.7rem; color:var(--muted); margin:0;">(Gloves)</span>
+      <div class="crit-stat-row">
+        <span class="label crit-stat-label">Gear Crit Rate</span>
+        <span class="calc crit-stat-val" id="totCritR">0</span>
+        <span class="adj-label">±</span>
+        <input type="number" class="mod" id="modGearCritR" value="0" min="-5" max="5" oninput="recalc()" title="Gear Crit Rate adjust (±5)">
+        <span class="label crit-stat-hint">(Gloves)</span>
       </div>
       <p class="note" style="margin-top:8px;">Yellow ± = above/below average adjust · Green = final value</p>
     </div>
@@ -1089,17 +1214,17 @@
         <span class="label">Miss rate</span>
         <span class="calc" id="missRate">—</span>
       </div>
-      <div class="row" style="margin-bottom:4px; flex-wrap:nowrap; align-items:center; gap:8px;">
-        <span class="label" style="min-width:130px; flex-shrink:0;">Damage vs DEF</span>
-        <span style="flex:1; display:flex; justify-content:center; align-items:center; gap:8px;">
+      <div class="row def-dmg-row" style="margin-bottom:4px;">
+        <span class="label def-dmg-label">Damage vs DEF</span>
+        <span class="def-dmg-nums">
           <span class="calc" id="defRange">—</span>
           <span class="label">Avg</span>
           <span class="calc" id="defMid">—</span>
         </span>
       </div>
-      <div class="row" style="margin-bottom:8px; flex-wrap:nowrap; align-items:center; gap:8px;">
-        <span class="label" style="color:#fb7185; min-width:130px; flex-shrink:0;">Crit Damage vs DEF</span>
-        <span style="flex:1; display:flex; justify-content:center; align-items:center; gap:8px;">
+      <div class="row def-dmg-row" style="margin-bottom:8px;">
+        <span class="label def-dmg-label" style="color:#fb7185;">Crit Damage vs DEF</span>
+        <span class="def-dmg-nums">
           <span class="calc" id="defCritRange" style="color:#fda4af;">—</span>
           <span class="label" style="color:#fb7185;">Avg</span>
           <span class="calc" id="defCritMid" style="color:#fda4af;">—</span>
@@ -1116,11 +1241,10 @@
 
       <div class="slider-row" style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border);">
         <span class="label">Disorder</span>
-        <span class="slider-extra">DEF −</span>
-        <span class="calc" id="disorderPdef">0</span>
         <input type="range" id="disorderLv" min="0" max="20" value="0" step="1" oninput="recalc()">
         <span class="calc" id="disorderLvVal">0</span>
         <span class="slider-max">/20</span>
+        <span class="slider-extra">DEF −<span class="calc" id="disorderPdef">0</span></span>
       </div>
     </div>
 
