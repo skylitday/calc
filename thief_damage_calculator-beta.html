@@ -1054,6 +1054,22 @@
     font-size: 1.1rem;
     font-weight: 800;
   }
+  .bottom-bar .bb-val.bb-est {
+    color: #fbbf24;
+    font-size: 1.1rem;
+    font-weight: 800;
+  }
+  .bottom-bar .bb-target-sel {
+    background: var(--input-bg);
+    color: var(--yellow-text);
+    border: 1px solid #c9b458;
+    border-radius: 3px;
+    padding: 1px 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    max-width: 42px;
+    cursor: pointer;
+  }
   .bottom-bar .bb-val.flash {
     animation: dockFlash 0.3s ease;
   }
@@ -1091,6 +1107,10 @@
     .bottom-bar .bb-val.bb-avg {
       font-size: 1.3rem;
       color: #4ade80;
+    }
+    .bottom-bar .bb-val.bb-est {
+      font-size: 1.3rem;
+      color: #fbbf24;
     }
   }
   @media (max-width: 800px) {
@@ -1228,6 +1248,10 @@
       <div class="bb-item bb-avg-item">
         <span class="bb-lbl">Avg</span>
         <span class="bb-val bb-dmg bb-avg" id="dockMid">—</span>
+      </div>
+      <div class="bb-item bb-est-item">
+        <span class="bb-lbl">Est. Output</span>
+        <span class="bb-val bb-dmg bb-est" id="dockEst">—</span>
       </div>
     </div>
   </div>
@@ -1644,6 +1668,34 @@
           </div>
         </div>
       </div>
+
+      <!-- Est. non-crit damage per cast (no DEF) -->
+      <div style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border);">
+        <div class="row" style="margin-bottom:6px; flex-wrap:wrap; align-items:center; gap:6px 10px;">
+          <span class="label" style="min-width:auto;">Est. non-crit / cast</span>
+          <span class="calc" id="estCastDmg" style="font-size:1.05rem;">—</span>
+        </div>
+        <div class="row" style="margin-bottom:4px; flex-wrap:wrap; align-items:center; gap:6px 10px;">
+          <span class="label" style="min-width:auto;">Lines × targets</span>
+          <span class="calc" id="estCastBreakdown" style="font-size:0.85rem;">—</span>
+        </div>
+        <div class="row" id="multiTargetRow" style="margin-bottom:2px; flex-wrap:wrap; align-items:center; gap:6px 10px; display:none;">
+          <span class="label" style="min-width:auto;">Targets hit</span>
+          <select id="multiTargetMod" onchange="onPanelTargetChange()" style="max-width:90px;">
+            <option value="1" selected>1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+          </select>
+          <span class="label" style="font-size:0.7rem; color:var(--muted);">(multi-target skills only)</span>
+        </div>
+        <p class="note" style="margin-top:6px; line-height:1.35;">
+          Avg × lines-per-target × targets. Shadow Partner modifier only works on claws.
+        </p>
+      </div>
+
       <div style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border);">
         <div class="row" style="margin-bottom:2px; flex-wrap:nowrap;">
           <span class="label">Critical Damage</span>
@@ -1985,6 +2037,20 @@ function filterMonsters() {
   recalc();
 }
 
+/* ── Dock / panel targets sync ── */
+function onDockTargetChange() {
+  const dock = document.getElementById('dockTargetMod');
+  const panel = document.getElementById('multiTargetMod');
+  if (dock && panel) panel.value = dock.value;
+  recalc();
+}
+function onPanelTargetChange() {
+  const dock = document.getElementById('dockTargetMod');
+  const panel = document.getElementById('multiTargetMod');
+  if (dock && panel) dock.value = panel.value;
+  recalc();
+}
+
 /* ── Sticky dock sync ── */
 function updateDock() {
   // Skill name from select
@@ -1995,6 +2061,7 @@ function updateDock() {
   }
 
   const map = [
+    ['estCastDmg', 'dockEst'],
     ['dmgRange', 'dockRange'],
     ['dmgMid', 'dockMid'],
   ];
@@ -2016,7 +2083,7 @@ function collectBuild() {
     'weapon', 'stars', 'watkMod',
     'weaponCritD', 'weaponCritR', 'gearCritD', 'gearCritR',
     'attBuff', 'customAtt', 'nimbleBodyLv', 'masteryLv',
-    'skill', 'shadowPartnerLv',
+    'skill', 'shadowPartnerLv', 'multiTargetMod',
     'critSkill', 'critRatePreset', 'critThrowLv', 'daggerMastLv',
     'guardShield', 'customShieldWdef',
     'monsterSelect', 'disorderLv',
@@ -2628,8 +2695,9 @@ function recalc() {
   else if (spLv >= 1) spExtraPct = 9 + spLv; // (109 + Lv) − 100
   set('spPct', spExtraPct + '%');
   set('spPctSummary', spExtraPct + '%');
-  if (wep.type === 'Claw' && spExtraPct > 0) {
-    const spFactor = spExtraPct / 100;
+  const spActive = (wep.type === 'Claw' && spExtraPct > 0);
+  const spFactor = spActive ? (spExtraPct / 100) : 0;
+  if (spActive) {
     set('spRange', '(' + Math.floor(low * spFactor) + ' ~ ' + Math.floor(high * spFactor) + ')');
     set('spMid', Math.floor(mid * spFactor));
     set('spCritRange', '(' + Math.floor(low * spFactor * critMult) + ' ~ ' + Math.floor(high * spFactor * critMult) + ')');
@@ -2639,6 +2707,59 @@ function recalc() {
     set('spMid', '—');
     set('spCritRange', '—');
     set('spCritMid', '—');
+  }
+
+  // ── Est. non-crit damage per cast (no DEF) ──
+  // lines per target; multi-target skills use the Targets dropdown (capped)
+  // SP bonus only for throwing stars / Avenger / Drain (Lucky Seven, Avenger, Drain) + claw
+  const SKILL_LINES = {
+    'Basic Attack':     { lines: 1, maxTargets: 1, spOk: false },
+    'Double Stab':      { lines: 2, maxTargets: 1, spOk: false },
+    'Savage Blow':      { lines: 6, maxTargets: 1, spOk: false },
+    'Steal':            { lines: 1, maxTargets: 2, spOk: false },
+    'Assaulter':        { lines: 1, maxTargets: 1, spOk: false },
+    'Band of Thieves':  { lines: 1, maxTargets: 6, spOk: false },
+    'Lucky Seven':      { lines: 2, maxTargets: 1, spOk: true },
+    'Drain':            { lines: 1, maxTargets: 1, spOk: true },
+    'Avenger':          { lines: 1, maxTargets: 4, spOk: true },
+    'Shadow Web':       { lines: 1, maxTargets: 4, spOk: false },
+  };
+  const skillInfo = SKILL_LINES[skill] || { lines: 1, maxTargets: 1, spOk: false };
+  const multiRow = document.getElementById('multiTargetRow');
+  const multiSel = document.getElementById('multiTargetMod');
+  const isMulti = skillInfo.maxTargets > 1;
+  if (multiRow) multiRow.style.display = isMulti ? '' : 'none';
+  // Default targets: Band of Thieves / Avenger → 4; other multi-hit → 2
+  let defaultTargets = 1;
+  if (isMulti) {
+    if (skill === 'Band of Thieves' || skill === 'Avenger') defaultTargets = 4;
+    else defaultTargets = 2;
+    defaultTargets = Math.min(defaultTargets, skillInfo.maxTargets);
+  }
+  let targetsUsed = 1;
+  if (isMulti && multiSel) {
+    [...multiSel.options].forEach(opt => {
+      const v = parseInt(opt.value, 10);
+      opt.disabled = v > skillInfo.maxTargets;
+    });
+    // Apply default when skill changes or current value is over max / invalid
+    const cur = parseInt(multiSel.value, 10) || 0;
+    if (!cur || cur > skillInfo.maxTargets || multiSel.dataset.lastSkill !== skill) {
+      multiSel.value = String(defaultTargets);
+      multiSel.dataset.lastSkill = skill;
+    }
+    targetsUsed = Math.max(1, Math.min(skillInfo.maxTargets, parseInt(multiSel.value, 10) || defaultTargets));
+  }
+  const totalLines = skillInfo.lines * targetsUsed;
+  const mainDmg = Math.floor(mid) * totalLines;
+  // SP only on Lucky Seven / Avenger / Drain + claw + SP level > 0
+  const spForEst = (spActive && skillInfo.spOk);
+  const spDmg = spForEst ? Math.floor(mid * spFactor) * totalLines : 0;
+  set('estCastDmg', mainDmg + spDmg);
+  if (spForEst) {
+    set('estCastBreakdown', skillInfo.lines + ' × ' + targetsUsed + ' = ' + totalLines + ' lines + SP ' + spExtraPct + '%');
+  } else {
+    set('estCastBreakdown', skillInfo.lines + ' × ' + targetsUsed + ' = ' + totalLines + ' lines');
   }
 
   // Critical Rate panel (separate from Damage)
