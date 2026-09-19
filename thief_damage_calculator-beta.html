@@ -508,12 +508,12 @@
 
 
   .stat-summary-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; table-layout: fixed; }
-  .stat-summary-table th { color: var(--muted); font-weight: 500; font-size: 0.75rem; text-align: center; padding: 4px 6px; }
+  .stat-summary-table th { color: var(--muted); font-weight: 500; font-size: 0.75rem; text-align: center; padding: 4px 4px; }
   .stat-summary-table th:first-child,
-  .stat-summary-table td:first-child { text-align: left; color: var(--muted); width: 18%; }
+  .stat-summary-table td:first-child { text-align: left; color: var(--muted); width: 14%; }
   .stat-summary-table th:not(:first-child),
   .stat-summary-table td:not(:first-child) { text-align: center; }
-  .stat-summary-table td { padding: 5px 6px; }
+  .stat-summary-table td { padding: 5px 4px; }
   .stat-summary-table .calc {
     display: block;
     width: 100%;
@@ -779,7 +779,6 @@
         <input type="number" class="mod" id="modGearCritR" value="0" min="-5" max="5" oninput="recalc()" title="Gear Crit Rate adjust (±5)">
         <span class="label crit-stat-hint">(Gloves)</span>
       </div>
-      <p class="note" style="margin-top:8px;">Yellow ± = above/below average adjust · Green = final value</p>
     </div>
 
     <!-- 4. SCROLLS -->
@@ -926,7 +925,7 @@
       <h2>STAT SUMMARY</h2>
       <table class="stat-summary-table">
         <thead>
-          <tr><th></th><th>STR</th><th>DEX</th><th>LUK</th></tr>
+          <tr><th></th><th>STR</th><th>DEX</th><th>LUK</th><th>ACC</th><th>EVA</th></tr>
         </thead>
         <tbody>
           <tr>
@@ -934,44 +933,39 @@
             <td><span class="calc" id="sumBaseStr">—</span></td>
             <td><span class="calc" id="sumBaseDex">—</span></td>
             <td><span class="calc" id="sumBaseLuk">—</span></td>
+            <td><span class="calc" id="sumBaseAcc">—</span></td>
+            <td><span class="calc" id="sumBaseEva">—</span></td>
           </tr>
           <tr>
             <td>Gear</td>
             <td><span class="calc" id="sumGearStr">—</span></td>
             <td><span class="calc" id="sumGearDex">—</span></td>
             <td><span class="calc" id="sumGearLuk">—</span></td>
+            <td><span class="calc" id="sumGearAcc">—</span></td>
+            <td><span class="calc" id="sumGearEva">—</span></td>
           </tr>
           <tr>
             <td>Scroll</td>
             <td><span class="calc" id="sumScStr">—</span></td>
             <td><span class="calc" id="sumScDex">—</span></td>
             <td><span class="calc" id="sumScLuk">—</span></td>
+            <td><span class="calc" id="sumScAcc">—</span></td>
+            <td><span class="calc" id="sumScEva">—</span></td>
+          </tr>
+          <tr>
+            <td>Skill</td>
+            <td><span class="calc">—</span></td>
+            <td><span class="calc">—</span></td>
+            <td><span class="calc">—</span></td>
+            <td><span class="calc" id="sumSkillAcc">—</span></td>
+            <td><span class="calc" id="sumSkillEva">—</span></td>
           </tr>
           <tr class="total-row">
             <td>TOTAL</td>
             <td><span class="calc" id="sumTotStr">—</span></td>
             <td><span class="calc" id="sumTotDex">—</span></td>
             <td><span class="calc" id="sumTotLuk">—</span></td>
-          </tr>
-        </tbody>
-      </table>
-      <table class="stat-summary-table" style="margin-top:10px;">
-        <thead>
-          <tr><th></th><th>Base</th><th>Gear</th><th>Skill</th><th>Total</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>ACC</td>
-            <td><span class="calc" id="sumBaseAcc">—</span></td>
-            <td><span class="calc" id="sumGearAcc">—</span></td>
-            <td><span class="calc" id="sumSkillAcc">—</span></td>
             <td><span class="calc" id="sumAcc">—</span></td>
-          </tr>
-          <tr>
-            <td>EVA</td>
-            <td><span class="calc" id="sumBaseEva">—</span></td>
-            <td><span class="calc" id="sumGearEva">—</span></td>
-            <td><span class="calc" id="sumSkillEva">—</span></td>
             <td><span class="calc" id="sumEva">—</span></td>
           </tr>
         </tbody>
@@ -1602,11 +1596,13 @@ function recalc() {
   const derivedEva = Math.trunc(totLuk / 3) + Math.trunc(totDex / 6) + 5;
   const totalEva = derivedEva + gearEva + skillEva + scEVA;
   set('sumBaseAcc', derivedAcc);
-  set('sumGearAcc', gearAcc + scACC);  // includes ACC from scrolls
+  set('sumGearAcc', gearAcc);
+  set('sumScAcc', scACC);
   set('sumSkillAcc', skillAcc);
   set('sumAcc', totalAcc);
   set('sumBaseEva', derivedEva);
-  set('sumGearEva', gearEva + scEVA);  // includes EVA from scrolls
+  set('sumGearEva', gearEva);
+  set('sumScEva', scEVA);
   set('sumSkillEva', skillEva);
   set('sumEva', totalEva);
 
