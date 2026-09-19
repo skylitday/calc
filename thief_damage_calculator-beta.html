@@ -111,7 +111,7 @@
     .gear-table th { font-size: 0.62rem; padding: 3px 2px; }
     .gear-table td { padding: 3px 2px; }
     .gear-table select { max-width: 140px; font-size: 0.7rem; }
-    .gear-table .gear-stat .mod { width: 26px; max-width: 26px; font-size: 0.65rem; }
+    .gear-table .gear-stat .gear-val { width: 36px; max-width: 40px; font-size: 0.7rem; }
     .scroll-table { font-size: 0.72rem; }
     .scroll-table th { font-size: 0.62rem; padding: 3px 2px; }
     .scroll-table td { padding: 3px 2px; }
@@ -207,8 +207,9 @@
       width: 0.9em !important;
       flex-shrink: 0 !important;
     }
-    .crit-stat-row .adj-label,
-    .crit-stat-row .mod {
+    .crit-stat-row .gear-val {
+      width: 42px !important;
+      max-width: 48px !important;
       flex-shrink: 0 !important;
     }
     .crit-stat-row .crit-stat-hint {
@@ -466,10 +467,13 @@
     flex-shrink: 0;
     margin: 0;
   }
-  .crit-stat-row .adj-label {
-    flex-shrink: 0;
-  }
-  .crit-stat-row .mod {
+  .crit-stat-row .gear-val {
+    width: 48px;
+    max-width: 56px;
+    padding: 2px 4px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-align: center;
     flex-shrink: 0;
   }
   .crit-stat-row .crit-stat-hint {
@@ -587,17 +591,12 @@
   .gear-table .gear-stat {
     white-space: nowrap;
   }
-  .gear-table .gear-stat .calc {
-    display: inline-block;
-    min-width: 1.4em;
-    text-align: right;
-    margin-right: 2px;
-  }
-  .gear-table .gear-stat .mod {
-    width: 28px;
-    max-width: 28px;
-    padding: 1px 2px;
-    font-size: 0.7rem;
+  .gear-table .gear-stat .gear-val {
+    width: 42px;
+    max-width: 48px;
+    padding: 2px 3px;
+    font-size: 0.78rem;
+    font-weight: 700;
     text-align: center;
   }
   .gear-table tfoot td {
@@ -732,6 +731,252 @@
   details > summary { list-style: none; }
   details > summary::-webkit-details-marker { display: none; }
   details[open] > summary > span:first-child { display: inline-block; transform: rotate(90deg); }
+
+  /* ── Toolbar ── */
+  .app-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    max-width: 1100px;
+    margin: 0 auto 16px;
+    padding: 0 4px;
+  }
+  .app-toolbar button {
+    background: #1e2a4a;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  }
+  .app-toolbar button:hover {
+    background: #2a3a5c;
+    border-color: #e94560;
+  }
+  .app-toolbar button:active { transform: scale(0.97); }
+  .app-toolbar button.primary {
+    background: #e94560;
+    border-color: #e94560;
+    color: #fff;
+  }
+  .app-toolbar button.primary:hover { background: #ff5a73; }
+  .app-toolbar .build-select {
+    background: #1e2a4a;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    max-width: 200px;
+    cursor: pointer;
+  }
+  .app-toolbar .build-select:hover { border-color: #e94560; }
+
+  /* ── Toast ── */
+  .toast-wrap {
+    position: fixed;
+    bottom: 72px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+  }
+  @media (min-width: 801px) {
+    .toast-wrap { bottom: 64px; }
+  }
+  .toast {
+    background: #1e2a4a;
+    border: 1px solid #e94560;
+    color: var(--text);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* ── Bottom summary bar (compact, no side-scroll) ── */
+  body {
+    padding-bottom: 56px;
+  }
+  .bottom-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    background: #121a2e;
+    border-top: 1px solid #2a4a6e;
+    box-shadow: 0 -6px 24px rgba(0,0,0,0.35);
+    padding: 6px 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 4px 0;
+    overflow-x: hidden;
+  }
+  .bottom-bar .bb-group {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px 12px;
+    padding: 0 10px;
+  }
+  .bottom-bar .bb-sep {
+    width: 1px;
+    align-self: stretch;
+    min-height: 24px;
+    background: rgba(136,146,176,0.28);
+    margin: 0;
+    flex-shrink: 0;
+  }
+  .bottom-bar .bb-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    min-width: 0;
+  }
+  .bottom-bar .bb-lbl {
+    font-size: 0.52rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.25px;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .bottom-bar .bb-val {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #93c5fd;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+  .bottom-bar .bb-val.bb-skill {
+    color: #fbbf24;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .bottom-bar .bb-val.bb-dmg {
+    color: #7ee787;
+    font-size: 0.78rem;
+  }
+  .bottom-bar .bb-val.bb-avg {
+    font-size: 0.88rem;
+    font-weight: 800;
+  }
+  .bottom-bar .bb-val.flash {
+    animation: dockFlash 0.35s ease;
+  }
+  /* Mobile: two tight rows, no horizontal scroll */
+  @media (max-width: 800px) {
+    body { padding-bottom: 68px; }
+    .bottom-bar {
+      padding: 5px 6px 6px;
+      gap: 3px 0;
+      justify-content: center;
+      overflow-x: hidden;
+      flex-wrap: wrap;
+    }
+    .bottom-bar .bb-group {
+      flex-wrap: nowrap;
+      padding: 0 4px;
+      gap: 6px 8px;
+      flex: 0 0 auto;
+    }
+    /* Hide vertical separators on narrow screens — less clutter */
+    .bottom-bar .bb-sep {
+      display: none;
+    }
+    .bottom-bar .bb-lbl {
+      font-size: 0.48rem;
+      letter-spacing: 0.15px;
+    }
+    .bottom-bar .bb-val {
+      font-size: 0.68rem;
+    }
+    .bottom-bar .bb-val.bb-dmg {
+      font-size: 0.68rem;
+    }
+    .bottom-bar .bb-val.bb-avg {
+      font-size: 0.78rem;
+    }
+    .bottom-bar .bb-val.bb-skill {
+      max-width: 72px;
+      font-size: 0.65rem;
+    }
+  }
+  @media (max-width: 380px) {
+    body { padding-bottom: 72px; }
+    .bottom-bar .bb-group {
+      gap: 4px 6px;
+      padding: 0 2px;
+    }
+    .bottom-bar .bb-val,
+    .bottom-bar .bb-val.bb-dmg {
+      font-size: 0.62rem;
+    }
+    .bottom-bar .bb-val.bb-avg {
+      font-size: 0.72rem;
+    }
+    .bottom-bar .bb-val.bb-skill {
+      max-width: 60px;
+      font-size: 0.6rem;
+    }
+  }
+  @keyframes dockFlash {
+    0% { filter: brightness(2); transform: scale(1.06); }
+    100% { filter: brightness(1); transform: scale(1); }
+  }
+
+  /* ── Monster search ── */
+  .mob-search-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+  }
+  .mob-search-wrap input[type="search"] {
+    flex: 1 1 140px;
+    min-width: 120px;
+    max-width: 200px;
+    background: var(--input-bg);
+    color: var(--yellow-text);
+    border: 1px solid #c9b458;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 0.8rem;
+  }
+  .mob-search-wrap select { flex: 1 1 180px; }
+
+  .damage-box .val.flash {
+    animation: dockFlash 0.35s ease;
+  }
+
+  @media (max-width: 800px) {
+    .app-toolbar button { padding: 5px 10px; font-size: 0.72rem; }
+    .toast-wrap { bottom: 76px; }
+  }
+  @media print {
+    .app-toolbar, .bottom-bar, .toast-wrap { display: none !important; }
+  }
 </style>
 
 </head>
@@ -748,6 +993,20 @@
   · Data from <a href="https://osmsdataexplorer.com/#formulas" target="_blank" rel="noopener" style="color:#8892b0;">osmsdataexplorer.com/#formulas</a><br>
   <strong style="color:#e94560;">Based on CoT2 test and not finalized</strong>
 </p>
+
+<div class="app-toolbar">
+  <select id="buildSelect" class="build-select" onchange="onBuildSelect()" title="Saved builds">
+    <option value="">— Saved builds —</option>
+  </select>
+  <button type="button" class="primary" onclick="saveBuildAs()" title="Save current setup with a name">💾 Save as…</button>
+  <button type="button" onclick="overwriteBuild()" title="Overwrite the selected build">Overwrite</button>
+  <button type="button" onclick="loadSelectedBuild()" title="Load selected build">Load</button>
+  <button type="button" onclick="renameBuild()" title="Rename selected build">Rename</button>
+  <button type="button" onclick="deleteBuild()" title="Delete selected build">Delete</button>
+  <button type="button" onclick="shareBuild()" title="Copy shareable link">🔗 Share</button>
+  <button type="button" onclick="resetBuild()" title="Reset to defaults">↺ Reset</button>
+</div>
+
 <div class="grid">
 
   <!-- LEFT COLUMN -->
@@ -780,7 +1039,7 @@
       <h2>WEAPON</h2>
       <div class="row">
         <span class="label">Weapon</span>
-        <select id="weapon" onchange="recalc()"></select>
+        <select id="weapon" onchange="onWeaponSelect()"></select>
         <span class="label">Type</span>
         <span class="calc" id="weaponType">—</span>
       </div>
@@ -802,17 +1061,13 @@
       </div>
       <div class="crit-stat-row crit-stat-row-first">
         <span class="label crit-stat-label">Weapon Crit Damage</span>
-        <span class="calc crit-stat-val" id="weaponCrit">0</span>
+        <input type="number" class="gear-val" id="weaponCritD" value="0" oninput="recalc()" title="Weapon Crit Damage % (base ±5)">
         <span class="label crit-stat-pct">%</span>
-        <span class="adj-label">±</span>
-        <input type="number" class="mod" id="modWeaponCrit" value="0" min="-5" max="5" oninput="recalc()" title="Weapon Crit Damage adjust (±5)">
       </div>
       <div class="crit-stat-row">
         <span class="label crit-stat-label">Weapon Crit Rate</span>
-        <span class="calc crit-stat-val" id="weaponCritR">0</span>
+        <input type="number" class="gear-val" id="weaponCritR" value="0" oninput="recalc()" title="Weapon Crit Rate % (base ±5)">
         <span class="label crit-stat-pct">%</span>
-        <span class="adj-label">±</span>
-        <input type="number" class="mod" id="modWeaponCritR" value="0" min="-5" max="5" oninput="recalc()" title="Weapon Crit Rate adjust (±5)">
       </div>
       <p class="note" style="margin-top:6px;">(Only certain claws have crit damage / crit rate)</p>
     </div>
@@ -838,16 +1093,14 @@
       </div>
       <div class="crit-stat-row crit-stat-row-first">
         <span class="label crit-stat-label">Gear Crit Damage</span>
-        <span class="calc crit-stat-val" id="totCrit">0</span>
-        <span class="adj-label">±</span>
-        <input type="number" class="mod" id="modGearCrit" value="0" min="-5" max="5" oninput="recalc()" title="Gear Crit Damage adjust (±5)">
+        <input type="number" class="gear-val" id="gearCritD" value="0" oninput="recalc()" title="Gear Crit Damage % (equipped base ±5)">
+        <span class="label crit-stat-pct">%</span>
         <span class="label crit-stat-hint">(Earrings)</span>
       </div>
       <div class="crit-stat-row">
         <span class="label crit-stat-label">Gear Crit Rate</span>
-        <span class="calc crit-stat-val" id="totCritR">0</span>
-        <span class="adj-label">±</span>
-        <input type="number" class="mod" id="modGearCritR" value="0" min="-5" max="5" oninput="recalc()" title="Gear Crit Rate adjust (±5)">
+        <input type="number" class="gear-val" id="gearCritR" value="0" oninput="recalc()" title="Gear Crit Rate % (equipped base ±5)">
+        <span class="label crit-stat-pct">%</span>
         <span class="label crit-stat-hint">(Gloves)</span>
       </div>
     </div>
@@ -967,7 +1220,7 @@
 
   <!-- RIGHT COLUMN -->
   <div>
-    <!-- STAT SUMMARY -->
+<!-- STAT SUMMARY -->
     <div class="panel">
       <h2>STAT SUMMARY</h2>
       <table class="stat-summary-table">
@@ -1019,7 +1272,7 @@
       </table>
     </div>
 
-    <!-- BUFFS & MASTERY -->
+<!-- BUFFS & MASTERY -->
     <div class="panel" style="margin-top:12px">
       <h2>BUFFS &amp; MASTERY</h2>
       <div class="row">
@@ -1053,9 +1306,10 @@
       </div>
     </div>
 
-    <!-- FORMULA INPUTS -->
+<!-- FORMULA INPUTS -->
     <div class="panel" style="margin-top:12px">
       <h2>FORMULA INPUTS</h2>
+
       <div class="row"><span class="label">Primary (LUK)</span><span class="calc" id="primary">—</span></div>
       <div class="row"><span class="label">Secondary (STR+DEX)</span><span class="calc" id="secondary">—</span></div>
       <div class="row"><span class="label">Total W ATT</span><span class="calc" id="totalWatk">—</span></div>
@@ -1063,9 +1317,10 @@
       <div class="row"><span class="label">Mastery</span><span class="calc" id="mastery">—</span></div>
       <div class="row"><span class="label">Wep MAX</span><span class="calc" id="wepMax">—</span></div>
       <div class="row"><span class="label">Wep MIN</span><span class="calc" id="wepMin">—</span></div>
+            
     </div>
 
-    <!-- SKILL -->
+<!-- SKILL -->
     <div class="panel" style="margin-top:12px">
       <h2>SKILL</h2>
       <div class="row">
@@ -1121,8 +1376,7 @@
       </details>
     </div>
 
-
-    <!-- DAMAGE -->
+<!-- DAMAGE -->
 
     <div class="panel" style="margin-top:12px">
       <h2>DAMAGE</h2>
@@ -1173,7 +1427,7 @@
       </p>
     </div>
 
-    <!-- CRITICAL RATE -->
+<!-- CRITICAL RATE -->
     <div class="panel" style="margin-top:12px">
       <h2>CRITICAL RATE</h2>
       <div class="row" style="margin-bottom:2px; flex-wrap:nowrap;">
@@ -1206,8 +1460,7 @@
       </div>
     </div>
 
-
-    <!-- GUARD -->
+<!-- GUARD -->
     <div class="panel" style="margin-top:12px">
       <h2>GUARD</h2>
       <div class="row" style="margin-bottom:8px; flex-wrap:wrap; align-items:center; gap:6px;">
@@ -1228,14 +1481,17 @@
       </div>
     </div>
 
-    <!-- MONSTER DEF -->
+<!-- MONSTER DEF -->
 
     <div class="panel" style="margin-top:12px">
       <h2>MONSTER / DEF</h2>
 
       <div class="row" style="margin-bottom:6px; flex-wrap:wrap; align-items:center; gap:6px;">
         <span class="label">Monster</span>
-        <select id="monsterSelect" onchange="recalc()" style="max-width:260px;"></select>
+        <div class="mob-search-wrap">
+          <input type="search" id="monsterSearch" placeholder="Search name / level…" autocomplete="off" oninput="filterMonsters()">
+          <select id="monsterSelect" onchange="recalc()" style="max-width:260px;"></select>
+        </div>
       </div>
       <div class="row mob-stats-row">
         <span class="label">Level</span>
@@ -1289,9 +1545,9 @@
       </div>
     </div>
 
-
   </div>
 </div>
+
 
 
 <script>
@@ -1350,29 +1606,30 @@ function fillSelect(sel, items, selected, dataSource) {
 function init() {
   fillSelect(document.getElementById('weapon'), LISTS.Weapons, DEFAULTS.weapon || 'Razor', weaponMap);
   fillSelect(document.getElementById('stars'), LISTS.Stars, DEFAULTS.stars || 'None');
+  // Seed weapon crit inputs from default weapon (same pattern as gear stats)
+  onWeaponSelect(true);
 
   const tbody = document.getElementById('gearBody');
   GEAR_SLOTS.forEach(slot => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="slot-name">${slot.label}</td>
-      <td class="gear-item"><select id="gear_${slot.id}" onchange="recalc()"></select></td>
+      <td class="gear-item"><select id="gear_${slot.id}" onchange="onGearSelect('${slot.id}')"></select></td>
       <td class="gear-stat">
-        <span class="calc" id="gStr_${slot.id}">0</span>
-        <input type="number" class="mod" id="modStr_${slot.id}" value="0" min="-5" max="5" oninput="recalc()" title="STR ±">
+        <input type="number" class="gear-val" id="gStr_${slot.id}" value="0" oninput="recalc()" title="STR (item base ±5)">
       </td>
       <td class="gear-stat">
-        <span class="calc" id="gDex_${slot.id}">0</span>
-        <input type="number" class="mod" id="modDex_${slot.id}" value="0" min="-5" max="5" oninput="recalc()" title="DEX ±">
+        <input type="number" class="gear-val" id="gDex_${slot.id}" value="0" oninput="recalc()" title="DEX (item base ±5)">
       </td>
       <td class="gear-stat">
-        <span class="calc" id="gLuk_${slot.id}">0</span>
-        <input type="number" class="mod" id="modLuk_${slot.id}" value="0" min="-5" max="5" oninput="recalc()" title="LUK ±">
+        <input type="number" class="gear-val" id="gLuk_${slot.id}" value="0" oninput="recalc()" title="LUK (item base ±5)">
       </td>
     `;
     tbody.appendChild(tr);
     // Always pass armorMap so CRIT / ACC / EVA tags can appear on any slot
     fillSelect(document.getElementById('gear_' + slot.id), LISTS[slot.list], DEFAULTS[slot.id] || 'None', armorMap);
+    // Seed editable stats from selected item base (also re-seeds gear crit totals)
+    onGearSelect(slot.id, true);
   });
 
   // Skill default
@@ -1400,20 +1657,345 @@ function init() {
       const opt = document.createElement('option');
       opt.value = m.id;
       opt.textContent = 'Lv' + m.level + ' ' + m.name + ' (DEF ' + m.pdef + ', EVA ' + (m.eva || 0) + ')';
-
       if (m.id === defaultId) opt.selected = true;
       mobSel.appendChild(opt);
     });
   }
 
+  // Populate named build dropdown
+  refreshBuildSelect('');
+
+  // Shared link takes priority over a blank start
+  if (!tryLoadFromHash()) {
+    recalc();
+  }
+}
+
+function num(id) {
+  const el = document.getElementById(id);
+  return el ? (parseFloat(el.value) || 0) : 0;
+}
+function val(id) {
+  const el = document.getElementById(id);
+  return el ? el.value : '';
+}
+function set(id, v) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const next = typeof v === 'number' ? (Number.isInteger(v) ? String(v) : v.toFixed(2)) : String(v);
+  if (el.textContent !== next) {
+    el.textContent = next;
+    if (el.classList.contains('val') || el.classList.contains('dock-val') || el.classList.contains('bb-val')) {
+      el.classList.remove('flash');
+      void el.offsetWidth;
+      el.classList.add('flash');
+    }
+  }
+}
+
+/* ── Toast ── */
+function toast(msg) {
+  const wrap = document.getElementById('toastWrap');
+  if (!wrap) return;
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  wrap.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('show'));
+  setTimeout(() => {
+    t.classList.remove('show');
+    setTimeout(() => t.remove(), 250);
+  }, 2200);
+}
+
+/* ── Monster filter ── */
+function filterMonsters() {
+  const q = (document.getElementById('monsterSearch')?.value || '').trim().toLowerCase();
+  const sel = document.getElementById('monsterSelect');
+  if (!sel || typeof MONSTERS === 'undefined') return;
+  const current = sel.value;
+  sel.innerHTML = '';
+  const list = !q
+    ? MONSTERS
+    : MONSTERS.filter(m =>
+        m.name.toLowerCase().includes(q) ||
+        String(m.level).includes(q) ||
+        String(m.pdef).includes(q) ||
+        ('lv' + m.level).includes(q)
+      );
+  list.forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m.id;
+    opt.textContent = 'Lv' + m.level + ' ' + m.name + ' (DEF ' + m.pdef + ', EVA ' + (m.eva || 0) + ')';
+    sel.appendChild(opt);
+  });
+  if ([...sel.options].some(o => o.value === current)) sel.value = current;
+  else if (sel.options.length) sel.selectedIndex = 0;
   recalc();
 }
 
-function num(id) { return parseFloat(document.getElementById(id).value) || 0; }
-function val(id) { return document.getElementById(id).value; }
-function set(id, v) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = typeof v === 'number' ? (Number.isInteger(v) ? v : v.toFixed(2)) : v;
+/* ── Sticky dock sync ── */
+function updateDock() {
+  // Skill name from select
+  const skillEl = document.getElementById('skill');
+  if (skillEl) {
+    const opt = skillEl.options[skillEl.selectedIndex];
+    set('dockSkill', opt ? opt.textContent : skillEl.value);
+  }
+
+  const map = [
+    ['skillMult', 'dockSkillMult'],
+    ['dmgRange', 'dockRange'],
+    ['dmgMid', 'dockMid'],
+    ['wepMax', 'dockWepMax'],
+    ['wepMin', 'dockWepMin'],
+  ];
+  map.forEach(([src, dst]) => {
+    const a = document.getElementById(src);
+    const b = document.getElementById(dst);
+    if (a && b) set(dst, a.textContent);
+  });
+}
+
+/* ── Named build library (browser only) ── */
+const BUILDS_KEY = 'thiefCalcBuilds_v2';
+const MAX_BUILDS = 12;
+
+function collectBuild() {
+  const data = { v: 1 };
+  const ids = [
+    'level', 'baseStr', 'baseDex',
+    'weapon', 'stars',
+    'weaponCritD', 'weaponCritR', 'gearCritD', 'gearCritR',
+    'attBuff', 'customAtt', 'nimbleBodyLv', 'masteryLv',
+    'skill', 'shadowPartnerLv',
+    'critSkill', 'critRatePreset', 'critThrowLv', 'daggerMastLv',
+    'guardShield', 'customShieldWdef',
+    'monsterSelect', 'disorderLv',
+  ];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) data[id] = el.value;
+  });
+  if (typeof GEAR_SLOTS !== 'undefined') {
+    GEAR_SLOTS.forEach(slot => {
+      ['gear_', 'gStr_', 'gDex_', 'gLuk_'].forEach(prefix => {
+        const id = prefix + slot.id;
+        const el = document.getElementById(id);
+        if (el) data[id] = el.value;
+      });
+    });
+  }
+  for (let i = 0; i < 8; i++) {
+    ['scStat', 'sc100_', 'sc60_', 'sc10_', 'scCh_', 'scFail_'].forEach(prefix => {
+      const id = prefix + i;
+      const el = document.getElementById(id);
+      if (el) data[id] = el.value;
+    });
+  }
+  return data;
+}
+
+function applyBuild(data, silent) {
+  if (!data || typeof data !== 'object') return false;
+  Object.keys(data).forEach(id => {
+    if (id === 'v' || id === 'name' || id === 'id' || id === 'savedAt') return;
+    const el = document.getElementById(id);
+    if (el) el.value = data[id];
+  });
+  const search = document.getElementById('monsterSearch');
+  if (search) search.value = '';
+  const mobSel = document.getElementById('monsterSelect');
+  if (mobSel && typeof MONSTERS !== 'undefined') {
+    const keep = data.monsterSelect;
+    mobSel.innerHTML = '';
+    MONSTERS.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.id;
+      opt.textContent = 'Lv' + m.level + ' ' + m.name + ' (DEF ' + m.pdef + ', EVA ' + (m.eva || 0) + ')';
+      mobSel.appendChild(opt);
+    });
+    if (keep) mobSel.value = keep;
+  }
+  recalc();
+  if (!silent) toast('Loaded: ' + (data.name || 'build'));
+  return true;
+}
+
+function readLibrary() {
+  try {
+    const raw = localStorage.getItem(BUILDS_KEY);
+    if (!raw) return [];
+    const list = JSON.parse(raw);
+    return Array.isArray(list) ? list : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function writeLibrary(list) {
+  localStorage.setItem(BUILDS_KEY, JSON.stringify(list));
+}
+
+function refreshBuildSelect(selectId) {
+  const sel = document.getElementById('buildSelect');
+  if (!sel) return;
+  const keep = selectId != null ? selectId : sel.value;
+  const list = readLibrary().slice().sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+  sel.innerHTML = '<option value="">— Saved builds —</option>';
+  list.forEach(b => {
+    const opt = document.createElement('option');
+    opt.value = b.id;
+    opt.textContent = b.name || '(unnamed)';
+    sel.appendChild(opt);
+  });
+  if (keep && [...sel.options].some(o => o.value === keep)) sel.value = keep;
+}
+
+function uid() {
+  return 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+function saveBuildAs() {
+  const list = readLibrary();
+  if (list.length >= MAX_BUILDS) {
+    toast('Max ' + MAX_BUILDS + ' builds — delete one first');
+    return;
+  }
+  const name = (prompt('Name this build:', 'My build') || '').trim();
+  if (!name) { toast('Save cancelled'); return; }
+  if (list.some(b => b.name.toLowerCase() === name.toLowerCase())) {
+    if (!confirm("A build named \"" + name + "\" already exists. Overwrite it?")) return;
+    const existing = list.find(b => b.name.toLowerCase() === name.toLowerCase());
+    existing.data = collectBuild();
+    existing.savedAt = Date.now();
+    try {
+      writeLibrary(list);
+      refreshBuildSelect(existing.id);
+      toast('Updated: ' + name);
+    } catch (e) {
+      toast('Could not save (storage blocked?)');
+    }
+    return;
+  }
+  const entry = { id: uid(), name: name, savedAt: Date.now(), data: collectBuild() };
+  list.push(entry);
+  try {
+    writeLibrary(list);
+    refreshBuildSelect(entry.id);
+    toast('Saved: ' + name);
+  } catch (e) {
+    toast('Could not save (storage blocked?)');
+  }
+}
+
+function overwriteBuild() {
+  const id = document.getElementById('buildSelect')?.value;
+  if (!id) { toast('Select a build first'); return; }
+  const list = readLibrary();
+  const entry = list.find(b => b.id === id);
+  if (!entry) { toast('Build not found'); return; }
+  if (!confirm("Overwrite \"" + entry.name + "\" with current setup?")) return;
+  entry.data = collectBuild();
+  entry.savedAt = Date.now();
+  try {
+    writeLibrary(list);
+    toast('Overwrote: ' + entry.name);
+  } catch (e) {
+    toast('Could not save');
+  }
+}
+
+function loadSelectedBuild() {
+  const id = document.getElementById('buildSelect')?.value;
+  if (!id) { toast('Select a build first'); return; }
+  const entry = readLibrary().find(b => b.id === id);
+  if (!entry) { toast('Build not found'); return; }
+  applyBuild(Object.assign({ name: entry.name }, entry.data));
+}
+
+function onBuildSelect() {
+  // optional: auto-load on change — keep explicit Load to avoid accidents
+}
+
+function renameBuild() {
+  const id = document.getElementById('buildSelect')?.value;
+  if (!id) { toast('Select a build first'); return; }
+  const list = readLibrary();
+  const entry = list.find(b => b.id === id);
+  if (!entry) return;
+  const name = (prompt('New name:', entry.name) || '').trim();
+  if (!name) { toast('Rename cancelled'); return; }
+  if (list.some(b => b.id !== id && b.name.toLowerCase() === name.toLowerCase())) {
+    toast('That name is already used');
+    return;
+  }
+  entry.name = name;
+  writeLibrary(list);
+  refreshBuildSelect(id);
+  toast('Renamed to: ' + name);
+}
+
+function deleteBuild() {
+  const id = document.getElementById('buildSelect')?.value;
+  if (!id) { toast('Select a build first'); return; }
+  const list = readLibrary();
+  const entry = list.find(b => b.id === id);
+  if (!entry) return;
+  if (!confirm("Delete \"" + entry.name + "\"?")) return;
+  writeLibrary(list.filter(b => b.id !== id));
+  refreshBuildSelect('');
+  toast('Deleted: ' + entry.name);
+}
+
+function shareBuild() {
+  try {
+    const json = JSON.stringify(collectBuild());
+    const encoded = btoa(unescape(encodeURIComponent(json)));
+    const url = location.origin + location.pathname + location.search + '#b=' + encoded;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(() => toast('Share link copied')).catch(() => fallbackCopy(url));
+    } else {
+      fallbackCopy(url);
+    }
+  } catch (e) {
+    toast('Could not create share link');
+  }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    toast('Share link copied');
+  } catch (e) {
+    toast('Copy failed — link in console');
+    console.log(text);
+  }
+  ta.remove();
+}
+
+function resetBuild() {
+  if (!confirm('Reset all inputs to defaults? (Saved builds are kept)')) return;
+  location.hash = '';
+  location.reload();
+}
+
+function tryLoadFromHash() {
+  const h = location.hash;
+  if (!h.startsWith('#b=')) return false;
+  try {
+    const json = decodeURIComponent(escape(atob(h.slice(3))));
+    return applyBuild(JSON.parse(json), true);
+  } catch (e) {
+    console.warn('Bad share hash', e);
+    return false;
+  }
 }
 
 function getArmor(name) {
@@ -1421,6 +2003,59 @@ function getArmor(name) {
 }
 function getWeapon(name) {
   return weaponMap[name] || { type:'', watk:0, critD:0, critR:0 };
+}
+
+/** Clamp an input to base ± limit (default ±5). Returns the clamped integer value. */
+function clampAroundBase(id, base, limit = 5) {
+  const el = document.getElementById(id);
+  if (!el) return base;
+  let v = Math.floor(parseFloat(el.value) || 0);
+  const lo = base - limit;
+  const hi = base + limit;
+  if (v > hi) v = hi;
+  else if (v < lo) v = lo;
+  if (Number(el.value) !== v) el.value = v;
+  return v;
+}
+
+/** When user picks a gear item, fill STR/DEX/LUK inputs with that item's base stats,
+ *  and re-seed Gear Crit Damage / Rate from the sum of all equipped pieces
+ *  (same pattern as main gear tab: selection resets editable values to base).
+ *  silent=true skips recalc (used during init / before a batch apply). */
+function onGearSelect(slotId, silent) {
+  const name = val('gear_' + slotId);
+  const a = getArmor(name);
+  const setIn = (id, v) => {
+    const el = document.getElementById(id);
+    if (el) el.value = v;
+  };
+  setIn('gStr_' + slotId, a.str || 0);
+  setIn('gDex_' + slotId, a.dex || 0);
+  setIn('gLuk_' + slotId, a.luk || 0);
+  // Re-seed gear crit totals from current equipped items
+  let sumCritD = 0, sumCritR = 0;
+  GEAR_SLOTS.forEach(slot => {
+    const n = val('gear_' + slot.id);
+    const arm = getArmor(n);
+    sumCritD += (arm.critD || 0);
+    sumCritR += (arm.critR || 0);
+  });
+  setIn('gearCritD', sumCritD);
+  setIn('gearCritR', sumCritR);
+  if (!silent) recalc();
+}
+
+/** When user picks a weapon, seed Weapon Crit Damage / Rate from that weapon's base
+ *  (editable afterwards, same as gear stats). */
+function onWeaponSelect(silent) {
+  const wep = getWeapon(val('weapon'));
+  const setIn = (id, v) => {
+    const el = document.getElementById(id);
+    if (el) el.value = v;
+  };
+  setIn('weaponCritD', wep.critD || 0);
+  setIn('weaponCritR', wep.critR || 0);
+  if (!silent) recalc();
 }
 
 function applyCritPreset() {
@@ -1456,17 +2091,9 @@ function recalc() {
   const wep = getWeapon(val('weapon'));
   set('weaponType', wep.type || '—');
   set('weaponWatk', wep.watk);
-  const clampMod = (id, lo = -5, hi = 5) => {
-    let v = num(id);
-    if (v > hi) v = hi; else if (v < lo) v = lo;
-    const el = document.getElementById(id);
-    if (el && Number(el.value) !== v) el.value = v;
-    return v;
-  };
-  const weaponCrit = (wep.critD || 0) + clampMod('modWeaponCrit');
-  set('weaponCrit', weaponCrit);
-  const weaponCritR = (wep.critR || 0) + clampMod('modWeaponCritR');
-  set('weaponCritR', weaponCritR);
+  // Crit values: editable, clamped to weapon base ±5
+  const weaponCrit = clampAroundBase('weaponCritD', wep.critD || 0, 5);
+  const weaponCritR = clampAroundBase('weaponCritR', wep.critR || 0, 5);
   const watkMod = num('watkMod');
 
   // Stars
@@ -1510,22 +2137,20 @@ function recalc() {
   else if (attBuff === 'Custom') attPower = num('customAtt');
   set('attPower', attPower);
 
-  // Gear (base + ± adjusters for above/below avg items)
-  let gearStr = 0, gearDex = 0, gearLuk = 0, gearCrit = 0, gearCritR = 0, gearAcc = 0, gearEva = 0;
+  // Gear — STR/DEX/LUK from editable inputs, clamped to item base ±5
+  let gearStr = 0, gearDex = 0, gearLuk = 0, gearAcc = 0, gearEva = 0;
+  let baseGearCritD = 0, baseGearCritR = 0;
   GEAR_SLOTS.forEach(slot => {
     const name = val('gear_' + slot.id);
     const a = getArmor(name);
-    const adjStr = a.str + clampMod('modStr_' + slot.id);
-    const adjDex = a.dex + clampMod('modDex_' + slot.id);
-    const adjLuk = a.luk + clampMod('modLuk_' + slot.id);
-    set('gStr_' + slot.id, adjStr);
-    set('gDex_' + slot.id, adjDex);
-    set('gLuk_' + slot.id, adjLuk);
+    const adjStr = clampAroundBase('gStr_' + slot.id, a.str || 0, 5);
+    const adjDex = clampAroundBase('gDex_' + slot.id, a.dex || 0, 5);
+    const adjLuk = clampAroundBase('gLuk_' + slot.id, a.luk || 0, 5);
     gearStr += adjStr;
     gearDex += adjDex;
     gearLuk += adjLuk;
-    gearCrit += (a.critD || 0);
-    gearCritR += (a.critR || 0);
+    baseGearCritD += (a.critD || 0);
+    baseGearCritR += (a.critR || 0);
     // ACC / EVA from OSMS equipment (Common + Thief wearable)
     const ae = (typeof GEAR_ACC_EVA !== 'undefined' && GEAR_ACC_EVA[name]) ? GEAR_ACC_EVA[name] : null;
     gearAcc += ae ? (ae.acc || 0) : (a.acc || 0);
@@ -1538,14 +2163,12 @@ function recalc() {
     gearAcc += (wepAe.acc || 0);
     gearEva += (wepAe.eva || 0);
   }
-  // Gear Crit Damage ± (earrings) / Gear Crit Rate ± (gloves)
-  gearCrit += clampMod('modGearCrit');
-  gearCritR += clampMod('modGearCritR');
+  // Gear Crit Damage / Rate: editable, clamped to equipped-gear base sum ±5
+  const gearCrit = clampAroundBase('gearCritD', baseGearCritD, 5);
+  const gearCritR = clampAroundBase('gearCritR', baseGearCritR, 5);
   set('totStr', gearStr);
   set('totDex', gearDex);
   set('totLuk', gearLuk);
-  set('totCrit', gearCrit);
-  set('totCritR', gearCritR);
 
   // Scrolls — clamp used slots to max per card
   const SCROLL_MAX = [7, 7, 10, 5, 5, 5, 5, 7];
@@ -1919,9 +2542,45 @@ function recalc() {
   }
   set('guardChance', (shieldGuard * 100).toFixed(1) + '%');
 
+  updateDock();
 }
 
 init();
 </script>
+
+<div class="bottom-bar" id="bottomBar" aria-label="Quick summary">
+  <div class="bb-group">
+    <div class="bb-item">
+      <span class="bb-lbl">Skill</span>
+      <span class="bb-val bb-skill" id="dockSkill">—</span>
+    </div>
+    <div class="bb-item">
+      <span class="bb-lbl">Mult</span>
+      <span class="bb-val" id="dockSkillMult">—</span>
+    </div>
+    <div class="bb-item">
+      <span class="bb-lbl">Wep Max</span>
+      <span class="bb-val" id="dockWepMax">—</span>
+    </div>
+    <div class="bb-item">
+      <span class="bb-lbl">Wep Min</span>
+      <span class="bb-val" id="dockWepMin">—</span>
+    </div>
+  </div>
+  <div class="bb-sep"></div>
+  <div class="bb-group">
+    <div class="bb-item">
+      <span class="bb-lbl">Range</span>
+      <span class="bb-val bb-dmg" id="dockRange">—</span>
+    </div>
+    <div class="bb-item">
+      <span class="bb-lbl">Avg</span>
+      <span class="bb-val bb-dmg bb-avg" id="dockMid">—</span>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
 </body>
 </html>
