@@ -106,19 +106,17 @@
     .stat-cell { min-width: 44px; width: 44px; }
     #gearBody td:first-child { white-space: normal; }
 
-    /* Scroll cards: stack header, 3-col counts */
-    .scroll-card-header {
-      grid-template-columns: 1fr;
-      justify-items: start;
-      gap: 6px;
-    }
-    .scroll-card-header .slot-name,
-    .scroll-card-header select,
-    .scroll-card-header .bonus-wrap {
-      justify-self: start;
-    }
-    .scroll-card-header select { width: 100%; max-width: 160px; }
-    .scroll-counts { grid-template-columns: repeat(3, 1fr); }
+    /* Compact gear + scroll tables on mobile */
+    .gear-table { font-size: 0.72rem; }
+    .gear-table th { font-size: 0.62rem; padding: 3px 2px; }
+    .gear-table td { padding: 3px 2px; }
+    .gear-table select { max-width: 140px; font-size: 0.7rem; }
+    .gear-table .gear-stat .mod { width: 26px; max-width: 26px; font-size: 0.65rem; }
+    .scroll-table { font-size: 0.72rem; }
+    .scroll-table th { font-size: 0.62rem; padding: 3px 2px; }
+    .scroll-table td { padding: 3px 2px; }
+    .scroll-table select { width: 68px; max-width: 68px; font-size: 0.7rem; }
+    .scroll-table input[type="number"] { width: 30px; max-width: 30px; font-size: 0.7rem; }
 
     .calc { font-size: 0.82rem; }
     .damage-box .nums .val { font-size: 1.15rem; }
@@ -223,7 +221,6 @@
     body { padding: 6px; }
     h1 { font-size: 1rem; }
     .panel { padding: 10px; }
-    .scroll-counts { grid-template-columns: repeat(2, 1fr); }
     .stat-cell { min-width: 40px; width: 40px; }
     input.mod { width: 28px; max-width: 28px; }
     .damage-box .nums .val { font-size: 1.05rem; }
@@ -545,64 +542,136 @@
   .scroll-chip .chip-label { color: var(--muted); font-size: 0.72rem; letter-spacing: 0.3px; }
   .scroll-chip .calc { padding: 0; min-width: 1.2em; text-align: center; }
 
-  .scroll-slots { display: flex; flex-direction: column; gap: 10px; }
-  .scroll-card {
-    background: #2c2830;
-    border: 1px solid #5c4a32;
-    border-radius: 6px;
-    padding: 10px 12px;
-    transition: background 0.15s, border-color 0.15s;
+  /* Compact gear table */
+  .gear-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
-  .scroll-card.at-max {
-    background: #3d2a14;
-    border-color: #f97316;
-  }
-  .scroll-card.over-max {
-    background: #3b1515;
-    border-color: #ef4444;
-  }
-  .scroll-card-header {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    margin-bottom: 8px;
-    gap: 8px;
-  }
-  .scroll-card-header .slot-name {
-    font-weight: 700;
-    font-size: 0.85rem;
-    color: var(--text);
-    justify-self: start;
-  }
-  .scroll-card-header select {
-    width: 90px;
-    max-width: 90px;
-    justify-self: center;
-  }
-  .scroll-card-header .bonus-wrap {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    justify-self: end;
-  }
-  .scroll-card-header .bonus-wrap .chip-label { color: var(--muted); font-size: 0.72rem; }
-  .scroll-counts {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 6px;
-  }
-  .scroll-counts label {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    font-size: 0.7rem;
-    color: var(--muted);
-  }
-  .scroll-counts input[type="number"] {
-    max-width: 100%;
+  .gear-table {
     width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+  }
+  .gear-table th {
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 0.68rem;
+    letter-spacing: 0.2px;
     text-align: center;
+    padding: 4px 3px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .gear-table th:first-child,
+  .gear-table th:nth-child(2) { text-align: left; }
+  .gear-table td {
+    padding: 3px 3px;
+    text-align: center;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(15, 52, 96, 0.45);
+  }
+  .gear-table td:first-child { text-align: left; }
+  .gear-table td.gear-item { text-align: left; }
+  .gear-table .slot-name {
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .gear-table select {
+    width: 100%;
+    max-width: 180px;
+    padding: 2px 4px;
+    font-size: 0.75rem;
+  }
+  .gear-table .gear-stat {
+    white-space: nowrap;
+  }
+  .gear-table .gear-stat .calc {
+    display: inline-block;
+    min-width: 1.4em;
+    text-align: right;
+    margin-right: 2px;
+  }
+  .gear-table .gear-stat .mod {
+    width: 28px;
+    max-width: 28px;
+    padding: 1px 2px;
+    font-size: 0.7rem;
+    text-align: center;
+  }
+  .gear-table tfoot td {
+    border-top: 1px solid var(--border);
+    border-bottom: none;
+    padding-top: 6px;
+    font-weight: 700;
+  }
+  .gear-table tfoot td:first-child { text-align: left; color: var(--text); }
+
+  /* Compact scroll table */
+  .scroll-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .scroll-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+  }
+  .scroll-table th {
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 0.68rem;
+    letter-spacing: 0.2px;
+    text-align: center;
+    padding: 4px 3px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .scroll-table th:first-child,
+  .scroll-table th:nth-child(2) { text-align: left; }
+  .scroll-table td {
+    padding: 4px 3px;
+    text-align: center;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(15, 52, 96, 0.45);
+  }
+  .scroll-table td:first-child { text-align: left; }
+  .scroll-table td:nth-child(2) { text-align: left; }
+  .scroll-table .slot-name {
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .scroll-table select {
+    width: 78px;
+    max-width: 78px;
+    padding: 2px 4px;
+    font-size: 0.75rem;
+  }
+  .scroll-table input[type="number"] {
+    width: 36px;
+    max-width: 36px;
+    padding: 2px 2px;
+    font-size: 0.75rem;
+    text-align: center;
+  }
+  .scroll-table .slot-count {
+    margin-left: 0;
+    font-size: 0.72rem;
+  }
+  .scroll-table tr.scroll-card.at-max td {
+    background: rgba(249, 115, 22, 0.12);
+  }
+  .scroll-table tr.scroll-card.over-max td {
+    background: rgba(239, 68, 68, 0.15);
+  }
+  .scroll-table tr.scroll-card:hover td {
+    background: rgba(233, 69, 96, 0.06);
+  }
+  .scroll-table tr.scroll-card.at-max:hover td {
+    background: rgba(249, 115, 22, 0.18);
   }
 
   .damage-box {
@@ -685,7 +754,7 @@
   <div>
     <!-- 1. LEVEL & BASE STATS -->
     <div class="panel">
-      <h2>1. LEVEL &amp; BASE STATS</h2>
+      <h2>LEVEL &amp; BASE STATS</h2>
       <div class="row">
         <span class="label">Level</span>
         <input type="number" id="level" value="1" min="1" max="200" oninput="recalc()">
@@ -708,7 +777,7 @@
 
     <!-- 2. WEAPON -->
     <div class="panel" style="margin-top:12px">
-      <h2>2. WEAPON</h2>
+      <h2>WEAPON</h2>
       <div class="row">
         <span class="label">Weapon</span>
         <select id="weapon" onchange="recalc()"></select>
@@ -750,21 +819,23 @@
 
     <!-- 3. GEAR -->
     <div class="panel" style="margin-top:12px">
-      <h2>3. GEAR</h2>
-      <table>
-        <thead>
-          <tr><th>Slot</th><th>Item</th><th>STR</th><th>DEX</th><th>LUK</th></tr>
-        </thead>
-        <tbody id="gearBody"></tbody>
-        <tfoot>
-          <tr>
-            <td colspan="2"><strong>TOTALS</strong></td>
-            <td class="stat-cell"><span class="calc" id="totStr">0</span></td>
-            <td class="stat-cell"><span class="calc" id="totDex">0</span></td>
-            <td class="stat-cell"><span class="calc" id="totLuk">0</span></td>
-          </tr>
-        </tfoot>
-      </table>
+      <h2>GEAR</h2>
+      <div class="gear-table-wrap">
+        <table class="gear-table">
+          <thead>
+            <tr><th>Slot</th><th>Item</th><th>STR</th><th>DEX</th><th>LUK</th></tr>
+          </thead>
+          <tbody id="gearBody"></tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2"><strong>TOTALS</strong></td>
+              <td><span class="calc" id="totStr">0</span></td>
+              <td><span class="calc" id="totDex">0</span></td>
+              <td><span class="calc" id="totLuk">0</span></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
       <div class="crit-stat-row crit-stat-row-first">
         <span class="label crit-stat-label">Gear Crit Damage</span>
         <span class="calc crit-stat-val" id="totCrit">0</span>
@@ -783,137 +854,113 @@
 
     <!-- 4. SCROLLS -->
     <div class="panel" style="margin-top:12px">
-      <h2>4. SCROLLS</h2>
-            <div class="scroll-slots">
-        <div class="scroll-card">
-          <div class="scroll-card-header">
-            <span class="slot-name">Weapon <span class="slot-count" id="scSlots0">0/7</span></span>
-            <select id="scStat0" onchange="recalc()">
-              <option selected>ATT</option>
-            </select>
-            <div class="bonus-wrap"><span class="chip-label">Bonus</span><span class="calc" id="scBonus0">0</span></div>
-          </div>
-          <div class="scroll-counts">
-            <label>100%<input type="number" id="sc100_0" value="0" min="0" max="7" oninput="recalc()"></label>
-            <label>60%<input type="number" id="sc60_0" value="0" min="0" oninput="recalc()"></label>
-            <label>10%<input type="number" id="sc10_0" value="0" min="0" oninput="recalc()"></label>
-            <label>Chaos<input type="number" id="scCh_0" value="0" min="0" oninput="recalc()"></label>
-            <label>Failed<input type="number" id="scFail_0" value="0" min="0" oninput="recalc()"></label>
-          </div>
-        </div>
-        <div class="scroll-card">
-          <div class="scroll-card-header">
-            <span class="slot-name">Hat <span class="slot-count" id="scSlots1">0/7</span></span>
-            <select id="scStat1" onchange="recalc()">
-              <option selected>ACC</option>
-            </select>
-            <div class="bonus-wrap"><span class="chip-label">Bonus</span><span class="calc" id="scBonus1">0</span></div>
-          </div>
-          <div class="scroll-counts">
-            <label>100%<input type="number" id="sc100_1" value="0" min="0" max="7" oninput="recalc()"></label>
-            <label>60%<input type="number" id="sc60_1" value="0" min="0" oninput="recalc()"></label>
-            <label>10%<input type="number" id="sc10_1" value="0" min="0" oninput="recalc()"></label>
-            <label>Chaos<input type="number" id="scCh_1" value="0" min="0" oninput="recalc()"></label>
-            <label>Failed<input type="number" id="scFail_1" value="0" min="0" oninput="recalc()"></label>
-          </div>
-        </div>
-        <div class="scroll-card">
-          <div class="scroll-card-header">
-            <span class="slot-name">Overall <span class="slot-count" id="scSlots2">0/10</span></span>
-            <select id="scStat2" onchange="recalc()">
-              <option selected>LUK</option><option>DEX</option><option>STR</option>
-            </select>
-            <div class="bonus-wrap"><span class="chip-label">Bonus</span><span class="calc" id="scBonus2">0</span></div>
-          </div>
-          <div class="scroll-counts">
-            <label>100%<input type="number" id="sc100_2" value="0" min="0" oninput="recalc()"></label>
-            <label>60%<input type="number" id="sc60_2" value="0" min="0" oninput="recalc()"></label>
-            <label>10%<input type="number" id="sc10_2" value="0" min="0" oninput="recalc()"></label>
-            <label>Chaos<input type="number" id="scCh_2" value="0" min="0" oninput="recalc()"></label>
-            <label>Failed<input type="number" id="scFail_2" value="0" min="0" oninput="recalc()"></label>
-          </div>
-        </div>
-        <div class="scroll-card">
-          <div class="scroll-card-header">
-            <span class="slot-name">Shoes <span class="slot-count" id="scSlots3">0/5</span></span>
-            <select id="scStat3" onchange="recalc()">
-              <option selected>EVA</option>
-            </select>
-            <div class="bonus-wrap"><span class="chip-label">Bonus</span><span class="calc" id="scBonus3">0</span></div>
-          </div>
-          <div class="scroll-counts">
-            <label>100%<input type="number" id="sc100_3" value="0" min="0" max="5" oninput="recalc()"></label>
-            <label>60%<input type="number" id="sc60_3" value="0" min="0" oninput="recalc()"></label>
-            <label>10%<input type="number" id="sc10_3" value="0" min="0" oninput="recalc()"></label>
-            <label>Chaos<input type="number" id="scCh_3" value="0" min="0" oninput="recalc()"></label>
-            <label>Failed<input type="number" id="scFail_3" value="0" min="0" oninput="recalc()"></label>
-          </div>
-        </div>
-        <div class="scroll-card">
-          <div class="scroll-card-header">
-            <span class="slot-name">Gloves <span class="slot-count" id="scSlots4">0/5</span></span>
-            <select id="scStat4" onchange="recalc()">
-              <option selected>ATT</option><option>CRIT R</option><option>ACC</option>
-            </select>
-            <div class="bonus-wrap"><span class="chip-label">Bonus</span><span class="calc" id="scBonus4">0</span></div>
-          </div>
-          <div class="scroll-counts">
-            <label>100%<input type="number" id="sc100_4" value="0" min="0" max="5" oninput="recalc()"></label>
-            <label>60%<input type="number" id="sc60_4" value="0" min="0" oninput="recalc()"></label>
-            <label>10%<input type="number" id="sc10_4" value="0" min="0" oninput="recalc()"></label>
-            <label>Chaos<input type="number" id="scCh_4" value="0" min="0" oninput="recalc()"></label>
-            <label>Failed<input type="number" id="scFail_4" value="0" min="0" oninput="recalc()"></label>
-          </div>
-        </div>
-        <div class="scroll-card">
-          <div class="scroll-card-header">
-            <span class="slot-name">Cape <span class="slot-count" id="scSlots5">0/5</span></span>
-            <select id="scStat5" onchange="recalc()">
-              <option selected>LUK</option><option>DEX</option><option>STR</option><option>ACC</option>
-            </select>
-            <div class="bonus-wrap"><span class="chip-label">Bonus</span><span class="calc" id="scBonus5">0</span></div>
-          </div>
-          <div class="scroll-counts">
-            <label>100%<input type="number" id="sc100_5" value="0" min="0" max="5" oninput="recalc()"></label>
-            <label>60%<input type="number" id="sc60_5" value="0" min="0" oninput="recalc()"></label>
-            <label>10%<input type="number" id="sc10_5" value="0" min="0" oninput="recalc()"></label>
-            <label>Chaos<input type="number" id="scCh_5" value="0" min="0" oninput="recalc()"></label>
-            <label>Failed<input type="number" id="scFail_5" value="0" min="0" oninput="recalc()"></label>
-          </div>
-        </div>
-        <div class="scroll-card">
-          <div class="scroll-card-header">
-            <span class="slot-name">Earrings <span class="slot-count" id="scSlots6">0/5</span></span>
-            <select id="scStat6" onchange="recalc()">
-              <option selected>LUK</option><option>DEX</option><option>STR</option><option>CRIT D</option><option>EVA</option>
-            </select>
-            <div class="bonus-wrap"><span class="chip-label">Bonus</span><span class="calc" id="scBonus6">0</span></div>
-          </div>
-          <div class="scroll-counts">
-            <label>100%<input type="number" id="sc100_6" value="0" min="0" max="5" oninput="recalc()"></label>
-            <label>60%<input type="number" id="sc60_6" value="0" min="0" oninput="recalc()"></label>
-            <label>10%<input type="number" id="sc10_6" value="0" min="0" oninput="recalc()"></label>
-            <label>Chaos<input type="number" id="scCh_6" value="0" min="0" oninput="recalc()"></label>
-            <label>Failed<input type="number" id="scFail_6" value="0" min="0" oninput="recalc()"></label>
-          </div>
-        </div>
-        <div class="scroll-card">
-          <div class="scroll-card-header">
-            <span class="slot-name">Shield <span class="slot-count" id="scSlots7">0/7</span></span>
-            <select id="scStat7" onchange="recalc()">
-              <option selected>S DEF</option>
-              <option>ACC</option>
-            </select>
-            <div class="bonus-wrap"><span class="chip-label">Bonus</span><span class="calc" id="scBonus7">0</span></div>
-          </div>
-          <div class="scroll-counts">
-            <label>100%<input type="number" id="sc100_7" value="0" min="0" max="7" oninput="recalc()"></label>
-            <label>60%<input type="number" id="sc60_7" value="0" min="0" oninput="recalc()"></label>
-            <label>10%<input type="number" id="sc10_7" value="0" min="0" oninput="recalc()"></label>
-            <label>Chaos<input type="number" id="scCh_7" value="0" min="0" oninput="recalc()"></label>
-            <label>Failed<input type="number" id="scFail_7" value="0" min="0" oninput="recalc()"></label>
-          </div>
-        </div>
+      <h2>SCROLLS</h2>
+      <div class="scroll-table-wrap">
+        <table class="scroll-table">
+          <thead>
+            <tr>
+              <th>Slot</th>
+              <th>Stat</th>
+              <th>100%</th>
+              <th>60%</th>
+              <th>10%</th>
+              <th>Chaos</th>
+              <th>Fail</th>
+              <th>Used</th>
+              <th>Bonus</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="scroll-card">
+              <td class="slot-name">Weapon</td>
+              <td><select id="scStat0" onchange="recalc()"><option selected>ATT</option></select></td>
+              <td><input type="number" id="sc100_0" value="0" min="0" max="7" oninput="recalc()"></td>
+              <td><input type="number" id="sc60_0" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="sc10_0" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="scCh_0" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="scFail_0" value="0" min="0" oninput="recalc()"></td>
+              <td><span class="slot-count" id="scSlots0">0/7</span></td>
+              <td><span class="calc" id="scBonus0">0</span></td>
+            </tr>
+            <tr class="scroll-card">
+              <td class="slot-name">Hat</td>
+              <td><select id="scStat1" onchange="recalc()"><option selected>ACC</option></select></td>
+              <td><input type="number" id="sc100_1" value="0" min="0" max="7" oninput="recalc()"></td>
+              <td><input type="number" id="sc60_1" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="sc10_1" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="scCh_1" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="scFail_1" value="0" min="0" oninput="recalc()"></td>
+              <td><span class="slot-count" id="scSlots1">0/7</span></td>
+              <td><span class="calc" id="scBonus1">0</span></td>
+            </tr>
+            <tr class="scroll-card">
+              <td class="slot-name">Overall</td>
+              <td><select id="scStat2" onchange="recalc()"><option selected>LUK</option><option>DEX</option><option>STR</option></select></td>
+              <td><input type="number" id="sc100_2" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="sc60_2" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="sc10_2" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="scCh_2" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="scFail_2" value="0" min="0" oninput="recalc()"></td>
+              <td><span class="slot-count" id="scSlots2">0/10</span></td>
+              <td><span class="calc" id="scBonus2">0</span></td>
+            </tr>
+            <tr class="scroll-card">
+              <td class="slot-name">Shoes</td>
+              <td><select id="scStat3" onchange="recalc()"><option selected>EVA</option></select></td>
+              <td><input type="number" id="sc100_3" value="0" min="0" max="5" oninput="recalc()"></td>
+              <td><input type="number" id="sc60_3" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="sc10_3" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="scCh_3" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="scFail_3" value="0" min="0" oninput="recalc()"></td>
+              <td><span class="slot-count" id="scSlots3">0/5</span></td>
+              <td><span class="calc" id="scBonus3">0</span></td>
+            </tr>
+            <tr class="scroll-card">
+              <td class="slot-name">Gloves</td>
+              <td><select id="scStat4" onchange="recalc()"><option selected>ATT</option><option>CRIT R</option><option>ACC</option></select></td>
+              <td><input type="number" id="sc100_4" value="0" min="0" max="5" oninput="recalc()"></td>
+              <td><input type="number" id="sc60_4" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="sc10_4" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="scCh_4" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="scFail_4" value="0" min="0" oninput="recalc()"></td>
+              <td><span class="slot-count" id="scSlots4">0/5</span></td>
+              <td><span class="calc" id="scBonus4">0</span></td>
+            </tr>
+            <tr class="scroll-card">
+              <td class="slot-name">Cape</td>
+              <td><select id="scStat5" onchange="recalc()"><option selected>LUK</option><option>DEX</option><option>STR</option><option>ACC</option></select></td>
+              <td><input type="number" id="sc100_5" value="0" min="0" max="5" oninput="recalc()"></td>
+              <td><input type="number" id="sc60_5" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="sc10_5" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="scCh_5" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="scFail_5" value="0" min="0" oninput="recalc()"></td>
+              <td><span class="slot-count" id="scSlots5">0/5</span></td>
+              <td><span class="calc" id="scBonus5">0</span></td>
+            </tr>
+            <tr class="scroll-card">
+              <td class="slot-name">Earrings</td>
+              <td><select id="scStat6" onchange="recalc()"><option selected>LUK</option><option>DEX</option><option>STR</option><option>CRIT D</option><option>EVA</option></select></td>
+              <td><input type="number" id="sc100_6" value="0" min="0" max="5" oninput="recalc()"></td>
+              <td><input type="number" id="sc60_6" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="sc10_6" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="scCh_6" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="scFail_6" value="0" min="0" oninput="recalc()"></td>
+              <td><span class="slot-count" id="scSlots6">0/5</span></td>
+              <td><span class="calc" id="scBonus6">0</span></td>
+            </tr>
+            <tr class="scroll-card">
+              <td class="slot-name">Shield</td>
+              <td><select id="scStat7" onchange="recalc()"><option selected>S DEF</option><option>ACC</option></select></td>
+              <td><input type="number" id="sc100_7" value="0" min="0" max="7" oninput="recalc()"></td>
+              <td><input type="number" id="sc60_7" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="sc10_7" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="scCh_7" value="0" min="0" oninput="recalc()"></td>
+              <td><input type="number" id="scFail_7" value="0" min="0" oninput="recalc()"></td>
+              <td><span class="slot-count" id="scSlots7">0/7</span></td>
+              <td><span class="calc" id="scBonus7">0</span></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -1308,25 +1355,19 @@ function init() {
   GEAR_SLOTS.forEach(slot => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${slot.label}</td>
-      <td><select id="gear_${slot.id}" onchange="recalc()"></select></td>
-      <td class="stat-cell">
-        <div class="stat-box">
-          <span class="calc" id="gStr_${slot.id}">0</span>
-          <div class="mod-row"><span class="adj-label">±</span><input type="number" class="mod" id="modStr_${slot.id}" value="0" min="-5" max="5" oninput="recalc()" title="STR adjust (±5)"></div>
-        </div>
+      <td class="slot-name">${slot.label}</td>
+      <td class="gear-item"><select id="gear_${slot.id}" onchange="recalc()"></select></td>
+      <td class="gear-stat">
+        <span class="calc" id="gStr_${slot.id}">0</span>
+        <input type="number" class="mod" id="modStr_${slot.id}" value="0" min="-5" max="5" oninput="recalc()" title="STR ±">
       </td>
-      <td class="stat-cell">
-        <div class="stat-box">
-          <span class="calc" id="gDex_${slot.id}">0</span>
-          <div class="mod-row"><span class="adj-label">±</span><input type="number" class="mod" id="modDex_${slot.id}" value="0" min="-5" max="5" oninput="recalc()" title="DEX adjust (±5)"></div>
-        </div>
+      <td class="gear-stat">
+        <span class="calc" id="gDex_${slot.id}">0</span>
+        <input type="number" class="mod" id="modDex_${slot.id}" value="0" min="-5" max="5" oninput="recalc()" title="DEX ±">
       </td>
-      <td class="stat-cell">
-        <div class="stat-box">
-          <span class="calc" id="gLuk_${slot.id}">0</span>
-          <div class="mod-row"><span class="adj-label">±</span><input type="number" class="mod" id="modLuk_${slot.id}" value="0" min="-5" max="5" oninput="recalc()" title="LUK adjust (±5)"></div>
-        </div>
+      <td class="gear-stat">
+        <span class="calc" id="gLuk_${slot.id}">0</span>
+        <input type="number" class="mod" id="modLuk_${slot.id}" value="0" min="-5" max="5" oninput="recalc()" title="LUK ±">
       </td>
     `;
     tbody.appendChild(tr);
