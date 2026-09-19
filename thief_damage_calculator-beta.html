@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>Maple Classic Thief Damage Calculator</title>
 <style>
   :root {
@@ -19,25 +19,40 @@
     --input-bg: #fff3cd;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html {
+    width: 100%;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+  }
   body {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     background: var(--bg);
     color: var(--text);
     padding: 16px;
-    min-height: 100vh;
+    min-height: 100%;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+    -webkit-overflow-scrolling: touch;
   }
   h1 {
     text-align: center;
     color: var(--header);
     font-size: 1.4rem;
-    margin-bottom: 4px;
+    margin: 0 auto 4px;
     letter-spacing: 0.5px;
+    width: 100%;
+    max-width: 1100px;
   }
   .subtitle {
     text-align: center;
     color: var(--muted);
     font-size: 0.8rem;
-    margin-bottom: 20px;
+    margin: 0 auto 20px;
+    width: 100%;
+    max-width: 1100px;
+    line-height: 1.45;
   }
   .legend span { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.75rem; margin: 0 4px; }
   .legend .y { background: var(--yellow); color: var(--yellow-text); }
@@ -47,104 +62,132 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
+    width: 100%;
     max-width: 1100px;
     margin: 0 auto;
+    justify-content: center;
+    align-items: start;
   }
   @media (max-width: 800px) {
     body {
-      padding: 10px 10px 72px;
+      padding: 6px 6px calc(60px + env(safe-area-inset-bottom, 0px));
       overflow-x: hidden;
+      overscroll-behavior-y: contain;
+    }
+    /* Phone column — keeps layout narrow on large phones too */
+    h1,
+    .subtitle,
+    .app-toolbar,
+    .grid {
+      max-width: 420px !important;
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    /* Keep 16px to avoid iOS focus-zoom, but constrain field widths */
+    input[type="number"],
+    input[type="search"],
+    input[type="text"],
+    select,
+    .gear-val,
+    .scroll-table input[type="number"],
+    .gear-table .gear-val {
+      font-size: 16px !important;
     }
     h1 {
-      font-size: 1.15rem;
-      letter-spacing: 0.2px;
-      padding: 0 4px;
-      line-height: 1.25;
+      font-size: 1.05rem;
+      letter-spacing: 0.15px;
+      padding: 0 2px;
+      line-height: 1.2;
+      text-align: center;
     }
     .subtitle {
-      font-size: 0.72rem;
-      margin-bottom: 12px;
-      line-height: 1.45;
-      padding: 0 6px;
+      font-size: 0.68rem;
+      margin: 0 auto 10px;
+      line-height: 1.4;
+      padding: 0 4px;
       text-align: center;
     }
     .grid {
       grid-template-columns: 1fr;
-      gap: 12px;
-      max-width: 100%;
-      margin: 0 auto;
+      gap: 10px;
+      justify-items: stretch;
     }
     .panel {
-      padding: 12px 12px;
+      padding: 10px;
       overflow-x: hidden;
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
     }
     .panel h2 {
-      font-size: 0.9rem;
-      text-align: left;
+      font-size: 0.82rem;
+      text-align: center;
+      margin-bottom: 8px;
+      padding-bottom: 4px;
     }
 
-    /* Toolbar: centered, wraps cleanly */
     .app-toolbar {
       justify-content: center;
       align-items: center;
-      gap: 6px;
-      margin-bottom: 14px;
+      gap: 5px;
+      margin-bottom: 10px;
       padding: 0;
     }
     .app-toolbar button {
-      padding: 6px 10px;
-      font-size: 0.72rem;
+      padding: 5px 8px;
+      font-size: 0.68rem;
     }
     .app-toolbar .build-select {
       flex: 1 1 100%;
       max-width: 100%;
       text-align: center;
       margin-bottom: 2px;
+      font-size: 0.8rem;
     }
 
-    /* Generic rows: wrap, align start, no forced min-widths */
     .row {
       flex-wrap: wrap !important;
       align-items: center;
-      row-gap: 6px;
-      column-gap: 8px;
+      row-gap: 5px;
+      column-gap: 6px;
       justify-content: flex-start;
+      margin-bottom: 4px;
     }
     .row > span:first-child {
-      min-width: 72px;
+      min-width: 64px;
       flex-shrink: 0;
     }
     .row select {
-      flex: 1 1 140px;
+      flex: 1 1 120px;
       max-width: 100%;
       min-width: 0;
     }
     input[type="number"] {
-      max-width: 72px;
+      max-width: 64px;
+      width: 64px;
     }
     input[type="range"] {
-      flex: 1 1 100px;
-      min-width: 80px;
+      flex: 1 1 90px;
+      min-width: 70px;
       max-width: 100%;
     }
 
-    /* Monster stats: scroll horizontally if needed, stay one line */
     .mob-stats-row {
-      flex-wrap: nowrap !important;
+      flex-wrap: wrap !important;
       gap: 4px 8px;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       justify-content: flex-start;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
+      overflow-x: hidden;
       max-width: 100%;
-      padding-bottom: 2px;
     }
-    .mob-stats-row .label { font-size: 0.7rem; }
-    .mob-stats-row .calc { font-size: 0.78rem; }
+    .mob-stats-row .label { font-size: 0.68rem; }
+    .mob-stats-row .calc { font-size: 0.75rem; }
 
     .mob-search-wrap {
       width: 100%;
       flex: 1 1 100%;
+      gap: 6px;
     }
     .mob-search-wrap input[type="search"],
     .mob-search-wrap select {
@@ -152,79 +195,71 @@
       max-width: 100%;
     }
 
-    /* Tables: horizontal scroll inside panel */
     .gear-table-wrap,
     .scroll-table-wrap {
-      margin: 0 -4px;
-      padding: 0 4px;
+      margin: 0;
+      padding: 0;
       overflow-x: auto;
+      overflow-y: hidden;
       -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+      max-width: 100%;
     }
-    .panel table {
-      width: 100%;
-    }
+    .panel table { width: 100%; }
     .stat-summary-table {
-      font-size: 0.76rem;
+      font-size: 0.72rem;
       table-layout: fixed;
     }
     .stat-summary-table th,
     .stat-summary-table td {
-      padding: 4px 2px;
+      padding: 3px 1px;
     }
 
-    /* Compact gear + scroll tables */
-    .gear-table { font-size: 0.72rem; }
-    .gear-table th { font-size: 0.62rem; padding: 4px 3px; }
-    .gear-table td { padding: 4px 3px; }
+    .gear-table { font-size: 0.68rem; }
+    .gear-table th { font-size: 0.58rem; padding: 3px 2px; }
+    .gear-table td { padding: 3px 2px; }
     .gear-table select {
-      max-width: 160px;
+      max-width: 120px;
       width: 100%;
-      font-size: 0.7rem;
+      font-size: 0.72rem !important;
     }
     .gear-table .gear-stat .gear-val {
-      width: 38px;
-      max-width: 42px;
-      font-size: 0.72rem;
+      width: 36px;
+      max-width: 40px;
       margin: 0 auto;
       display: block;
     }
     .gear-table td.gear-stat { text-align: center; }
-    .scroll-table { font-size: 0.7rem; }
-    .scroll-table th { font-size: 0.6rem; padding: 3px 2px; }
-    .scroll-table td { padding: 3px 2px; }
-    .scroll-table select { width: 64px; max-width: 64px; font-size: 0.68rem; }
-    .scroll-table input[type="number"] { width: 28px; max-width: 28px; font-size: 0.68rem; }
+    .scroll-table { font-size: 0.65rem; }
+    .scroll-table th { font-size: 0.55rem; padding: 2px 1px; }
+    .scroll-table td { padding: 2px 1px; }
+    .scroll-table select { width: 56px; max-width: 56px; }
+    .scroll-table input[type="number"] { width: 28px; max-width: 28px; }
 
-    .calc { font-size: 0.84rem; }
-    .damage-box {
-      padding: 12px 10px;
-    }
-    .damage-box .nums {
-      justify-content: center;
-      gap: 8px;
-    }
-    .damage-box .nums .val { font-size: 1.2rem; }
-    .damage-box .nums .lbl { font-size: 0.7rem; }
+    .calc { font-size: 0.8rem; }
+    .damage-box { padding: 10px 8px; }
+    .damage-box .nums { justify-content: center; gap: 6px; }
+    .damage-box .nums .val { font-size: 1.1rem; }
+    .damage-box .nums .lbl { font-size: 0.65rem; }
 
-    /* Slider rows: label + flexible track */
     .slider-row {
       flex-wrap: nowrap !important;
-      gap: 6px;
-      margin-top: 8px;
+      gap: 4px;
+      margin-top: 6px;
       width: 100%;
       align-items: center;
     }
     .slider-row > .label:first-child {
-      width: 96px !important;
-      min-width: 96px !important;
-      max-width: 96px !important;
+      width: 78px !important;
+      min-width: 78px !important;
+      max-width: 78px !important;
       flex-shrink: 0 !important;
-      font-size: 0.78rem;
+      font-size: 0.72rem;
     }
     .slider-row input[type="range"] {
       flex: 1 1 auto !important;
       width: auto !important;
-      min-width: 80px !important;
+      min-width: 60px !important;
       max-width: none !important;
     }
     .slider-row .calc,
@@ -234,80 +269,76 @@
       width: auto !important;
       min-width: 0 !important;
     }
-    .slider-row .calc { min-width: 1.4em !important; text-align: right; }
-    .slider-row .slider-max { min-width: 2em !important; }
+    .slider-row .calc { min-width: 1.3em !important; text-align: right; }
+    .slider-row .slider-max { min-width: 1.8em !important; font-size: 0.65rem; }
 
-    /* Damage vs DEF: stack, left-aligned numbers */
     .def-dmg-row {
       flex-direction: column !important;
       flex-wrap: wrap !important;
       align-items: stretch !important;
-      gap: 4px !important;
-      margin-bottom: 10px !important;
+      gap: 3px !important;
+      margin-bottom: 8px !important;
     }
     .def-dmg-row .def-dmg-label {
       width: auto !important;
       min-width: 0 !important;
-      font-size: 0.78rem;
+      font-size: 0.72rem;
     }
     .def-dmg-row .def-dmg-nums {
       width: 100%;
       justify-content: flex-start;
       flex-wrap: wrap;
-      gap: 6px 12px;
+      gap: 4px 10px;
     }
-    .def-dmg-row .def-dmg-nums .calc { font-size: 0.92rem; }
+    .def-dmg-row .def-dmg-nums .calc { font-size: 0.85rem; }
 
-    /* Crit rows: wrap cleanly, aligned */
     .crit-stat-row {
       flex-wrap: wrap !important;
-      gap: 6px 8px !important;
+      gap: 4px 6px !important;
       align-items: center;
     }
     .crit-stat-row .crit-stat-label {
-      width: 120px !important;
-      min-width: 110px !important;
+      width: 100px !important;
+      min-width: 90px !important;
       flex-shrink: 0 !important;
-      font-size: 0.78rem;
+      font-size: 0.72rem;
     }
     .crit-stat-row .gear-val {
-      width: 44px !important;
-      max-width: 48px !important;
+      width: 40px !important;
+      max-width: 44px !important;
       flex-shrink: 0 !important;
     }
-    .crit-stat-row .crit-stat-pct {
-      flex-shrink: 0 !important;
-    }
+    .crit-stat-row .crit-stat-pct { flex-shrink: 0 !important; }
     .crit-stat-row .crit-stat-hint {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       width: 100%;
       margin-left: 0 !important;
     }
   }
 
   @media (max-width: 420px) {
-    body { padding: 8px 8px 76px; }
-    h1 { font-size: 1.02rem; }
-    .panel { padding: 10px; }
-    .damage-box .nums .val { font-size: 1.08rem; }
+    body { padding: 4px 4px calc(58px + env(safe-area-inset-bottom, 0px)); }
+    h1 { font-size: 0.98rem; }
+    .panel { padding: 8px; }
+    .damage-box .nums .val { font-size: 1.02rem; }
     .slider-row > .label:first-child {
-      width: 84px !important;
-      min-width: 84px !important;
-      max-width: 84px !important;
-      font-size: 0.72rem;
+      width: 72px !important;
+      min-width: 72px !important;
+      max-width: 72px !important;
+      font-size: 0.68rem;
     }
     .crit-stat-row .crit-stat-label {
-      width: 108px !important;
-      min-width: 100px !important;
-      font-size: 0.72rem;
+      width: 92px !important;
+      min-width: 84px !important;
+      font-size: 0.68rem;
     }
     .gear-table .gear-stat .gear-val {
-      width: 34px;
-      max-width: 36px;
+      width: 32px;
+      max-width: 34px;
     }
     .app-toolbar button {
-      padding: 5px 8px;
-      font-size: 0.68rem;
+      padding: 4px 7px;
+      font-size: 0.64rem;
     }
   }
 
@@ -318,6 +349,7 @@
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 14px 16px;
+    width: 100%;
   }
   .panel h2 {
     font-size: 0.95rem;
@@ -325,6 +357,7 @@
     margin-bottom: 12px;
     border-bottom: 1px solid var(--border);
     padding-bottom: 6px;
+    text-align: center;
   }
 
   table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
@@ -811,7 +844,9 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    align-items: center;
     gap: 8px;
+    width: 100%;
     max-width: 1100px;
     margin: 0 auto 16px;
     padding: 0 4px;
@@ -898,6 +933,12 @@
       0 -12px 40px rgba(0, 0, 0, 0.55),
       0 0 48px rgba(233, 69, 96, 0.12);
     padding: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    width: 100%;
+    max-width: 100vw;
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
   .bottom-bar-inner {
     display: flex;
@@ -1016,10 +1057,14 @@
     }
   }
   @media (max-width: 800px) {
-    body { padding-bottom: 56px; }
+    body { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
+    .bottom-bar {
+      box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.4);
+    }
     .bottom-bar-inner {
-      padding: 8px 12px;
+      padding: 8px 10px;
       gap: 8px 12px;
+      max-width: 420px;
     }
     .bottom-bar .bb-group.bb-dmg-group {
       gap: 10px 14px;
@@ -1043,7 +1088,7 @@
     }
   }
   @media (max-width: 380px) {
-    body { padding-bottom: 58px; }
+    body { padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px)); }
     .bottom-bar-inner {
       padding: 7px 10px;
       flex-wrap: wrap;
@@ -1063,8 +1108,14 @@
     }
   }
   @keyframes dockFlash {
-    0% { filter: brightness(2); transform: scale(1.04); }
-    100% { filter: brightness(1); transform: scale(1); }
+    0% { filter: brightness(1.6); }
+    100% { filter: brightness(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bottom-bar .bb-val.flash,
+    .damage-box .val.flash {
+      animation: none !important;
+    }
   }
 
   /* ── Monster search ── */
