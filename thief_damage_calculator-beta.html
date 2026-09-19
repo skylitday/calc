@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Maple Classic Thief Damage Calculator</title>
 <style>
   :root {
@@ -68,23 +68,28 @@
     justify-content: center;
     align-items: start;
   }
+  /* Phones / tablets portrait — tuned for ~375px (iPhone 13 mini) up to large phones */
   @media (max-width: 800px) {
     body {
-      padding: 6px 6px calc(60px + env(safe-area-inset-bottom, 0px));
+      /* top = fixed summary bar + safe area; sides tight; bottom home indicator */
+      padding:
+        calc(42px + env(safe-area-inset-top, 0px))
+        8px
+        calc(10px + env(safe-area-inset-bottom, 0px));
       overflow-x: hidden;
       overscroll-behavior-y: contain;
+      font-size: 13px;
     }
-    /* Phone column — keeps layout narrow on large phones too */
     h1,
     .subtitle,
     .app-toolbar,
     .grid {
-      max-width: 420px !important;
+      max-width: 100% !important;
       width: 100%;
       margin-left: auto;
       margin-right: auto;
     }
-    /* Keep 16px to avoid iOS focus-zoom, but constrain field widths */
+    /* Prevent iOS focus-zoom without making UI feel oversized */
     input[type="number"],
     input[type="search"],
     input[type="text"],
@@ -95,104 +100,111 @@
       font-size: 16px !important;
     }
     h1 {
-      font-size: 1.05rem;
-      letter-spacing: 0.15px;
+      font-size: 0.92rem;
+      letter-spacing: 0.1px;
       padding: 0 2px;
       line-height: 1.2;
       text-align: center;
+      margin-bottom: 2px;
     }
     .subtitle {
-      font-size: 0.68rem;
-      margin: 0 auto 10px;
-      line-height: 1.4;
-      padding: 0 4px;
+      font-size: 0.6rem;
+      margin: 0 auto 6px;
+      line-height: 1.35;
+      padding: 0 2px;
       text-align: center;
     }
     .grid {
       grid-template-columns: 1fr;
-      gap: 10px;
+      gap: 8px;
       justify-items: stretch;
     }
     .panel {
-      padding: 10px;
+      padding: 8px 9px;
       overflow-x: hidden;
       width: 100%;
       max-width: 100%;
       margin: 0;
     }
     .panel h2 {
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       text-align: center;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       padding-bottom: 4px;
     }
 
     .app-toolbar {
       justify-content: center;
       align-items: center;
-      gap: 5px;
-      margin-bottom: 10px;
+      gap: 4px;
+      margin-bottom: 8px;
       padding: 0;
     }
     .app-toolbar button {
-      padding: 5px 8px;
-      font-size: 0.68rem;
+      padding: 5px 7px;
+      font-size: 0.65rem;
     }
     .app-toolbar .build-select {
       flex: 1 1 100%;
       max-width: 100%;
       text-align: center;
       margin-bottom: 2px;
-      font-size: 0.8rem;
+      font-size: 0.78rem !important;
     }
 
     .row {
       flex-wrap: wrap !important;
       align-items: center;
-      row-gap: 5px;
-      column-gap: 6px;
+      row-gap: 4px;
+      column-gap: 5px;
       justify-content: flex-start;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
     .row > span:first-child {
-      min-width: 64px;
+      min-width: 58px;
       flex-shrink: 0;
     }
     .row select {
-      flex: 1 1 120px;
+      flex: 1 1 110px;
       max-width: 100%;
       min-width: 0;
     }
     input[type="number"] {
-      max-width: 64px;
-      width: 64px;
+      max-width: 58px;
+      width: 58px;
     }
     input[type="range"] {
-      flex: 1 1 90px;
-      min-width: 70px;
+      flex: 1 1 80px;
+      min-width: 64px;
       max-width: 100%;
+    }
+
+    .label {
+      font-size: 0.72rem;
     }
 
     .mob-stats-row {
       flex-wrap: wrap !important;
-      gap: 4px 8px;
-      font-size: 0.75rem;
+      gap: 3px 6px;
+      font-size: 0.72rem;
       justify-content: flex-start;
       overflow-x: hidden;
       max-width: 100%;
     }
-    .mob-stats-row .label { font-size: 0.68rem; }
-    .mob-stats-row .calc { font-size: 0.75rem; }
+    .mob-stats-row .label { font-size: 0.65rem; }
+    .mob-stats-row .calc { font-size: 0.72rem; }
 
     .mob-search-wrap {
       width: 100%;
       flex: 1 1 100%;
-      gap: 6px;
+      gap: 5px;
+      flex-wrap: wrap;
     }
     .mob-search-wrap input[type="search"],
     .mob-search-wrap select {
       flex: 1 1 100%;
       max-width: 100%;
+      min-width: 0;
     }
 
     .gear-table-wrap,
@@ -205,61 +217,63 @@
       overscroll-behavior-x: contain;
       max-width: 100%;
     }
-    .panel table { width: 100%; }
+    .panel table { width: 100%; max-width: 100%; }
     .stat-summary-table {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       table-layout: fixed;
     }
     .stat-summary-table th,
     .stat-summary-table td {
-      padding: 3px 1px;
+      padding: 2px 1px;
     }
 
-    .gear-table { font-size: 0.68rem; }
-    .gear-table th { font-size: 0.58rem; padding: 3px 2px; }
-    .gear-table td { padding: 3px 2px; }
+    .gear-table { font-size: 0.65rem; }
+    .gear-table th { font-size: 0.55rem; padding: 2px 1px; }
+    .gear-table td { padding: 2px 1px; }
     .gear-table select {
-      max-width: 120px;
+      max-width: 100%;
       width: 100%;
-      font-size: 0.72rem !important;
+      min-width: 0;
     }
     .gear-table .gear-stat .gear-val {
-      width: 36px;
-      max-width: 40px;
+      width: 34px;
+      max-width: 36px;
       margin: 0 auto;
       display: block;
     }
     .gear-table td.gear-stat { text-align: center; }
-    .scroll-table { font-size: 0.65rem; }
-    .scroll-table th { font-size: 0.55rem; padding: 2px 1px; }
+    /* Item column can shrink; stats stay readable */
+    .gear-table td:first-child { max-width: 42%; }
+    .scroll-table { font-size: 0.62rem; }
+    .scroll-table th { font-size: 0.52rem; padding: 2px 1px; }
     .scroll-table td { padding: 2px 1px; }
-    .scroll-table select { width: 56px; max-width: 56px; }
-    .scroll-table input[type="number"] { width: 28px; max-width: 28px; }
+    .scroll-table select { width: 52px; max-width: 52px; }
+    .scroll-table input[type="number"] { width: 26px; max-width: 26px; }
 
-    .calc { font-size: 0.8rem; }
-    .damage-box { padding: 10px 8px; }
-    .damage-box .nums { justify-content: center; gap: 6px; }
-    .damage-box .nums .val { font-size: 1.1rem; }
-    .damage-box .nums .lbl { font-size: 0.65rem; }
+    .calc { font-size: 0.76rem; }
+    .damage-box { padding: 8px 6px; }
+    .damage-box .nums { justify-content: center; gap: 5px; }
+    .damage-box .nums .val { font-size: 1.02rem; }
+    .damage-box .nums .lbl { font-size: 0.6rem; }
 
     .slider-row {
       flex-wrap: nowrap !important;
-      gap: 4px;
-      margin-top: 6px;
+      gap: 3px;
+      margin-top: 5px;
       width: 100%;
       align-items: center;
     }
     .slider-row > .label:first-child {
-      width: 78px !important;
-      min-width: 78px !important;
-      max-width: 78px !important;
+      width: 70px !important;
+      min-width: 70px !important;
+      max-width: 70px !important;
       flex-shrink: 0 !important;
-      font-size: 0.72rem;
+      font-size: 0.68rem;
     }
     .slider-row input[type="range"] {
       flex: 1 1 auto !important;
       width: auto !important;
-      min-width: 60px !important;
+      min-width: 56px !important;
       max-width: none !important;
     }
     .slider-row .calc,
@@ -269,78 +283,112 @@
       width: auto !important;
       min-width: 0 !important;
     }
-    .slider-row .calc { min-width: 1.3em !important; text-align: right; }
-    .slider-row .slider-max { min-width: 1.8em !important; font-size: 0.65rem; }
+    .slider-row .calc { min-width: 1.2em !important; text-align: right; }
+    .slider-row .slider-max { min-width: 1.6em !important; font-size: 0.6rem; }
 
     .def-dmg-row {
       flex-direction: column !important;
       flex-wrap: wrap !important;
       align-items: stretch !important;
-      gap: 3px !important;
-      margin-bottom: 8px !important;
+      gap: 2px !important;
+      margin-bottom: 6px !important;
     }
     .def-dmg-row .def-dmg-label {
       width: auto !important;
       min-width: 0 !important;
-      font-size: 0.72rem;
+      font-size: 0.68rem;
     }
     .def-dmg-row .def-dmg-nums {
       width: 100%;
       justify-content: flex-start;
       flex-wrap: wrap;
-      gap: 4px 10px;
+      gap: 3px 8px;
     }
-    .def-dmg-row .def-dmg-nums .calc { font-size: 0.85rem; }
+    .def-dmg-row .def-dmg-nums .calc { font-size: 0.8rem; }
 
     .crit-stat-row {
       flex-wrap: wrap !important;
-      gap: 4px 6px !important;
+      gap: 3px 5px !important;
       align-items: center;
-    }
-    .crit-stat-row .crit-stat-label {
-      width: 100px !important;
-      min-width: 90px !important;
-      flex-shrink: 0 !important;
-      font-size: 0.72rem;
-    }
-    .crit-stat-row .gear-val {
-      width: 40px !important;
-      max-width: 44px !important;
-      flex-shrink: 0 !important;
-    }
-    .crit-stat-row .crit-stat-pct { flex-shrink: 0 !important; }
-    .crit-stat-row .crit-stat-hint {
-      font-size: 0.6rem;
-      width: 100%;
-      margin-left: 0 !important;
-    }
-  }
-
-  @media (max-width: 420px) {
-    body { padding: 4px 4px calc(58px + env(safe-area-inset-bottom, 0px)); }
-    h1 { font-size: 0.98rem; }
-    .panel { padding: 8px; }
-    .damage-box .nums .val { font-size: 1.02rem; }
-    .slider-row > .label:first-child {
-      width: 72px !important;
-      min-width: 72px !important;
-      max-width: 72px !important;
-      font-size: 0.68rem;
     }
     .crit-stat-row .crit-stat-label {
       width: 92px !important;
       min-width: 84px !important;
+      flex-shrink: 0 !important;
       font-size: 0.68rem;
+    }
+    .crit-stat-row .gear-val {
+      width: 38px !important;
+      max-width: 42px !important;
+      flex-shrink: 0 !important;
+    }
+    .crit-stat-row .crit-stat-pct { flex-shrink: 0 !important; }
+    .crit-stat-row .crit-stat-hint {
+      font-size: 0.55rem;
+      width: 100%;
+      margin-left: 0 !important;
+    }
+
+    /* Top bar: compact on phones */
+    .bottom-bar-inner {
+      padding: 5px 8px !important;
+      min-height: 34px !important;
+      gap: 4px 8px !important;
+    }
+    .bottom-bar .bb-val.bb-skill {
+      max-width: 88px !important;
+      font-size: 0.7rem !important;
+    }
+    .bottom-bar .bb-val.bb-avg {
+      font-size: 0.9rem !important;
+    }
+    .bottom-bar .bb-val.bb-dmg {
+      font-size: 0.74rem !important;
+    }
+    .bottom-bar .bb-lbl {
+      font-size: 0.5rem !important;
+    }
+  }
+
+  /* iPhone 13 mini / SE-class (~375px and under) */
+  @media (max-width: 390px) {
+    body {
+      padding:
+        calc(40px + env(safe-area-inset-top, 0px))
+        6px
+        calc(8px + env(safe-area-inset-bottom, 0px));
+    }
+    h1 { font-size: 0.88rem; }
+    .panel { padding: 7px 8px; }
+    .panel h2 { font-size: 0.74rem; }
+    .damage-box .nums .val { font-size: 0.96rem; }
+    .slider-row > .label:first-child {
+      width: 64px !important;
+      min-width: 64px !important;
+      max-width: 64px !important;
+      font-size: 0.64rem;
+    }
+    .crit-stat-row .crit-stat-label {
+      width: 84px !important;
+      min-width: 78px !important;
+      font-size: 0.64rem;
     }
     .gear-table .gear-stat .gear-val {
       width: 32px;
       max-width: 34px;
     }
     .app-toolbar button {
-      padding: 4px 7px;
-      font-size: 0.64rem;
+      padding: 4px 6px;
+      font-size: 0.62rem;
+    }
+    .bottom-bar .bb-val.bb-skill {
+      max-width: 72px !important;
+    }
+    .bottom-bar .bb-group.bb-dmg-group {
+      gap: 8px 10px !important;
     }
   }
+
 
 
 
@@ -889,7 +937,7 @@
   /* ── Toast ── */
   .toast-wrap {
     position: fixed;
-    bottom: 58px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000;
@@ -900,7 +948,7 @@
     align-items: center;
   }
   @media (min-width: 801px) {
-    .toast-wrap { bottom: 72px; }
+    .toast-wrap { bottom: 24px; }
   }
   .toast {
     background: #1e2a4a;
@@ -916,26 +964,26 @@
   }
   .toast.show { opacity: 1; transform: translateY(0); }
 
-  /* ── Bottom summary strip ── */
+  /* ── Top summary bar (fixed to top edge) ── */
   body {
-    padding-bottom: 52px;
+    padding-top: calc(48px + env(safe-area-inset-top, 0px));
   }
   .bottom-bar {
     position: fixed;
+    top: 0;
     left: 0;
     right: 0;
-    bottom: 0;
-    z-index: 50;
-    background: linear-gradient(180deg, #152038 0%, #0c1220 100%);
-    border-top: 2px solid #e94560;
-    box-shadow:
-      0 -1px 0 rgba(255, 120, 140, 0.25),
-      0 -12px 40px rgba(0, 0, 0, 0.55),
-      0 0 48px rgba(233, 69, 96, 0.12);
-    padding: 0;
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+    z-index: 100;
     width: 100%;
-    max-width: 100vw;
+    max-width: none;
+    margin: 0;
+    border-radius: 0;
+    border: none;
+    border-bottom: 2px solid #e94560;
+    background: #0c1220;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+    padding: 0;
+    padding-top: env(safe-area-inset-top, 0px);
     transform: translateZ(0);
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
@@ -944,11 +992,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px 20px;
-    max-width: 720px;
+    gap: 10px 16px;
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 8px 16px;
-    min-height: 44px;
+    padding: 8px 14px;
+    min-height: 40px;
   }
   .bottom-bar .bb-group {
     display: flex;
@@ -958,12 +1006,10 @@
     min-width: 0;
   }
   .bottom-bar .bb-group.bb-dmg-group {
-    gap: 14px 22px;
+    gap: 12px 20px;
     margin-left: auto;
   }
-  .bottom-bar .bb-sep {
-    display: none;
-  }
+  .bottom-bar .bb-sep { display: none; }
   .bottom-bar .bb-item {
     display: flex;
     flex-direction: row;
@@ -972,143 +1018,123 @@
     min-width: 0;
   }
   .bottom-bar .bb-lbl {
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     color: #6b7a99;
     text-transform: uppercase;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.55px;
     font-weight: 600;
     white-space: nowrap;
     line-height: 1;
   }
   .bottom-bar .bb-val {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     font-weight: 700;
     color: #c8d4f0;
     font-variant-numeric: tabular-nums;
-    line-height: 1.2;
+    line-height: 1.15;
     white-space: nowrap;
   }
   .bottom-bar .bb-val.bb-skill {
     color: #ff8a9a;
-    max-width: 160px;
+    max-width: 150px;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 0.88rem;
+    font-size: 0.85rem;
   }
   .bottom-bar .bb-val.bb-dmg {
     color: #7ee787;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
   }
   .bottom-bar .bb-val.bb-avg {
     color: #4ade80;
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     font-weight: 800;
   }
   .bottom-bar .bb-val.flash {
-    animation: dockFlash 0.35s ease;
+    animation: dockFlash 0.3s ease;
   }
-
-  /* Desktop: stronger presence, larger type, clearer hierarchy */
   @media (min-width: 801px) {
-    body { padding-bottom: 64px; }
-    .bottom-bar {
-      border-top-width: 3px;
-      box-shadow:
-        0 -1px 0 rgba(255, 140, 160, 0.35),
-        0 -16px 48px rgba(0, 0, 0, 0.55),
-        0 0 64px rgba(233, 69, 96, 0.16);
+    body {
+      padding-top: calc(56px + env(safe-area-inset-top, 0px));
     }
     .bottom-bar-inner {
-      max-width: 900px;
-      padding: 12px 28px;
-      min-height: 56px;
-      gap: 24px 36px;
+      padding: 10px 24px;
+      min-height: 48px;
+      gap: 20px 32px;
     }
     .bottom-bar .bb-group.bb-dmg-group {
-      gap: 28px 40px;
-    }
-    .bottom-bar .bb-item {
-      gap: 8px;
+      gap: 24px 36px;
     }
     .bottom-bar .bb-item.bb-range-item,
     .bottom-bar .bb-item.bb-avg-item {
-      padding-left: 20px;
+      padding-left: 18px;
       border-left: 1px solid rgba(136, 146, 176, 0.28);
     }
     .bottom-bar .bb-lbl {
-      font-size: 0.72rem;
-      letter-spacing: 0.8px;
+      font-size: 0.7rem;
+      letter-spacing: 0.7px;
       color: #8892b0;
     }
     .bottom-bar .bb-val.bb-skill {
-      font-size: 1.05rem;
+      font-size: 1rem;
       max-width: 220px;
       color: #fda4af;
     }
     .bottom-bar .bb-val.bb-dmg {
-      font-size: 1.05rem;
+      font-size: 1rem;
       color: #86efac;
     }
     .bottom-bar .bb-val.bb-avg {
-      font-size: 1.45rem;
-      font-weight: 800;
+      font-size: 1.3rem;
       color: #4ade80;
-      text-shadow: 0 0 18px rgba(74, 222, 128, 0.35);
     }
   }
   @media (max-width: 800px) {
-    body { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
-    .bottom-bar {
-      box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.4);
+    body {
+      padding-top: calc(44px + env(safe-area-inset-top, 0px));
     }
     .bottom-bar-inner {
-      padding: 8px 10px;
-      gap: 8px 12px;
-      max-width: 420px;
+      padding: 6px 10px;
+      min-height: 36px;
+      gap: 6px 10px;
     }
     .bottom-bar .bb-group.bb-dmg-group {
       gap: 10px 14px;
     }
     .bottom-bar .bb-lbl {
-      font-size: 0.58rem;
-      letter-spacing: 0.4px;
+      font-size: 0.52rem;
+      letter-spacing: 0.35px;
     }
     .bottom-bar .bb-val {
-      font-size: 0.82rem;
+      font-size: 0.76rem;
     }
     .bottom-bar .bb-val.bb-skill {
       max-width: 100px;
-      font-size: 0.8rem;
+      font-size: 0.72rem;
     }
     .bottom-bar .bb-val.bb-dmg {
-      font-size: 0.82rem;
-    }
-    .bottom-bar .bb-val.bb-avg {
-      font-size: 1.02rem;
-    }
-  }
-  @media (max-width: 380px) {
-    body { padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px)); }
-    .bottom-bar-inner {
-      padding: 7px 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .bottom-bar .bb-group.bb-dmg-group {
-      margin-left: 0;
-      width: 100%;
-      justify-content: center;
-    }
-    .bottom-bar .bb-val.bb-skill {
-      max-width: 120px;
       font-size: 0.76rem;
     }
     .bottom-bar .bb-val.bb-avg {
-      font-size: 0.96rem;
+      font-size: 0.92rem;
+    }
+  }
+  @media (max-width: 380px) {
+    .bottom-bar-inner {
+      padding: 5px 8px;
+      flex-wrap: nowrap;
+      justify-content: space-between;
+    }
+    .bottom-bar .bb-val.bb-skill {
+      max-width: 72px;
+      font-size: 0.68rem;
+    }
+    .bottom-bar .bb-val.bb-avg {
+      font-size: 0.86rem;
     }
   }
   @keyframes dockFlash {
-    0% { filter: brightness(1.6); }
+    0% { filter: brightness(1.5); }
     100% { filter: brightness(1); }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -1117,6 +1143,9 @@
       animation: none !important;
     }
   }
+
+  }
+
 
   /* ── Monster search ── */
   .mob-search-wrap {
@@ -1145,7 +1174,7 @@
 
   @media (max-width: 800px) {
     .app-toolbar button { padding: 5px 10px; font-size: 0.72rem; }
-    .toast-wrap { bottom: 62px; }
+    .toast-wrap { bottom: 20px; }
   }
   @media print {
     .app-toolbar, .bottom-bar, .toast-wrap { display: none !important; }
@@ -1154,6 +1183,28 @@
 
 </head>
 <body>
+
+<div class="bottom-bar" id="bottomBar" aria-label="Quick summary">
+  <div class="bottom-bar-inner">
+    <div class="bb-group">
+      <div class="bb-item bb-skill-item">
+        <span class="bb-lbl">Skill</span>
+        <span class="bb-val bb-skill" id="dockSkill">—</span>
+      </div>
+    </div>
+    <div class="bb-group bb-dmg-group">
+      <div class="bb-item bb-range-item">
+        <span class="bb-lbl">Range</span>
+        <span class="bb-val bb-dmg" id="dockRange">—</span>
+      </div>
+      <div class="bb-item bb-avg-item">
+        <span class="bb-lbl">Avg</span>
+        <span class="bb-val bb-dmg bb-avg" id="dockMid">—</span>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <h1>MAPLE CLASSIC THIEF DAMAGE CALCULATOR</h1>
 <p class="subtitle legend">
@@ -2716,27 +2767,6 @@ function recalc() {
 
 init();
 </script>
-
-<div class="bottom-bar" id="bottomBar" aria-label="Quick summary">
-  <div class="bottom-bar-inner">
-    <div class="bb-group">
-      <div class="bb-item bb-skill-item">
-        <span class="bb-lbl">Skill</span>
-        <span class="bb-val bb-skill" id="dockSkill">—</span>
-      </div>
-    </div>
-    <div class="bb-group bb-dmg-group">
-      <div class="bb-item bb-range-item">
-        <span class="bb-lbl">Range</span>
-        <span class="bb-val bb-dmg" id="dockRange">—</span>
-      </div>
-      <div class="bb-item bb-avg-item">
-        <span class="bb-lbl">Avg</span>
-        <span class="bb-val bb-dmg bb-avg" id="dockMid">—</span>
-      </div>
-    </div>
-  </div>
-</div>
 
 <div class="toast-wrap" id="toastWrap"></div>
 
