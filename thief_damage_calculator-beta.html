@@ -1246,7 +1246,7 @@
         <span class="bb-val bb-dmg" id="dockRange">—</span>
       </div>
       <div class="bb-item bb-est-item">
-        <span class="bb-lbl">Min Output</span>
+        <span class="bb-lbl">Est. Avg Output</span>
         <span class="bb-val bb-dmg bb-est" id="dockEst">—</span>
       </div>
     </div>
@@ -1488,6 +1488,27 @@
         </table>
       </div>
     </div>
+
+    <!-- 5. GUARD -->
+    <div class="panel" style="margin-top:12px">
+      <h2>GUARD</h2>
+      <div class="row" style="margin-bottom:8px; flex-wrap:wrap; align-items:center; gap:6px;">
+        <span class="label">Shield</span>
+        <select id="guardShield" onchange="recalc()" style="max-width:220px;"></select>
+      </div>
+      <div class="row" style="margin-bottom:6px; flex-wrap:wrap; align-items:center; gap:4px 12px;">
+        <span class="label">WDEF</span>
+        <span class="calc" id="shieldBaseWdef">0</span>
+        <span class="label">MDEF</span>
+        <span class="calc" id="shieldMdef">0</span>
+        <span class="label">Guard</span>
+        <span class="calc" id="guardChance">0%</span>
+      </div>
+      <div class="row" style="margin-bottom:0;">
+        <span class="label">Custom WDEF</span>
+        <input type="number" id="customShieldWdef" value="0" min="0" max="500" oninput="recalc()">
+      </div>
+    </div>
   </div>
 
   <!-- RIGHT COLUMN -->
@@ -1668,7 +1689,7 @@
       <!-- Est. non-crit damage per cast (no DEF) -->
       <div style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border);">
         <div class="row" style="margin-bottom:6px; flex-wrap:wrap; align-items:center; gap:6px 10px;">
-          <span class="label" style="min-width:auto;">Est. non-crit / cast (min)</span>
+          <span class="label" style="min-width:auto;">Est. non-crit / cast</span>
           <span class="calc" id="estCastDmg" style="font-size:1.05rem;">—</span>
         </div>
         <div class="row" style="margin-bottom:4px; flex-wrap:wrap; align-items:center; gap:6px 10px;">
@@ -1688,7 +1709,7 @@
           <span class="label" style="font-size:0.7rem; color:var(--muted);">(multi-target skills only)</span>
         </div>
         <p class="note" style="margin-top:6px; line-height:1.35;">
-          Min × lines-per-target × targets. Shadow Partner modifier only works on claws.
+          Avg × lines-per-target × targets. Shadow Partner modifier only works on claws.
         </p>
       </div>
 
@@ -1757,27 +1778,6 @@
         <input type="range" id="daggerMastLv" min="0" max="20" value="0" step="1" oninput="recalc()">
         <span class="calc" id="daggerMastLvVal">0</span>
         <span class="slider-max">/20</span>
-      </div>
-    </div>
-
-<!-- GUARD -->
-    <div class="panel" style="margin-top:12px">
-      <h2>GUARD</h2>
-      <div class="row" style="margin-bottom:8px; flex-wrap:wrap; align-items:center; gap:6px;">
-        <span class="label">Shield</span>
-        <select id="guardShield" onchange="recalc()" style="max-width:220px;"></select>
-      </div>
-      <div class="row" style="margin-bottom:6px; flex-wrap:wrap; align-items:center; gap:4px 12px;">
-        <span class="label">WDEF</span>
-        <span class="calc" id="shieldBaseWdef">0</span>
-        <span class="label">MDEF</span>
-        <span class="calc" id="shieldMdef">0</span>
-        <span class="label">Guard</span>
-        <span class="calc" id="guardChance">0%</span>
-      </div>
-      <div class="row" style="margin-bottom:0;">
-        <span class="label">Custom WDEF</span>
-        <input type="number" id="customShieldWdef" value="0" min="0" max="500" oninput="recalc()">
       </div>
     </div>
 
@@ -2746,12 +2746,10 @@ function recalc() {
     targetsUsed = Math.max(1, Math.min(skillInfo.maxTargets, parseInt(multiSel.value, 10) || defaultTargets));
   }
   const totalLines = skillInfo.lines * targetsUsed;
-  // Use min (low) line damage for conservative estimate
-  const lineMin = Math.floor(low);
-  const mainDmg = lineMin * totalLines;
+  const mainDmg = Math.floor(mid) * totalLines;
   // SP only on Lucky Seven / Avenger / Drain + claw + SP level > 0
   const spForEst = (spActive && skillInfo.spOk);
-  const spDmg = spForEst ? Math.floor(low * spFactor) * totalLines : 0;
+  const spDmg = spForEst ? Math.floor(mid * spFactor) * totalLines : 0;
   set('estCastDmg', mainDmg + spDmg);
   if (spForEst) {
     set('estCastBreakdown', skillInfo.lines + ' × ' + targetsUsed + ' = ' + totalLines + ' lines + SP ' + spExtraPct + '%');
