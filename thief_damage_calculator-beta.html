@@ -1245,12 +1245,8 @@
         <span class="bb-lbl">Range</span>
         <span class="bb-val bb-dmg" id="dockRange">—</span>
       </div>
-      <div class="bb-item bb-avg-item">
-        <span class="bb-lbl">Avg</span>
-        <span class="bb-val bb-dmg bb-avg" id="dockMid">—</span>
-      </div>
       <div class="bb-item bb-est-item">
-        <span class="bb-lbl">Est. Output</span>
+        <span class="bb-lbl">Min Output</span>
         <span class="bb-val bb-dmg bb-est" id="dockEst">—</span>
       </div>
     </div>
@@ -1672,7 +1668,7 @@
       <!-- Est. non-crit damage per cast (no DEF) -->
       <div style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border);">
         <div class="row" style="margin-bottom:6px; flex-wrap:wrap; align-items:center; gap:6px 10px;">
-          <span class="label" style="min-width:auto;">Est. non-crit / cast</span>
+          <span class="label" style="min-width:auto;">Est. non-crit / cast (min)</span>
           <span class="calc" id="estCastDmg" style="font-size:1.05rem;">—</span>
         </div>
         <div class="row" style="margin-bottom:4px; flex-wrap:wrap; align-items:center; gap:6px 10px;">
@@ -1692,7 +1688,7 @@
           <span class="label" style="font-size:0.7rem; color:var(--muted);">(multi-target skills only)</span>
         </div>
         <p class="note" style="margin-top:6px; line-height:1.35;">
-          Avg × lines-per-target × targets. Shadow Partner modifier only works on claws.
+          Min × lines-per-target × targets. Shadow Partner modifier only works on claws.
         </p>
       </div>
 
@@ -2063,7 +2059,6 @@ function updateDock() {
   const map = [
     ['estCastDmg', 'dockEst'],
     ['dmgRange', 'dockRange'],
-    ['dmgMid', 'dockMid'],
   ];
   map.forEach(([src, dst]) => {
     const a = document.getElementById(src);
@@ -2751,10 +2746,12 @@ function recalc() {
     targetsUsed = Math.max(1, Math.min(skillInfo.maxTargets, parseInt(multiSel.value, 10) || defaultTargets));
   }
   const totalLines = skillInfo.lines * targetsUsed;
-  const mainDmg = Math.floor(mid) * totalLines;
+  // Use min (low) line damage for conservative estimate
+  const lineMin = Math.floor(low);
+  const mainDmg = lineMin * totalLines;
   // SP only on Lucky Seven / Avenger / Drain + claw + SP level > 0
   const spForEst = (spActive && skillInfo.spOk);
-  const spDmg = spForEst ? Math.floor(mid * spFactor) * totalLines : 0;
+  const spDmg = spForEst ? Math.floor(low * spFactor) * totalLines : 0;
   set('estCastDmg', mainDmg + spDmg);
   if (spForEst) {
     set('estCastBreakdown', skillInfo.lines + ' × ' + targetsUsed + ' = ' + totalLines + ' lines + SP ' + spExtraPct + '%');
