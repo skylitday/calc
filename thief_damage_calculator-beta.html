@@ -51,109 +51,185 @@
     margin: 0 auto;
   }
   @media (max-width: 800px) {
-    body { padding: 8px; }
-    h1 { font-size: 1.1rem; letter-spacing: 0.2px; }
-    .subtitle { font-size: 0.72rem; margin-bottom: 12px; line-height: 1.4; }
-    .grid { grid-template-columns: 1fr; gap: 12px; }
-    .panel { padding: 12px; }
-    .panel h2 { font-size: 0.9rem; }
+    body {
+      padding: 10px 10px 72px;
+      overflow-x: hidden;
+    }
+    h1 {
+      font-size: 1.15rem;
+      letter-spacing: 0.2px;
+      padding: 0 4px;
+      line-height: 1.25;
+    }
+    .subtitle {
+      font-size: 0.72rem;
+      margin-bottom: 12px;
+      line-height: 1.45;
+      padding: 0 6px;
+      text-align: center;
+    }
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+    .panel {
+      padding: 12px 12px;
+      overflow-x: hidden;
+    }
+    .panel h2 {
+      font-size: 0.9rem;
+      text-align: left;
+    }
 
-    /* Allow control rows to wrap (except compact stat rows) */
-    .row,
-    .row[style*="nowrap"],
-    div[style*="flex-wrap:nowrap"] {
+    /* Toolbar: centered, wraps cleanly */
+    .app-toolbar {
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 14px;
+      padding: 0;
+    }
+    .app-toolbar button {
+      padding: 6px 10px;
+      font-size: 0.72rem;
+    }
+    .app-toolbar .build-select {
+      flex: 1 1 100%;
+      max-width: 100%;
+      text-align: center;
+      margin-bottom: 2px;
+    }
+
+    /* Generic rows: wrap, align start, no forced min-widths */
+    .row {
       flex-wrap: wrap !important;
+      align-items: center;
       row-gap: 6px;
       column-gap: 8px;
+      justify-content: flex-start;
     }
+    .row > span:first-child {
+      min-width: 72px;
+      flex-shrink: 0;
+    }
+    .row select {
+      flex: 1 1 140px;
+      max-width: 100%;
+      min-width: 0;
+    }
+    input[type="number"] {
+      max-width: 72px;
+    }
+    input[type="range"] {
+      flex: 1 1 100px;
+      min-width: 80px;
+      max-width: 100%;
+    }
+
+    /* Monster stats: scroll horizontally if needed, stay one line */
     .mob-stats-row {
       flex-wrap: nowrap !important;
-      gap: 3px 6px;
-      font-size: 0.8rem;
-    }
-    .mob-stats-row .label { font-size: 0.72rem; }
-    .mob-stats-row .calc { font-size: 0.8rem; }
-    .row > span:first-child { min-width: 0; }
-
-    /* Drop fixed inline widths so labels/inputs fit */
-    .label[style*="width:"],
-    span[style*="width:"],
-    span[style*="min-width:"] {
-      width: auto !important;
-      min-width: 0 !important;
-      flex-shrink: 1 !important;
-    }
-
-    select {
+      gap: 4px 8px;
+      font-size: 0.78rem;
+      justify-content: flex-start;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
       max-width: 100%;
-      flex: 1 1 140px;
+      padding-bottom: 2px;
     }
-    input[type="number"] { max-width: 72px; }
-    input[type="range"] {
-      width: 100% !important;
+    .mob-stats-row .label { font-size: 0.7rem; }
+    .mob-stats-row .calc { font-size: 0.78rem; }
+
+    .mob-search-wrap {
+      width: 100%;
+      flex: 1 1 100%;
+    }
+    .mob-search-wrap input[type="search"],
+    .mob-search-wrap select {
+      flex: 1 1 100%;
       max-width: 100%;
-      flex: 1 1 120px;
-      min-width: 100px;
     }
 
-    /* Tables: horizontal scroll, keep readable */
-    .panel table {
-      display: block;
+    /* Tables: horizontal scroll inside panel */
+    .gear-table-wrap,
+    .scroll-table-wrap {
+      margin: 0 -4px;
+      padding: 0 4px;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
     }
-    .stat-summary-table { font-size: 0.78rem; }
-    .stat-cell { min-width: 44px; width: 44px; }
-    #gearBody td:first-child { white-space: normal; }
+    .panel table {
+      width: 100%;
+    }
+    .stat-summary-table {
+      font-size: 0.76rem;
+      table-layout: fixed;
+    }
+    .stat-summary-table th,
+    .stat-summary-table td {
+      padding: 4px 2px;
+    }
 
-    /* Compact gear + scroll tables on mobile */
+    /* Compact gear + scroll tables */
     .gear-table { font-size: 0.72rem; }
-    .gear-table th { font-size: 0.62rem; padding: 3px 2px; }
-    .gear-table td { padding: 3px 2px; }
-    .gear-table select { max-width: 140px; font-size: 0.7rem; }
-    .gear-table .gear-stat .gear-val { width: 36px; max-width: 40px; font-size: 0.7rem; }
-    .scroll-table { font-size: 0.72rem; }
-    .scroll-table th { font-size: 0.62rem; padding: 3px 2px; }
+    .gear-table th { font-size: 0.62rem; padding: 4px 3px; }
+    .gear-table td { padding: 4px 3px; }
+    .gear-table select {
+      max-width: 160px;
+      width: 100%;
+      font-size: 0.7rem;
+    }
+    .gear-table .gear-stat .gear-val {
+      width: 38px;
+      max-width: 42px;
+      font-size: 0.72rem;
+      margin: 0 auto;
+      display: block;
+    }
+    .gear-table td.gear-stat { text-align: center; }
+    .scroll-table { font-size: 0.7rem; }
+    .scroll-table th { font-size: 0.6rem; padding: 3px 2px; }
     .scroll-table td { padding: 3px 2px; }
-    .scroll-table select { width: 68px; max-width: 68px; font-size: 0.7rem; }
-    .scroll-table input[type="number"] { width: 30px; max-width: 30px; font-size: 0.7rem; }
+    .scroll-table select { width: 64px; max-width: 64px; font-size: 0.68rem; }
+    .scroll-table input[type="number"] { width: 28px; max-width: 28px; font-size: 0.68rem; }
 
-    .calc { font-size: 0.82rem; }
-    .damage-box .nums .val { font-size: 1.15rem; }
-    .damage-box { padding: 10px; }
-
-    .mob-dmg-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px 12px;
+    .calc { font-size: 0.84rem; }
+    .damage-box {
+      padding: 12px 10px;
     }
-    .mob-dmg-row .dmg-group {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 4px 8px;
-      flex: 1 1 140px;
+    .damage-box .nums {
+      justify-content: center;
+      gap: 8px;
     }
+    .damage-box .nums .val { font-size: 1.2rem; }
+    .damage-box .nums .lbl { font-size: 0.7rem; }
 
-    /* Slider rows: keep one line, aligned label column */
+    /* Slider rows: label + flexible track */
     .slider-row {
       flex-wrap: nowrap !important;
       gap: 6px;
       margin-top: 8px;
+      width: 100%;
+      align-items: center;
     }
     .slider-row > .label:first-child {
-      width: 100px !important;
-      min-width: 100px !important;
+      width: 96px !important;
+      min-width: 96px !important;
+      max-width: 96px !important;
       flex-shrink: 0 !important;
+      font-size: 0.78rem;
     }
     .slider-row input[type="range"] {
-      flex: 0 0 110px !important;
-      width: 110px !important;
-      min-width: 110px !important;
-      max-width: 110px !important;
+      flex: 1 1 auto !important;
+      width: auto !important;
+      min-width: 80px !important;
+      max-width: none !important;
     }
     .slider-row .calc,
-    .slider-row .slider-max {
+    .slider-row .slider-max,
+    .slider-row .slider-extra {
       flex-shrink: 0 !important;
       width: auto !important;
       min-width: 0 !important;
@@ -161,79 +237,77 @@
     .slider-row .calc { min-width: 1.4em !important; text-align: right; }
     .slider-row .slider-max { min-width: 2em !important; }
 
-    /* Damage vs DEF rows — stack cleanly on mobile */
+    /* Damage vs DEF: stack, left-aligned numbers */
     .def-dmg-row {
+      flex-direction: column !important;
       flex-wrap: wrap !important;
-      flex-direction: column;
-      align-items: flex-start !important;
-      gap: 2px 8px !important;
-      margin-bottom: 8px !important;
+      align-items: stretch !important;
+      gap: 4px !important;
+      margin-bottom: 10px !important;
     }
     .def-dmg-row .def-dmg-label {
-      min-width: 0 !important;
       width: auto !important;
-      flex-shrink: 0 !important;
+      min-width: 0 !important;
       font-size: 0.78rem;
     }
     .def-dmg-row .def-dmg-nums {
-      flex: none;
       width: 100%;
       justify-content: flex-start;
-      gap: 6px 10px;
       flex-wrap: wrap;
+      gap: 6px 12px;
     }
-    .def-dmg-row .def-dmg-nums .calc {
-      font-size: 0.9rem;
-    }
+    .def-dmg-row .def-dmg-nums .calc { font-size: 0.92rem; }
 
-    /* Weapon / Gear crit rows — keep columns aligned on mobile */
+    /* Crit rows: wrap cleanly, aligned */
     .crit-stat-row {
-      flex-wrap: nowrap !important;
-      gap: 6px !important;
+      flex-wrap: wrap !important;
+      gap: 6px 8px !important;
+      align-items: center;
     }
     .crit-stat-row .crit-stat-label {
-      width: 112px !important;
-      min-width: 112px !important;
+      width: 120px !important;
+      min-width: 110px !important;
       flex-shrink: 0 !important;
       font-size: 0.78rem;
     }
-    .crit-stat-row .crit-stat-val {
-      width: 1.8em !important;
-      min-width: 1.8em !important;
+    .crit-stat-row .gear-val {
+      width: 44px !important;
+      max-width: 48px !important;
       flex-shrink: 0 !important;
-      text-align: right;
     }
     .crit-stat-row .crit-stat-pct {
-      width: 0.9em !important;
-      flex-shrink: 0 !important;
-    }
-    .crit-stat-row .gear-val {
-      width: 42px !important;
-      max-width: 48px !important;
       flex-shrink: 0 !important;
     }
     .crit-stat-row .crit-stat-hint {
       font-size: 0.65rem;
-      white-space: nowrap;
+      width: 100%;
+      margin-left: 0 !important;
     }
   }
 
   @media (max-width: 420px) {
-    body { padding: 6px; }
-    h1 { font-size: 1rem; }
+    body { padding: 8px 8px 76px; }
+    h1 { font-size: 1.02rem; }
     .panel { padding: 10px; }
-    .stat-cell { min-width: 40px; width: 40px; }
-    input.mod { width: 28px; max-width: 28px; }
-    .damage-box .nums .val { font-size: 1.05rem; }
+    .damage-box .nums .val { font-size: 1.08rem; }
     .slider-row > .label:first-child {
-      width: 88px !important;
-      min-width: 88px !important;
-      font-size: 0.75rem;
+      width: 84px !important;
+      min-width: 84px !important;
+      max-width: 84px !important;
+      font-size: 0.72rem;
     }
     .crit-stat-row .crit-stat-label {
-      width: 100px !important;
+      width: 108px !important;
       min-width: 100px !important;
       font-size: 0.72rem;
+    }
+    .gear-table .gear-stat .gear-val {
+      width: 34px;
+      max-width: 36px;
+    }
+    .app-toolbar button {
+      padding: 5px 8px;
+      font-size: 0.68rem;
     }
   }
 
@@ -780,7 +854,7 @@
   /* ── Toast ── */
   .toast-wrap {
     position: fixed;
-    bottom: 72px;
+    bottom: 58px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000;
@@ -791,7 +865,7 @@
     align-items: center;
   }
   @media (min-width: 801px) {
-    .toast-wrap { bottom: 64px; }
+    .toast-wrap { bottom: 72px; }
   }
   .toast {
     background: #1e2a4a;
@@ -807,9 +881,9 @@
   }
   .toast.show { opacity: 1; transform: translateY(0); }
 
-  /* ── Bottom summary bar (compact, no side-scroll) ── */
+  /* ── Bottom summary strip ── */
   body {
-    padding-bottom: 56px;
+    padding-bottom: 52px;
   }
   .bottom-bar {
     position: fixed;
@@ -817,131 +891,179 @@
     right: 0;
     bottom: 0;
     z-index: 50;
-    background: #121a2e;
-    border-top: 1px solid #2a4a6e;
-    box-shadow: 0 -6px 24px rgba(0,0,0,0.35);
-    padding: 6px 10px;
+    background: linear-gradient(180deg, #152038 0%, #0c1220 100%);
+    border-top: 2px solid #e94560;
+    box-shadow:
+      0 -1px 0 rgba(255, 120, 140, 0.25),
+      0 -12px 40px rgba(0, 0, 0, 0.55),
+      0 0 48px rgba(233, 69, 96, 0.12);
+    padding: 0;
+  }
+  .bottom-bar-inner {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
-    gap: 4px 0;
-    overflow-x: hidden;
+    justify-content: space-between;
+    gap: 12px 20px;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 8px 16px;
+    min-height: 44px;
   }
   .bottom-bar .bb-group {
     display: flex;
     flex-wrap: nowrap;
-    align-items: center;
-    justify-content: center;
-    gap: 8px 12px;
-    padding: 0 10px;
+    align-items: baseline;
+    gap: 6px 8px;
+    min-width: 0;
+  }
+  .bottom-bar .bb-group.bb-dmg-group {
+    gap: 14px 22px;
+    margin-left: auto;
   }
   .bottom-bar .bb-sep {
-    width: 1px;
-    align-self: stretch;
-    min-height: 24px;
-    background: rgba(136,146,176,0.28);
-    margin: 0;
-    flex-shrink: 0;
+    display: none;
   }
   .bottom-bar .bb-item {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1px;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 6px;
     min-width: 0;
   }
   .bottom-bar .bb-lbl {
-    font-size: 0.52rem;
-    color: var(--muted);
+    font-size: 0.65rem;
+    color: #6b7a99;
     text-transform: uppercase;
-    letter-spacing: 0.25px;
-    line-height: 1;
+    letter-spacing: 0.6px;
+    font-weight: 600;
     white-space: nowrap;
+    line-height: 1;
   }
   .bottom-bar .bb-val {
-    font-size: 0.72rem;
+    font-size: 0.9rem;
     font-weight: 700;
-    color: #93c5fd;
+    color: #c8d4f0;
     font-variant-numeric: tabular-nums;
-    line-height: 1.15;
+    line-height: 1.2;
     white-space: nowrap;
   }
   .bottom-bar .bb-val.bb-skill {
-    color: #fbbf24;
-    max-width: 100px;
+    color: #ff8a9a;
+    max-width: 160px;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size: 0.88rem;
   }
   .bottom-bar .bb-val.bb-dmg {
     color: #7ee787;
-    font-size: 0.78rem;
+    font-size: 0.9rem;
   }
   .bottom-bar .bb-val.bb-avg {
-    font-size: 0.88rem;
+    color: #4ade80;
+    font-size: 1.15rem;
     font-weight: 800;
   }
   .bottom-bar .bb-val.flash {
     animation: dockFlash 0.35s ease;
   }
-  /* Mobile: two tight rows, no horizontal scroll */
-  @media (max-width: 800px) {
-    body { padding-bottom: 68px; }
+
+  /* Desktop: stronger presence, larger type, clearer hierarchy */
+  @media (min-width: 801px) {
+    body { padding-bottom: 64px; }
     .bottom-bar {
-      padding: 5px 6px 6px;
-      gap: 3px 0;
-      justify-content: center;
-      overflow-x: hidden;
-      flex-wrap: wrap;
+      border-top-width: 3px;
+      box-shadow:
+        0 -1px 0 rgba(255, 140, 160, 0.35),
+        0 -16px 48px rgba(0, 0, 0, 0.55),
+        0 0 64px rgba(233, 69, 96, 0.16);
     }
-    .bottom-bar .bb-group {
-      flex-wrap: nowrap;
-      padding: 0 4px;
-      gap: 6px 8px;
-      flex: 0 0 auto;
+    .bottom-bar-inner {
+      max-width: 900px;
+      padding: 12px 28px;
+      min-height: 56px;
+      gap: 24px 36px;
     }
-    /* Hide vertical separators on narrow screens — less clutter */
-    .bottom-bar .bb-sep {
-      display: none;
+    .bottom-bar .bb-group.bb-dmg-group {
+      gap: 28px 40px;
+    }
+    .bottom-bar .bb-item {
+      gap: 8px;
+    }
+    .bottom-bar .bb-item.bb-range-item,
+    .bottom-bar .bb-item.bb-avg-item {
+      padding-left: 20px;
+      border-left: 1px solid rgba(136, 146, 176, 0.28);
     }
     .bottom-bar .bb-lbl {
-      font-size: 0.48rem;
-      letter-spacing: 0.15px;
-    }
-    .bottom-bar .bb-val {
-      font-size: 0.68rem;
-    }
-    .bottom-bar .bb-val.bb-dmg {
-      font-size: 0.68rem;
-    }
-    .bottom-bar .bb-val.bb-avg {
-      font-size: 0.78rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.8px;
+      color: #8892b0;
     }
     .bottom-bar .bb-val.bb-skill {
-      max-width: 72px;
-      font-size: 0.65rem;
+      font-size: 1.05rem;
+      max-width: 220px;
+      color: #fda4af;
+    }
+    .bottom-bar .bb-val.bb-dmg {
+      font-size: 1.05rem;
+      color: #86efac;
+    }
+    .bottom-bar .bb-val.bb-avg {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #4ade80;
+      text-shadow: 0 0 18px rgba(74, 222, 128, 0.35);
+    }
+  }
+  @media (max-width: 800px) {
+    body { padding-bottom: 56px; }
+    .bottom-bar-inner {
+      padding: 8px 12px;
+      gap: 8px 12px;
+    }
+    .bottom-bar .bb-group.bb-dmg-group {
+      gap: 10px 14px;
+    }
+    .bottom-bar .bb-lbl {
+      font-size: 0.58rem;
+      letter-spacing: 0.4px;
+    }
+    .bottom-bar .bb-val {
+      font-size: 0.82rem;
+    }
+    .bottom-bar .bb-val.bb-skill {
+      max-width: 100px;
+      font-size: 0.8rem;
+    }
+    .bottom-bar .bb-val.bb-dmg {
+      font-size: 0.82rem;
+    }
+    .bottom-bar .bb-val.bb-avg {
+      font-size: 1.02rem;
     }
   }
   @media (max-width: 380px) {
-    body { padding-bottom: 72px; }
-    .bottom-bar .bb-group {
-      gap: 4px 6px;
-      padding: 0 2px;
+    body { padding-bottom: 58px; }
+    .bottom-bar-inner {
+      padding: 7px 10px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
-    .bottom-bar .bb-val,
-    .bottom-bar .bb-val.bb-dmg {
-      font-size: 0.62rem;
-    }
-    .bottom-bar .bb-val.bb-avg {
-      font-size: 0.72rem;
+    .bottom-bar .bb-group.bb-dmg-group {
+      margin-left: 0;
+      width: 100%;
+      justify-content: center;
     }
     .bottom-bar .bb-val.bb-skill {
-      max-width: 60px;
-      font-size: 0.6rem;
+      max-width: 120px;
+      font-size: 0.76rem;
+    }
+    .bottom-bar .bb-val.bb-avg {
+      font-size: 0.96rem;
     }
   }
   @keyframes dockFlash {
-    0% { filter: brightness(2); transform: scale(1.06); }
+    0% { filter: brightness(2); transform: scale(1.04); }
     100% { filter: brightness(1); transform: scale(1); }
   }
 
@@ -972,7 +1094,7 @@
 
   @media (max-width: 800px) {
     .app-toolbar button { padding: 5px 10px; font-size: 0.72rem; }
-    .toast-wrap { bottom: 76px; }
+    .toast-wrap { bottom: 62px; }
   }
   @media print {
     .app-toolbar, .bottom-bar, .toast-wrap { display: none !important; }
@@ -1743,11 +1865,8 @@ function updateDock() {
   }
 
   const map = [
-    ['skillMult', 'dockSkillMult'],
     ['dmgRange', 'dockRange'],
     ['dmgMid', 'dockMid'],
-    ['wepMax', 'dockWepMax'],
-    ['wepMin', 'dockWepMin'],
   ];
   map.forEach(([src, dst]) => {
     const a = document.getElementById(src);
@@ -2548,33 +2667,22 @@ init();
 </script>
 
 <div class="bottom-bar" id="bottomBar" aria-label="Quick summary">
-  <div class="bb-group">
-    <div class="bb-item">
-      <span class="bb-lbl">Skill</span>
-      <span class="bb-val bb-skill" id="dockSkill">—</span>
+  <div class="bottom-bar-inner">
+    <div class="bb-group">
+      <div class="bb-item bb-skill-item">
+        <span class="bb-lbl">Skill</span>
+        <span class="bb-val bb-skill" id="dockSkill">—</span>
+      </div>
     </div>
-    <div class="bb-item">
-      <span class="bb-lbl">Mult</span>
-      <span class="bb-val" id="dockSkillMult">—</span>
-    </div>
-    <div class="bb-item">
-      <span class="bb-lbl">Wep Max</span>
-      <span class="bb-val" id="dockWepMax">—</span>
-    </div>
-    <div class="bb-item">
-      <span class="bb-lbl">Wep Min</span>
-      <span class="bb-val" id="dockWepMin">—</span>
-    </div>
-  </div>
-  <div class="bb-sep"></div>
-  <div class="bb-group">
-    <div class="bb-item">
-      <span class="bb-lbl">Range</span>
-      <span class="bb-val bb-dmg" id="dockRange">—</span>
-    </div>
-    <div class="bb-item">
-      <span class="bb-lbl">Avg</span>
-      <span class="bb-val bb-dmg bb-avg" id="dockMid">—</span>
+    <div class="bb-group bb-dmg-group">
+      <div class="bb-item bb-range-item">
+        <span class="bb-lbl">Range</span>
+        <span class="bb-val bb-dmg" id="dockRange">—</span>
+      </div>
+      <div class="bb-item bb-avg-item">
+        <span class="bb-lbl">Avg</span>
+        <span class="bb-val bb-dmg bb-avg" id="dockMid">—</span>
+      </div>
     </div>
   </div>
 </div>
