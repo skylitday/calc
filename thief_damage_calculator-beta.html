@@ -833,10 +833,13 @@
   }
 
   .damage-box {
-    background: #0f3460;
+    /* Classic Maple non-crit hit — bright orange */
+    background: linear-gradient(180deg, #3d2208 0%, #2a1605 100%);
+    border: 1px solid #f97316;
     border-radius: 6px;
     padding: 12px;
     margin-top: 10px;
+    box-shadow: 0 0 12px rgba(249, 115, 22, 0.25), 0 0 0 1px rgba(249, 115, 22, 0.2), inset 0 1px 0 rgba(253, 186, 116, 0.15);
   }
   .damage-box .nums {
     display: flex;
@@ -847,11 +850,11 @@
   .damage-box .nums .val {
     font-size: 1.4rem;
     font-weight: 700;
-    color: #4ade80;
+    color: #ff9f1a; /* classic Maple normal damage — bright orange */
   }
   .damage-box .nums .lbl {
     font-size: 0.75rem;
-    color: var(--muted);
+    color: #fdba74;
   }
   /* Critical card — Maple-style red accents */
   .damage-box.crit {
@@ -1865,13 +1868,14 @@
         </span>
       </div>
 
-
-
-
-
-
-
-
+      <div class="row def-dmg-row" style="margin-bottom:8px;">
+        <span class="label def-dmg-label">Skill Output (no crit)</span>
+        <span class="def-dmg-nums">
+          <span class="calc" id="defEstRange">—</span>
+          <span class="label">Avg</span>
+          <span class="calc" id="defEstAvg">—</span>
+        </span>
+      </div>
 
       <div class="slider-row" style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border);">
         <span class="label">Disorder</span>
@@ -2867,6 +2871,9 @@ function recalc() {
     set('defMid', Math.floor(mid * factor));
     set('defCritRange', '(' + Math.floor(low * critMult * factor) + ' ~ ' + Math.floor(high * critMult * factor) + ')');
     set('defCritMid', Math.floor(mid * critMult * factor));
+    // Estimated non-crit skill output vs DEF (same lines/targets/SP as Estimated Output)
+    set('defEstRange', '(' + Math.floor(estMin * factor) + ' ~ ' + Math.floor(estMax * factor) + ')');
+    set('defEstAvg', Math.floor(estAvg * factor));
 
     // Hit rate: your ACC vs monster Avoid
     const levelDiff = Math.max(0, (mob.level || 0) - level);
@@ -2923,7 +2930,9 @@ function recalc() {
     set('defRange', '—');
     set('defMid', '—');
     set('defCritRange', '—');
-        set('defCritMid', '—');
+    set('defCritMid', '—');
+    set('defEstRange', '—');
+    set('defEstAvg', '—');
   }
 
   // Shield Guard — Custom WDEF only used when shield preset is Custom
