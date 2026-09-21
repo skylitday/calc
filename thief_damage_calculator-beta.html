@@ -877,6 +877,38 @@
     color: #9f1239;
   }
 
+  /* Estimated Output — plain rows (no cards) */
+  .est-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 12px;
+    margin-bottom: 6px;
+  }
+  .est-row .est-label {
+    color: var(--muted);
+    font-size: 0.8rem;
+    min-width: 72px;
+  }
+  .est-row .est-val {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #ff9f1a;
+  }
+  .est-row .est-sep {
+    color: var(--muted);
+    font-size: 0.75rem;
+  }
+  .est-row.crit .est-label { color: #fb7185; }
+  .est-row.crit .est-val { color: #fda4af; }
+  .est-sub {
+    font-size: 0.68rem;
+    color: var(--muted);
+    margin: -2px 0 8px;
+    line-height: 1.3;
+  }
+  .est-sub.crit { color: #9f1239; }
+
   .scroll-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1761,42 +1793,26 @@
 <!-- ESTIMATED OUTPUT -->
     <div class="panel" style="margin-top:12px">
       <h2>ESTIMATED OUTPUT</h2>
-      <div class="damage-box">
-        <div class="nums" style="justify-content:space-around;">
-          <div>
-            <div class="lbl">Min</div>
-            <div class="val" id="estCastMin">—</div>
-          </div>
-          <div>
-            <div class="lbl">Avg</div>
-            <div class="val" id="estCastDmg">—</div>
-          </div>
-          <div>
-            <div class="lbl">Max</div>
-            <div class="val" id="estCastMax">—</div>
-          </div>
-        </div>
+      <div class="est-row">
+        <span class="est-label">Non-crit</span>
+        <span class="est-sep">Min</span>
+        <span class="est-val" id="estCastMin">—</span>
+        <span class="est-sep">Max</span>
+        <span class="est-val" id="estCastMax">—</span>
+        <span class="est-sep">Avg</span>
+        <span class="est-val" id="estCastDmg">—</span>
       </div>
-      <p class="note" style="margin-top:6px; margin-bottom:0; line-height:1.35; text-align:center;">
-        Above estimate assumes 0% crit rate.
-      </p>
-      <div class="damage-box crit" style="margin-top:10px;">
-        <div class="crit-title">CRITICAL @ <span id="estCastCritPct">20</span>% dmg <span style="font-weight:400;opacity:0.85;">(100% crit rate simulated)</span></div>
-        <div class="nums" style="justify-content:space-around;">
-          <div>
-            <div class="lbl">Min</div>
-            <div class="val" id="estCastCritMin">—</div>
-          </div>
-          <div>
-            <div class="lbl">Avg</div>
-            <div class="val" id="estCastCritAvg">—</div>
-          </div>
-          <div>
-            <div class="lbl">Max</div>
-            <div class="val" id="estCastCritMax">—</div>
-          </div>
-        </div>
+      <div class="est-sub">Assumes 0% crit rate</div>
+      <div class="est-row crit">
+        <span class="est-label">Crit @ <span id="estCastCritPct">20</span>%</span>
+        <span class="est-sep">Min</span>
+        <span class="est-val" id="estCastCritMin">—</span>
+        <span class="est-sep">Max</span>
+        <span class="est-val" id="estCastCritMax">—</span>
+        <span class="est-sep">Avg</span>
+        <span class="est-val" id="estCastCritAvg">—</span>
       </div>
+      <div class="est-sub crit">100% crit rate simulated</div>
       <div class="row" style="margin-top:10px; margin-bottom:4px; flex-wrap:wrap; align-items:center; gap:6px 10px;">
         <span class="label" style="min-width:auto;">Lines × targets</span>
         <span class="calc" id="estCastBreakdown" style="font-size:0.85rem;">—</span>
