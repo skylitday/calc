@@ -1661,10 +1661,11 @@
         <span class="slider-max">/15</span>
       </div>
       <div class="slider-row">
-        <span class="label">Mastery Lv</span>
+        <span class="label">Mastery</span>
         <input type="range" id="masteryLv" min="0" max="20" value="0" step="1" oninput="recalc()">
         <span class="calc" id="masteryLvVal">0</span>
         <span class="slider-max">/20</span>
+        <span class="slider-extra">Lv. <span class="calc" id="masteryRankVal">0</span>/10</span>
       </div>
     </div>
 
@@ -2650,11 +2651,13 @@ function recalc() {
   set('fAttPower', attPower);
 
   // Mastery & Wep multipliers
-  // m = (SkillLevel / 20 + 0.1) × 0.8
-  // CoT2 mastery skills max at 20; skill lv 20 = same coefficient as old rank 10
-  const masteryLv = Math.max(0, Math.min(20, num('masteryLv')));
-  set('masteryLvVal', masteryLv);
-  let mastery = (masteryLv / 20 + 0.1) * 0.8;
+  // Slider = skill points (0–20). Formula uses Mastery Level 0–10 (2 SP per rank).
+  // m = (MasteryLevel / 10 + 0.1) × 0.8  (MeowDB / CoT2)
+  const masterySp = Math.max(0, Math.min(20, num('masteryLv')));
+  const masteryRank = Math.min(10, Math.floor(masterySp / 2));
+  set('masteryLvVal', masterySp);
+  set('masteryRankVal', masteryRank);
+  let mastery = (masteryRank / 10 + 0.1) * 0.8;
   let wepMax, wepMin;
   // isMixed: skill uses the ordinary melee pool (60% swing / 40% stab → expected 1.4 for dagger)
   let isMixed = false;
