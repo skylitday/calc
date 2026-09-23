@@ -1688,7 +1688,7 @@
       <h2>SKILL</h2>
       <div class="row">
         <span class="label">Skill</span>
-        <select id="skill" onchange="recalc()" style="max-width:230px;">
+        <select id="skill" onchange="onSkillChange()" style="max-width:230px;">
           <option value="Basic Attack">Basic Attack</option>
           <option>Double Stab</option>
           <option>Savage Blow</option>
@@ -1697,15 +1697,17 @@
           <option>Band of Thieves</option>
           <option>Lucky Seven</option>
           <option>Drain</option>
-
           <option>Avenger</option>
           <option>Shadow Web</option>
-
-
         </select>
-
         <span class="label">Skill Mult</span>
         <span class="calc" id="skillMult">—</span>
+      </div>
+      <div class="slider-row" id="skillLvRow" style="margin-top:8px;">
+        <span class="label">Skill Level</span>
+        <input type="range" id="skillLv" min="1" max="30" value="30" step="1" oninput="recalc()">
+        <span class="calc" id="skillLvVal">30</span>
+        <span class="slider-max" id="skillLvMax">/30</span>
       </div>
       <details style="margin-top:10px; padding-top:8px; border-top:1px solid var(--border);">
         <summary style="cursor:pointer; font-size:0.8rem; color:var(--muted); user-select:none; list-style:none; display:flex; align-items:center; gap:6px;">
@@ -1932,6 +1934,121 @@ const GEAR_SLOTS = [
   { id: 'shield', list: 'Shield', label: 'Shield' },
 ];
 
+/* ── CoT2 skill data (osmsdataexplorer / MeowDB) ──
+   dmgPct = skill damage % per hit (or total for Shadow Web)
+   lines  = hits per target
+   maxTargets / spOk for estimated output
+*/
+const SKILL_DATA = {
+  'Basic Attack':    { max: 0,  spOk: true,  maxTargets: 1 },
+  'Double Stab':     { max: 20, spOk: false, maxTargets: 1 },
+  'Savage Blow':     { max: 30, spOk: false, maxTargets: 1 },
+  'Steal':           { max: 30, spOk: false, maxTargets: 2 },
+  'Assaulter':       { max: 30, spOk: false, maxTargets: 1 },
+  'Band of Thieves': { max: 30, spOk: false, maxTargets: 6 },
+  'Lucky Seven':     { max: 20, spOk: true,  maxTargets: 1 },
+  'Drain':           { max: 30, spOk: true,  maxTargets: 1 },
+  'Avenger':         { max: 30, spOk: true,  maxTargets: 4 },
+  'Shadow Web':      { max: 20, spOk: false, maxTargets: 4 },
+};
+
+/** CoT2 per-level skill stats. lv 0 = unlearned (Basic Attack behavior). */
+function getSkillStats(skill, lv) {
+  const meta = SKILL_DATA[skill] || { max: 0, spOk: false, maxTargets: 1 };
+  const max = meta.max || 0;
+  // defaults
+  let dmgPct = 100, lines = 1, maxTargets = meta.maxTargets || 1;
+
+  // Basic Attack is always 100% (ratio 1.00)
+  if (skill === 'Basic Attack' || max <= 0) {
+    return { dmgPct: 100, skillMult: 1, lines: 1, maxTargets: 1, spOk: true, lv: 0, max: 0 };
+  }
+  // Skills scale 1..max (no level 0); default to max if invalid
+  lv = Math.max(1, Math.min(max, Math.floor(lv || max)));
+
+  if (skill === 'Double Stab') {
+    // L1–19: 80+4*(lv-1); L20: 160
+    dmgPct = (lv >= 20) ? 160 : (80 + (lv - 1) * 4);
+    lines = 2;
+  } else if (skill === 'Lucky Seven') {
+    // L1–19: 60+4*(lv-1); L20: 140
+    dmgPct = (lv >= 20) ? 140 : (60 + (lv - 1) * 4);
+    lines = 2;
+  } else if (skill === 'Drain') {
+    // L1–29: 180+2*(lv-1); L30: 240
+    dmgPct = (lv >= 30) ? 240 : (180 + (lv - 1) * 2);
+    lines = 1;
+  } else if (skill === 'Steal') {
+    // L1–29: 120+2*(lv-1); L30: 180
+    dmgPct = (lv >= 30) ? 180 : (120 + (lv - 1) * 2);
+    lines = 1;
+  } else if (skill === 'Assaulter') {
+    // L1–29: 480+4*(lv-1); L30: 600
+    dmgPct = (lv >= 30) ? 600 : (480 + (lv - 1) * 4);
+    lines = 1;
+  } else if (skill === 'Band of Thieves') {
+    // L1–29: 160+2*(lv-1); L30: 220 · thieves 3/4/5 at lv 1/11/21
+    dmgPct = (lv >= 30) ? 220 : (160 + (lv - 1) * 2);
+    lines = 1;
+    maxTargets = (lv >= 21) ? 5 : (lv >= 11) ? 4 : 3;
+  } else if (skill === 'Avenger') {
+    // L1–29: 90+2*(lv-1); L30: 150
+    dmgPct = (lv >= 30) ? 150 : (90 + (lv - 1) * 2);
+    lines = 1;
+  } else if (skill === 'Shadow Web') {
+    // total damage %: L1–19: 25+(lv-1); L20: 45 · targets 3→4 at 11
+    dmgPct = (lv >= 20) ? 45 : (25 + (lv - 1));
+    lines = 1;
+    maxTargets = (lv >= 11) ? 4 : 3;
+  } else if (skill === 'Savage Blow') {
+    // hits: 4 (1–10), 5 (11–20), 6 (21–30)
+    // dmg% within each decade: 65,66,…73,75
+    if (lv <= 10) lines = 4;
+    else if (lv <= 20) lines = 5;
+    else lines = 6;
+    const pos = ((lv - 1) % 10) + 1; // 1..10 within decade
+    dmgPct = (pos >= 10) ? 75 : (64 + pos); // 65..73, then 75
+  }
+
+  return {
+    dmgPct,
+    skillMult: dmgPct / 100,
+    lines,
+    maxTargets,
+    spOk: !!meta.spOk,
+    lv,
+    max,
+  };
+}
+
+function onSkillChange() {
+  const skill = val('skill');
+  const meta = SKILL_DATA[skill] || { max: 0 };
+  const row = document.getElementById('skillLvRow');
+  const slider = document.getElementById('skillLv');
+  const maxEl = document.getElementById('skillLvMax');
+  if (!slider) return;
+  const max = meta.max || 0;
+  if (max <= 0) {
+    if (row) row.style.display = 'none';
+  } else {
+    if (row) row.style.display = '';
+    slider.min = 1;
+    slider.max = max;
+    if (maxEl) maxEl.textContent = '/' + max;
+    // keep current level if still valid; default to max when switching skill
+    let cur = parseInt(slider.value, 10) || max;
+    if (slider.dataset.lastSkill !== skill) {
+      cur = max;
+      slider.dataset.lastSkill = skill;
+    }
+    if (cur > max) cur = max;
+    if (cur < 1) cur = 1;
+    slider.value = cur;
+  }
+  recalc();
+}
+
 function fillSelect(sel, items, selected, dataSource) {
   sel.innerHTML = '';
   items.forEach(item => {
@@ -1989,12 +2106,30 @@ function init() {
     onGearSelect(slot.id, true);
   });
 
-  // Skill default
+  // Skill default + level slider bounds
   const skillSel = document.getElementById('skill');
   for (const o of skillSel.options) {
     if (o.value === (DEFAULTS.skill || 'Basic Attack')) o.selected = true;
   }
-
+  // Initialize skill level UI (hide for Basic Attack; set max for others)
+  (function seedSkillLv() {
+    const skill = val('skill');
+    const meta = SKILL_DATA[skill] || { max: 0 };
+    const row = document.getElementById('skillLvRow');
+    const slider = document.getElementById('skillLv');
+    const maxEl = document.getElementById('skillLvMax');
+    if (!slider) return;
+    if (!meta.max) {
+      if (row) row.style.display = 'none';
+    } else {
+      if (row) row.style.display = '';
+      slider.min = 1;
+      slider.max = meta.max;
+      if (maxEl) maxEl.textContent = '/' + meta.max;
+      slider.value = meta.max; // default maxed
+      slider.dataset.lastSkill = skill;
+    }
+  })();
 
   const guardShieldSel = document.getElementById('guardShield');
   if (guardShieldSel) {
@@ -2136,7 +2271,7 @@ function collectBuild() {
     'weapon', 'stars', 'watkMod',
     'weaponCritD', 'weaponCritR', 'gearCritD', 'gearCritR',
     'attBuff', 'customAtt', 'nimbleBodyLv', 'masteryLv',
-    'skill', 'shadowPartnerLv', 'multiTargetMod',
+    'skill', 'skillLv', 'shadowPartnerLv', 'multiTargetMod',
     'critSkill', 'critRatePreset', 'critThrowLv', 'daggerMastLv',
     'guardShield', 'customShieldWdef',
     'monsterSelect', 'disorderLv',
@@ -2185,6 +2320,28 @@ function applyBuild(data, silent) {
     });
     if (keep) mobSel.value = keep;
   }
+  // Sync skill level slider max/visibility to loaded skill (keep saved skillLv)
+  (function syncSkillLvUi() {
+    const skill = val('skill');
+    const meta = SKILL_DATA[skill] || { max: 0 };
+    const row = document.getElementById('skillLvRow');
+    const slider = document.getElementById('skillLv');
+    const maxEl = document.getElementById('skillLvMax');
+    if (!slider) return;
+    if (!meta.max) {
+      if (row) row.style.display = 'none';
+    } else {
+      if (row) row.style.display = '';
+      slider.min = 1;
+      slider.max = meta.max;
+      if (maxEl) maxEl.textContent = '/' + meta.max;
+      let cur = parseInt(slider.value, 10) || meta.max;
+      if (cur > meta.max) cur = meta.max;
+      if (cur < 1) cur = 1;
+      slider.value = cur;
+      slider.dataset.lastSkill = skill;
+    }
+  })();
   recalc();
   if (!silent) toast('Loaded: ' + (data.name || 'build'));
   return true;
@@ -2478,19 +2635,28 @@ function recalc() {
   }
   set('effWatk', effWatk);
 
-  // Skill
+  // Skill — CoT2 per-level damage % (osmsdataexplorer)
   const skill = val('skill');
-  let skillMult = 1;
-  if (skill === 'Lucky Seven') skillMult = 1.4;
-  else if (skill === 'Drain') skillMult = 2.4;
-  else if (skill === 'Double Stab') skillMult = 1.6;
-  else if (skill === 'Savage Blow') skillMult = 0.75;
-  else if (skill === 'Steal') skillMult = 1.8;
-  else if (skill === 'Assaulter') skillMult = 6.0;
-  else if (skill === 'Band of Thieves') skillMult = 2.2;
-  else if (skill === 'Avenger') skillMult = 1.5;
-  else if (skill === 'Shadow Web') skillMult = 0.45; // CoT2 max Lv20: total 45% damage (OSMS id:4111002)
-  set('skillMult', skillMult);
+  const skillMeta = SKILL_DATA[skill] || { max: 0 };
+  let skillLv = skillMeta.max > 0
+    ? Math.max(1, Math.min(skillMeta.max, Math.floor(num('skillLv') || skillMeta.max)))
+    : 0;
+  // keep slider display in sync
+  const skillLvEl = document.getElementById('skillLv');
+  if (skillLvEl && skillMeta.max > 0) {
+    skillLvEl.min = 1;
+    skillLvEl.max = skillMeta.max;
+    if (Number(skillLvEl.value) !== skillLv) skillLvEl.value = skillLv;
+  }
+  set('skillLvVal', skillLv);
+  const skMaxEl = document.getElementById('skillLvMax');
+  if (skMaxEl) skMaxEl.textContent = '/' + (skillMeta.max || 0);
+  const skillRow = document.getElementById('skillLvRow');
+  if (skillRow) skillRow.style.display = (skillMeta.max > 0) ? '' : 'none';
+
+  const skillStats = getSkillStats(skill, skillLv);
+  const skillMult = skillStats.skillMult;
+  set('skillMult', skillMult.toFixed(2));
 
 
 
@@ -2765,31 +2931,21 @@ function recalc() {
   }
 
   // ── Est. non-crit damage per cast (no DEF) ──
-  // lines per target; multi-target skills use the Targets dropdown (capped)
-  // SP bonus only for throwing stars / Avenger / Drain (Lucky Seven, Avenger, Drain) + claw
-  const SKILL_LINES = {
-    'Basic Attack':     { lines: 1, maxTargets: 1, spOk: true },
-    'Double Stab':      { lines: 2, maxTargets: 1, spOk: false },
-    'Savage Blow':      { lines: 6, maxTargets: 1, spOk: false },
-    'Steal':            { lines: 1, maxTargets: 2, spOk: false },
-    'Assaulter':        { lines: 1, maxTargets: 1, spOk: false },
-    'Band of Thieves':  { lines: 1, maxTargets: 6, spOk: false },
-    'Lucky Seven':      { lines: 2, maxTargets: 1, spOk: true },
-    'Drain':            { lines: 1, maxTargets: 1, spOk: true },
-    'Avenger':          { lines: 1, maxTargets: 4, spOk: true },
-    'Shadow Web':       { lines: 1, maxTargets: 4, spOk: false },
+  // lines / maxTargets from CoT2 skill level (Savage Blow hits, Band of Thieves summons, etc.)
+  const skillInfo = {
+    lines: skillStats.lines,
+    maxTargets: skillStats.maxTargets,
+    spOk: skillStats.spOk,
   };
-  const skillInfo = SKILL_LINES[skill] || { lines: 1, maxTargets: 1, spOk: false };
   const multiRow = document.getElementById('multiTargetRow');
   const multiSel = document.getElementById('multiTargetMod');
   const isMulti = skillInfo.maxTargets > 1;
   if (multiRow) multiRow.style.display = isMulti ? '' : 'none';
-  // Default targets: Band of Thieves / Avenger → 4; other multi-hit → 2
+  // Default targets: Band of Thieves / Avenger → min(4, max); other multi → 2
   let defaultTargets = 1;
   if (isMulti) {
-    if (skill === 'Band of Thieves' || skill === 'Avenger') defaultTargets = 4;
-    else defaultTargets = 2;
-    defaultTargets = Math.min(defaultTargets, skillInfo.maxTargets);
+    if (skill === 'Band of Thieves' || skill === 'Avenger') defaultTargets = Math.min(4, skillInfo.maxTargets);
+    else defaultTargets = Math.min(2, skillInfo.maxTargets);
   }
   let targetsUsed = 1;
   if (isMulti && multiSel) {
@@ -2797,7 +2953,6 @@ function recalc() {
       const v = parseInt(opt.value, 10);
       opt.disabled = v > skillInfo.maxTargets;
     });
-    // Apply default when skill changes or current value is over max / invalid
     const cur = parseInt(multiSel.value, 10) || 0;
     if (!cur || cur > skillInfo.maxTargets || multiSel.dataset.lastSkill !== skill) {
       multiSel.value = String(defaultTargets);
@@ -2806,7 +2961,6 @@ function recalc() {
     targetsUsed = Math.max(1, Math.min(skillInfo.maxTargets, parseInt(multiSel.value, 10) || defaultTargets));
   }
   const totalLines = skillInfo.lines * targetsUsed;
-  // SP on Basic Attack / Lucky Seven / Avenger / Drain + claw + SP level > 0
   const spForEst = (spActive && skillInfo.spOk);
   const lineMin = Math.floor(low);
   const lineAvg = Math.floor(mid);
