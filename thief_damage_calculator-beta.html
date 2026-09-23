@@ -1987,10 +1987,11 @@ function getSkillStats(skill, lv) {
     dmgPct = (lv >= 30) ? 600 : (480 + (lv - 1) * 4);
     lines = 1;
   } else if (skill === 'Band of Thieves') {
-    // L1–29: 160+2*(lv-1); L30: 220 · thieves 3/4/5 at lv 1/11/21
+    // L1–29: 160+2*(lv-1); L30: 220
+    // CoT2 summons 3/4/5 thieves by rank; model as up to self+5 = 6 lines, default 4
     dmgPct = (lv >= 30) ? 220 : (160 + (lv - 1) * 2);
     lines = 1;
-    maxTargets = (lv >= 21) ? 5 : (lv >= 11) ? 4 : 3;
+    maxTargets = 6;
   } else if (skill === 'Avenger') {
     // L1–29: 90+2*(lv-1); L30: 150
     dmgPct = (lv >= 30) ? 150 : (90 + (lv - 1) * 2);
