@@ -1385,7 +1385,7 @@
       <div class="gear-table-wrap">
         <table class="gear-table">
           <thead>
-            <tr><th>Slot</th><th>Item</th><th>STR</th><th>DEX</th><th>LUK</th></tr>
+            <tr><th>Slot</th><th>Item</th><th>STR</th><th>DEX</th><th>LUK</th><th>ACC</th><th>EVA</th></tr>
           </thead>
           <tbody id="gearBody"></tbody>
           <tfoot>
@@ -1394,6 +1394,8 @@
               <td><span class="calc" id="totStr">0</span></td>
               <td><span class="calc" id="totDex">0</span></td>
               <td><span class="calc" id="totLuk">0</span></td>
+              <td><span class="calc" id="totAcc">0</span></td>
+              <td><span class="calc" id="totEva">0</span></td>
             </tr>
           </tfoot>
         </table>
@@ -2063,6 +2065,12 @@ function init() {
       <td class="gear-stat">
         <input type="number" class="gear-val" id="gLuk_${slot.id}" value="0" oninput="recalc()" title="LUK (item base ±5)">
       </td>
+      <td class="gear-stat">
+        <input type="number" class="gear-val" id="gAcc_${slot.id}" value="0" oninput="recalc()" title="ACC (item base ±5)">
+      </td>
+      <td class="gear-stat">
+        <input type="number" class="gear-val" id="gEva_${slot.id}" value="0" oninput="recalc()" title="EVA (item base ±5)">
+      </td>
     `;
     tbody.appendChild(tr);
     // Always pass armorMap so CRIT / ACC / EVA tags can appear on any slot
@@ -2247,7 +2255,7 @@ function collectBuild() {
   });
   if (typeof GEAR_SLOTS !== 'undefined') {
     GEAR_SLOTS.forEach(slot => {
-      ['gear_', 'gStr_', 'gDex_', 'gLuk_'].forEach(prefix => {
+      ['gear_', 'gStr_', 'gDex_', 'gLuk_', 'gAcc_', 'gEva_'].forEach(prefix => {
         const id = prefix + slot.id;
         const el = document.getElementById(id);
         if (el) data[id] = el.value;
@@ -2522,6 +2530,13 @@ function onGearSelect(slotId, silent) {
   setIn('gStr_' + slotId, a.str || 0);
   setIn('gDex_' + slotId, a.dex || 0);
   setIn('gLuk_' + slotId, a.luk || 0);
+  let baseAcc = a.acc || 0, baseEva = 0;
+  if (typeof GEAR_ACC_EVA !== 'undefined' && GEAR_ACC_EVA[name]) {
+    baseAcc = GEAR_ACC_EVA[name].acc || 0;
+    baseEva = GEAR_ACC_EVA[name].eva || 0;
+  }
+  setIn('gAcc_' + slotId, baseAcc);
+  setIn('gEva_' + slotId, baseEva);
   // Re-seed gear crit totals from current equipped items
   let sumCritD = 0, sumCritR = 0;
   GEAR_SLOTS.forEach(slot => {
@@ -2645,15 +2660,20 @@ function recalc() {
     const adjStr = clampAroundBase('gStr_' + slot.id, a.str || 0, 5);
     const adjDex = clampAroundBase('gDex_' + slot.id, a.dex || 0, 5);
     const adjLuk = clampAroundBase('gLuk_' + slot.id, a.luk || 0, 5);
+    let baseAcc = a.acc || 0, baseEva = 0;
+    if (typeof GEAR_ACC_EVA !== 'undefined' && GEAR_ACC_EVA[name]) {
+      baseAcc = GEAR_ACC_EVA[name].acc || 0;
+      baseEva = GEAR_ACC_EVA[name].eva || 0;
+    }
+    const adjAcc = clampAroundBase('gAcc_' + slot.id, baseAcc, 5);
+    const adjEva = clampAroundBase('gEva_' + slot.id, baseEva, 5);
     gearStr += adjStr;
     gearDex += adjDex;
     gearLuk += adjLuk;
+    gearAcc += adjAcc;
+    gearEva += adjEva;
     baseGearCritD += (a.critD || 0);
     baseGearCritR += (a.critR || 0);
-    // ACC / EVA from OSMS equipment (Common + Thief wearable)
-    const ae = (typeof GEAR_ACC_EVA !== 'undefined' && GEAR_ACC_EVA[name]) ? GEAR_ACC_EVA[name] : null;
-    gearAcc += ae ? (ae.acc || 0) : (a.acc || 0);
-    gearEva += ae ? (ae.eva || 0) : 0;
   });
   // Weapon ACC / EVA (claws/daggers with ACC in GEAR_ACC_EVA, e.g. Blood Avarice, Green Scarab, Korean Fan)
   const wepName = val('weapon');
@@ -2668,6 +2688,8 @@ function recalc() {
   set('totStr', gearStr);
   set('totDex', gearDex);
   set('totLuk', gearLuk);
+  set('totAcc', gearAcc);
+  set('totEva', gearEva);
 
   // Scrolls — clamp used slots to max per card
   const SCROLL_MAX = [7, 7, 10, 5, 5, 5, 5, 7];
@@ -2708,12 +2730,10 @@ function recalc() {
       bonus = wdefB;
       bonusLabel = wdefB + '/' + mdefB;
     } else if (st === 'ATT' && i === 0) {
-      // Weapon ATT (Dagger/Claw Public Release): +1 / +2 / +4 / +5
       bonus = s100*1 + s60*2 + s10*4 + sCh*5;
       bonusLabel = String(bonus);
       scATT += bonus;
     } else {
-      // Stat / glove ATT / ACC / EVA / CRIT: +1 / +2 / +3 / +4
       bonus = s100*1 + s60*2 + s10*3 + sCh*4;
       bonusLabel = String(bonus);
       if (st === 'STR') scSTR += bonus;
@@ -2887,7 +2907,7 @@ function recalc() {
   else if (spLv >= 1) spExtraPct = 9 + spLv; // (109 + Lv) − 100
   set('spPct', spExtraPct + '%');
   set('spPctSummary', spExtraPct + '%');
-  const spActive = false; // Shadow Partner removed (not in Public Release)
+  const spActive = false; // Shadow Partner removed
   const spFactor = spActive ? (spExtraPct / 100) : 0;
   if (spActive) {
     set('spRange', '(' + Math.floor(low * spFactor) + ' ~ ' + Math.floor(high * spFactor) + ')');
